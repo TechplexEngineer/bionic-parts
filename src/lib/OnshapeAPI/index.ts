@@ -1,4 +1,4 @@
-import { createHmac } from 'node:crypto';
+// import { createHmac } from 'node:crypto';
 import type { GetDocumentResponse } from './GetDocumentResponse';
 import type { GetBillOfMaterialsResponse } from './GetBillOfMaterialsResponse';
 import type {
@@ -11,32 +11,26 @@ import type { GetBillOfMaterialsOptions } from './GetBillOfMaterialsOptions';
 import type {GetDocumentVersionsResponse} from "$lib/OnshapeAPI/GetDocumentVersionsResponse";
 import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
 
-async function signDataHmac265_broken_for_post(key: string, data: string): Promise<string> {
-	// encoder to convert string to Uint8Array
-	const enc = new TextEncoder();
-
-	const hmac512 = await crypto.subtle.importKey(
-		'raw', // raw format of the key - should be Uint8Array
-		enc.encode(key),
-		{
-			// algorithm details
-			name: 'HMAC',
-			hash: { name: 'SHA-512' }
-		},
-		false, // export = false
-		['sign', 'verify'] // what this key can do
-	);
-
-	const signature = await crypto.subtle.sign('HMAC', hmac512, enc.encode(data));
-	return Buffer.from(signature).toString('base64');
-	// return Array.prototype.map.call(b, (x) => x.toString().padStart(2, '0')).join('');
+export const uint8ArrayToByteString = function (input: Uint8Array): string {
+    return String.fromCharCode.apply(null, input as any)
 }
 
-async function signDataHmac265(key: string, data: string): Promise<string> {
-	const hmac = createHmac('sha256', key);
-	hmac.update(data);
-	return hmac.digest('base64');
+export async function signDataHmac256(secretKey: string, data: string): Promise<string> {
+    const enc = new TextEncoder(/*"utf-8"*/);
+    const algorithm = {name: "HMAC", hash: "SHA-256"};
+
+    const key = await crypto.subtle.importKey("raw", enc.encode(secretKey), algorithm, false, ["sign", "verify"]);
+    const signature = await crypto.subtle.sign(algorithm.name, key, enc.encode(data));
+    const digest = new Uint8Array(signature);
+
+    return btoa(uint8ArrayToByteString(digest))
 }
+
+// async function signDataHmac265(key: string, data: string): Promise<string> {
+// 	const hmac = createHmac('sha256', key);
+// 	hmac.update(data);
+// 	return hmac.digest('base64');
+// }
 
 // function signDataHmac265(key:string, data:string): string {
 // 	const hmac = createHmac('sha256', key);
@@ -313,7 +307,7 @@ export default class OnshapeAPI {
 			queryString +
 			'\n'
 		).toLowerCase();
-		const signature = await signDataHmac265(this.creds.secretKey, hmacString);
+		const signature = await signDataHmac256(this.creds.secretKey, hmacString);
 
 		const asign = 'On ' + this.creds.accessKey + ':HmacSHA256:' + signature;
 
