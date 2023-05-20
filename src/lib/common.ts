@@ -15,3 +15,11 @@ export const hasReleasedPartChanged = (releasedPartId: string, res:BTRootDiffInf
 	}
 	return false
 }
+
+type Project = {
+	name: string;
+	slug: string;
+	onshapeDID: string;
+	mainAssemblyEid: string;
+};
+export type { Project };

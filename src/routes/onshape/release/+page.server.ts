@@ -1,7 +1,6 @@
-import type { PageServerLoad, Actions } from '../../../../.svelte-kit/types/src/routes';
+import type { PageServerLoad, Actions } from './$types';
 import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
-import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
 import getDb from "$lib/getdb";
 
 const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
