@@ -1,5 +1,4 @@
 // Inspired by https://github.com/BuilderIO/qwik/issues/3345#issuecomment-1475385715
-import * as fs from "node:fs/promises";
 import type {D1Database} from "@miniflare/d1";
 
 let getDevDb: any = () => {
@@ -8,6 +7,7 @@ let getDevDb: any = () => {
 
 
 if (import.meta.env.DEV) {
+    const fs = await import("fs/promises");
     const {D1Database:D1D, D1DatabaseAPI} = await import("@miniflare/d1");
     const {createSQLiteDB} = await import("@miniflare/shared");
 
