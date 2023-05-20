@@ -13,7 +13,6 @@
 
     //bound to the text area
     let outputValue = JSON.stringify($page.form, null, 4);
-    $: console.log("$page.form", $page.form);
 
     let resourceItems = ["documents", "metadata", "parts", "partstudios", "translation"].sort();//.map(i=>({value:i, label:i}))
     let resourceValue = "parts";

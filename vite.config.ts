@@ -3,10 +3,20 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
+
 	ssr: {
-        noExternal: ['@popperjs/core']
-    }
+		noExternal: ['@popperjs/core']
+	},
+
+	css: {
+		preprocessorOptions: {
+			scss: {
+				additionalData: '@use "src/variables.scss" as *;'
+			}
+		}
+	}
 });
