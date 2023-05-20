@@ -1,6 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-import OnshapeApi, {GetOpts, WVM} from '$lib/OnshapeAPI';
+import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
+import type {GetOpts} from "$lib/OnshapeAPI";
 
 const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
 const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
@@ -39,13 +40,11 @@ interface runQueryData {
 
 export const actions = {
 	/**
-	 * Modify game state in reaction to a keypress. If client-side JavaScript
-	 * is available, this will happen in the browser instead of here
+	 * Run a raw Onshape API request
 	 */
-	runQuery: async ({ request, cookies }) => {
+	runQuery: async ({ request }) => {
 		const formData = await request.formData();
 		const data = Object.fromEntries(formData) as unknown as runQueryData;
-
 
 		if (data.httpMethod == "get") {
 			const opts: GetOpts = {
@@ -54,55 +53,14 @@ export const actions = {
 				e: data.eid,
 				subresource: data.subresource || undefined
 			};
-			opts[data.wvm] = data.wvmid;
+			opts[data.wvm as WVM] = data.wvmid;
 
 			return {
 				opts: opts,
 				output: await Onshape.get(opts),
 				// out2: await Onshape.GetParts(data.did, WVM.V, data.wvmid, data.eid)
 			}
-
 		}
-
-		// return {
-		// 	output: "test"
-		// }
-
-		// if ()
-
-		// Onshape.get({
-		//
-		// })
-		// const game = new Game(cookies.get('sverdle'));
-        //
-		// const data = await request.formData();
-		// const key = data.get('key');
-        //
-		// const i = game.answers.length;
-        //
-		// if (key === 'backspace') {
-		// 	game.guesses[i] = game.guesses[i].slice(0, -1);
-		// } else {
-		// 	game.guesses[i] += key;
-		// }
-        //
-		// cookies.set('sverdle', game.toString());
-	},
-
-	enter: async ({ request, cookies }) => {
-		// const game = new Game(cookies.get('sverdle'));
-        //
-		// const data = await request.formData();
-		// const guess = data.getAll('guess') as string[];
-        //
-		// if (!game.enter(guess)) {
-		// 	return fail(400, { badGuess: true });
-		// }
-        //
-		// cookies.set('sverdle', game.toString());
-	},
-
-	restart: async ({ cookies }) => {
-		// cookies.delete('sverdle');
+		// NOTE: Only GET is supported as this is published online
 	}
 } satisfies Actions;

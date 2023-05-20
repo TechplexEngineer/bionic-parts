@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from './$types';
-import OnshapeApi, {GetPartsResponse, WVM} from '$lib/OnshapeAPI';
+import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
 
@@ -127,7 +127,11 @@ export const load = (async (event) => {
 	// list of parts in the currently selected version
 	const rawParts = await Onshape.GetParts(searchParams.did, searchParams.wv as WVM, searchParams.wvid, searchParams.eid);
 	if (!Array.isArray(rawParts)) {
-		return {};
+		return {
+			searchParams,
+			parts: [],
+			error: "Error retrieving parts"
+		};
 	}
 	const parts = rawParts.map(async (p) => {
 		return {
