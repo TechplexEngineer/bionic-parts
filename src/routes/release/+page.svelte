@@ -12,13 +12,11 @@
     export let data: PageData;
 
     let errorMessage = null;
+    $: errorMessage = ("error" in data) ? data.error : undefined
 
-    if (("error" in data)) {
-        errorMessage = data.error
-    }
+    let isVersion = false;
+    $: isVersion = data.searchParams.wv == "v";
 
-    let isVersion = data.searchParams.wv == "v";
-    let parts = data.parts;
 </script>
 
 <div class="text-column">
@@ -40,7 +38,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {#each parts as part}
+                {#each data.parts as part}
                     <tr>
                         <td>{part.name}
                             <form id={part.id} method="POST" use:enhance>
