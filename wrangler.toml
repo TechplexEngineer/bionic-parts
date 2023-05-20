@@ -1,0 +1,6 @@
+name = "bionic-parts"
+
+
+build.command = "npm run build"
+
+

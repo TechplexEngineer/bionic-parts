@@ -2,6 +2,7 @@ import type { PageServerLoad, Actions } from './$types';
 import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
+import getDb from "$lib/getdb";
 
 const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
 const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
@@ -120,6 +121,24 @@ const normalizeSearchParams = (params: URLSearchParams) => {
 
 export const load = (async (event) => {
     const searchParams: OnshapeFrameQueryParams = normalizeSearchParams(event.url.searchParams);
+
+	console.log("searchParams", searchParams);
+	if (typeof searchParams.did === "undefined") {
+		return {
+			searchParams,
+			parts: [],
+			error: "No Document ID provided"
+		};
+	}
+
+	const db = getDb(event.platform);
+	if (typeof db === "undefined") {
+		return {
+			searchParams,
+			parts: [],
+			error: "Error accessing database"
+		};
+	}
 
 	const versions = await Onshape.GetDocumentVersions(searchParams.did);
 	console.log("versions", versions);
