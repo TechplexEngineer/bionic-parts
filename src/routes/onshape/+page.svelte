@@ -60,8 +60,8 @@
                 <input type="text" class="form-control" id="did" name="did" value="da2bc7f409791a8720b27217">
             </div>
             <div class="col-md-2">
-                <label class="form-label">W-V-M</label>
-                <Select items={wvmItems} bind:value={wvmValue}></Select>
+                <label class="form-label" for="wvmInput">W-V-M</label>
+                <Select items={wvmItems} bind:value={wvmValue} id="wvmInput"></Select>
                 <input type="hidden" name="wvm" value={wvmValue.value}>
             </div>
             <div class="col-md-2">
@@ -79,13 +79,13 @@
         </div>
         <div class="row">
             <div class="col">
-                <label class="form-label" id="requestTypeInput">Request Type</label>
+                <label class="form-label" for="requestTypeInput">Request Type</label>
                 <Select items={reqTypeItems} bind:value={reqTypeValue} id="requestTypeInput"></Select>
                 <input type="hidden" name="httpMethod" value={reqTypeValue.value}>
             </div>
             <div class="col">
-                <label class="form-label">&nbsp;</label>
-                <button type="submit" class="btn btn-success d-block">Send It</button>
+                <label class="form-label" for="sendItBtn">&nbsp;</label>
+                <button type="submit" class="btn btn-success d-block" id="sendItBtn">Send It</button>
                 <!--                <div class="btn btn-success d-block">Send It</div>-->
             </div>
 
