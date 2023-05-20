@@ -10,7 +10,7 @@ const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
 const Onshape = new OnshapeApi({
 	accessKey: accessKey,
 	secretKey: secretKey,
-	debug: true
+	debug: false
 });
 
 interface OnshapeFrameQueryParams {
@@ -38,15 +38,15 @@ interface ReleasedParts {
 	releasedVersion: string
 }
 
-const releasedParts: ReleasedParts[] = [
-	{
-		partId: "JHD",
-		releasedVersion: "4a9943812a2ae4574d5a91fa"
-	},
-	{
-		partId: "JHH",
-		releasedVersion: "4a9943812a2ae4574d5a91fa"
-	}
+let releasedParts: ReleasedParts[] = [
+	// {
+	// 	partId: "JHD",
+	// 	releasedVersion: "4a9943812a2ae4574d5a91fa"
+	// },
+	// {
+	// 	partId: "JHH",
+	// 	releasedVersion: "4a9943812a2ae4574d5a91fa"
+	// }
 ];
 
 interface CurrentRev {
@@ -76,20 +76,16 @@ const getPartState = async (currentRev: CurrentRev): Promise<PartReleaseState> =
 	// return PartReleaseState.NeverReleased;
 	// 1. check if the part has ever been released
 	const releasedPart = releasedParts.find(p => p.partId === currentRev.partId)
-	console.log(currentRev.partId, releasedPart);
 	if (typeof releasedPart !== "undefined") {
 		if (await hasPartChanged(currentRev, releasedPart)) {
-			console.log(currentRev.partId, "changed");
 			//  --- Yes => ChangedSinceLastRelease
 			return PartReleaseState.ChangedSinceLastRelease;
 		} else {
-			console.log(currentRev.partId, "released");
 			//  --- No  => Released
 			return PartReleaseState.Released;
 		}
 
 	} else {
-		console.log(currentRev.partId, releasedPart);
 		//  --- No  => NeverReleased
 		return PartReleaseState.NeverReleased;
 	}
@@ -118,11 +114,14 @@ const normalizeSearchParams = (params: URLSearchParams) => {
 		userId: objParams.userId,
 	} as OnshapeFrameQueryParams;
 }
+interface QueryResult {
+	onshapePartId: string,
+	onshapeReleasedVersion: string
+}
 
 export const load = (async (event) => {
     const searchParams: OnshapeFrameQueryParams = normalizeSearchParams(event.url.searchParams);
 
-	console.log("searchParams", searchParams);
 	if (typeof searchParams.did === "undefined") {
 		return {
 			searchParams,
@@ -131,7 +130,7 @@ export const load = (async (event) => {
 		};
 	}
 
-	const db = getDb(event.platform);
+	const db = await getDb(event.platform);
 	if (typeof db === "undefined") {
 		return {
 			searchParams,
@@ -139,9 +138,20 @@ export const load = (async (event) => {
 			error: "Error accessing database"
 		};
 	}
+	const res1 = await db.exec(`CREATE TABLE IF NOT EXISTS releasedParts (id INTEGER, projectId INTEGER, onshapePartId TEXT, onshapeReleasedVersion TEXT, userNotes TEXT )`);
+	// console.log(res1);
+	const res = await db.prepare("SELECT id, projectId, onshapePartId, onshapeReleasedVersion, userNotes FROM releasedParts").all()
+	releasedParts = (res.results as unknown as QueryResult[]).map((r) => {
+		return {
+			partId: r.onshapePartId,
+			releasedVersion: r.onshapeReleasedVersion
+		}
+	});
+	console.log("releasedParts", releasedParts);
 
-	const versions = await Onshape.GetDocumentVersions(searchParams.did);
-	console.log("versions", versions);
+
+	// const versions = await Onshape.GetDocumentVersions(searchParams.did);
+	// console.log("versions", versions);
 
 	// list of parts in the currently selected version
 	const rawParts = await Onshape.GetParts(searchParams.did, searchParams.wv as WVM, searchParams.wvid, searchParams.eid);
@@ -173,11 +183,21 @@ export const load = (async (event) => {
 }) satisfies PageServerLoad;
 
 
+interface RequestData {
+	partId: string,
+	versionId: string,
+}
 
 export const actions = {
 
-	release: async ({ request, cookies }) => {
-		console.log("Release");
+	release: async ({ request, cookies, platform}) => {
+		const db = await getDb(platform);
+		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
+		console.log("Release", data);
+
+		const res = await db.prepare("INSERT INTO releasedParts (onshapePartId, onshapeReleasedVersion) VALUES (?, ?)").bind(data.partId, data.versionId).run();
+		console.log(res);
+
 		return {};
 	},
 	re_release: async ({ request, cookies }) => {

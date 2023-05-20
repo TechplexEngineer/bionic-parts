@@ -19,8 +19,6 @@
 
     let isVersion = data.searchParams.wv == "v";
     let parts = data.parts;
-
-
 </script>
 
 <div class="text-column">
@@ -41,11 +39,13 @@
                     <th>Actions</th>
                 </tr>
                 </thead>
+                <tbody>
                 {#each parts as part}
                     <tr>
                         <td>{part.name}
                             <form id={part.id} method="POST" use:enhance>
                                 <input type="hidden" name="partId" value={part.id}>
+                                <input type="hidden" name="versionId" value={data.searchParams.wvid}>
                             </form>
                         </td>
                         <td>{part.state}</td>
@@ -64,6 +64,7 @@
                         </td>
                     </tr>
                 {/each}
+                </tbody>
             </table>
         {:else}
             <span class="text-danger">Please choose a version to release, then you can choose parts to release.</span>

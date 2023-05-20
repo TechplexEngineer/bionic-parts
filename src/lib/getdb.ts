@@ -1,5 +1,6 @@
 // Inspired by https://github.com/BuilderIO/qwik/issues/3345#issuecomment-1475385715
 import * as fs from "node:fs/promises";
+import type {D1Database} from "@miniflare/d1";
 
 let getDevDb: any = () => {
     throw new Error("Not in a dev env, ");
@@ -25,7 +26,7 @@ if (import.meta.env.DEV) {
     };
 }
 
-const getDb = async (platform: App.Platform|undefined) => {
+const getDb = async (platform: App.Platform|undefined):Promise<D1Database> => {
     if (platform?.env?.BIONIC_PARTS_DB) {
         return platform.env?.BIONIC_PARTS_DB;
     }
