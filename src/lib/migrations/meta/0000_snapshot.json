@@ -1,0 +1,47 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "id": "fa317195-3518-40df-878d-0bd589295957",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "parts": {
+      "name": "parts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "projectId": {
+          "name": "projectId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "onshapePartId": {
+          "name": "onshapePartId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "onshapeReleasedVersion": {
+          "name": "onshapeReleasedVersion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    }
+  },
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}
