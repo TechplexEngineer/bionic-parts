@@ -2,6 +2,7 @@
 import type {D1Database} from "@miniflare/d1";
 import {drizzle} from "drizzle-orm/d1";
 import type {DrizzleD1Database} from "drizzle-orm/d1";
+import {migrate} from "drizzle-orm/d1/migrator";
 
 let getDevDb = async (): Promise<D1Database> => {
     throw new Error("Not in a dev env, ");
@@ -29,11 +30,17 @@ if (import.meta.env.DEV) {
 }
 
 const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<DrizzleD1Database> => {
+    let db;
     if (platform?.env?.BIONIC_PARTS_DB) {
-        return drizzle(platform.env?.BIONIC_PARTS_DB);
+        db = platform.env?.BIONIC_PARTS_DB;
+    } else {
+        db = await getDevDb();
     }
+    const ddb = drizzle(db as any);
 
-    return drizzle(await getDevDb() as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
+    await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });
+
+    return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
 
 export default getDbFromPlatform;

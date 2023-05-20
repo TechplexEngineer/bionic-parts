@@ -11,7 +11,7 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"generate": "drizzle-kit generate:sqlite --schema=src/lib/schemas/index.ts",
+		"generate": "drizzle-kit generate:sqlite",
 		"up": "drizzle-kit up:sqlite --schema=src/schema.ts"
 	},
 	"devDependencies": {

@@ -21,15 +21,17 @@
 </script>
 
 <div class="container">
-    <div class="row">
+    <div class="row mb-4">
         <div class="col-2">
             <!-- Some Other Action -->
         </div>
         <div class="col-8">
             <h1>Projects</h1>
         </div>
-        <div class="col-2">
-            <div class="btn btn-success" on:click={newProjectModalToggle} on:keypress={newProjectModalToggle}>New Project</div>
+        <div class="col-2 d-flex flex-column">
+            <div class="mt-auto ms-auto">
+                <div class="btn btn-success" on:click={newProjectModalToggle} on:keypress={newProjectModalToggle}>New Project</div>
+            </div>
         </div>
     </div>
 
