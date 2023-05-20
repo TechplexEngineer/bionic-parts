@@ -1,7 +1,9 @@
 import type { PageServerLoad, Actions } from './$types';
 import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
-import getDb from "$lib/getdb";
+
+import {parts as partsSchema} from "$lib/schemas";
+import type {PartModel} from "$lib/schemas";
 
 const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
 const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
@@ -31,13 +33,9 @@ interface Part {
 	state: PartReleaseState
 }
 
-interface ReleasedParts {
-	// partQuery: string,
-	partId: string,
-	releasedVersion: string
-}
 
-let releasedParts: ReleasedParts[] = [
+
+// let releasedParts: PartModel[] = [
 	// {
 	// 	partId: "JHD",
 	// 	releasedVersion: "4a9943812a2ae4574d5a91fa"
@@ -46,7 +44,7 @@ let releasedParts: ReleasedParts[] = [
 	// 	partId: "JHH",
 	// 	releasedVersion: "4a9943812a2ae4574d5a91fa"
 	// }
-];
+// ];
 
 interface CurrentRev {
 	did: string,
@@ -56,7 +54,7 @@ interface CurrentRev {
 	partId: string, //eg JHH
 }
 
-const hasPartChanged = async (c:CurrentRev, releasedPart: ReleasedParts): Promise<boolean> => {
+const hasPartChanged = async (c:CurrentRev, releasedPart: PartModel): Promise<boolean> => {
 	//@todo prevent comparing a newer version to an older version
 
 	if (c.wvid == releasedPart.releasedVersion) {
@@ -70,7 +68,7 @@ const hasPartChanged = async (c:CurrentRev, releasedPart: ReleasedParts): Promis
 }
 
 
-const getPartState = async (currentRev: CurrentRev): Promise<PartReleaseState> => {
+const getPartState = async (currentRev: CurrentRev, releasedParts: PartModel[]): Promise<PartReleaseState> => {
 
 	// return PartReleaseState.NeverReleased;
 	// 1. check if the part has ever been released
@@ -130,7 +128,7 @@ export const load = (async (event) => {
 		};
 	}
 
-	const db = await getDb(event.platform);
+	const db = event.locals.db
 	if (typeof db === "undefined") {
 		return {
 			searchParams,
@@ -138,16 +136,18 @@ export const load = (async (event) => {
 			error: "Error accessing database"
 		};
 	}
-	const res1 = await db.exec(`CREATE TABLE IF NOT EXISTS releasedParts (id INTEGER, projectId INTEGER, onshapePartId TEXT, onshapeReleasedVersion TEXT, userNotes TEXT )`);
-	// console.log(res1);
-	const res = await db.prepare("SELECT id, projectId, onshapePartId, onshapeReleasedVersion, userNotes FROM releasedParts").all()
-	releasedParts = (res.results as unknown as QueryResult[]).map((r) => {
-		return {
-			partId: r.onshapePartId,
-			releasedVersion: r.onshapeReleasedVersion
-		}
-	});
+	const releasedParts = await db.select().from(partsSchema).all();
 	console.log("releasedParts", releasedParts);
+	// const res1 = await db.exec(`CREATE TABLE IF NOT EXISTS releasedParts (id INTEGER, projectId INTEGER, onshapePartId TEXT, onshapeReleasedVersion TEXT, userNotes TEXT )`);
+	// // console.log(res1);
+	// const res = await db.prepare("SELECT id, projectId, onshapePartId, onshapeReleasedVersion, userNotes FROM releasedParts").all()
+	// releasedParts = (res.results as unknown as QueryResult[]).map((r) => {
+	// 	return {
+	// 		partId: r.onshapePartId,
+	// 		releasedVersion: r.onshapeReleasedVersion
+	// 	}
+	// });
+	// console.log("releasedParts", releasedParts);
 
 
 	// const versions = await Onshape.GetDocumentVersions(searchParams.did);
@@ -172,7 +172,7 @@ export const load = (async (event) => {
 				wv: searchParams.wv,
 				wvid: searchParams.wvid,
 				eid: searchParams.eid,
-			})
+			}, releasedParts)
 		} as Part
 	})
 
@@ -190,18 +190,15 @@ interface RequestData {
 
 export const actions = {
 
-	release: async ({ request, cookies, platform}) => {
-		const db = await getDb(platform);
-		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
-		console.log("Release", data);
+	release: async ({ request, locals: {db}}) => {
 
-		const res = await db.prepare("INSERT INTO releasedParts (onshapePartId, onshapeReleasedVersion) VALUES (?, ?)").bind(data.partId, data.versionId).run();
-		console.log(res);
+		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
+		await db.insert(partsSchema).values({partId: data.partId, releasedVersion: data.versionId}).run();
 
 		return {};
 	},
-	re_release: async ({ request, cookies }) => {
-		console.log("re-Release");
+	re_release: async ({ request, locals: {db} }) => {
+		console.log("re-Release"); //@todo
 		return {};
 	}
 } satisfies Actions;
