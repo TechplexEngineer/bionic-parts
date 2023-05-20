@@ -47,31 +47,24 @@
 
     <Modal header="Create new Project" isOpen={newProjectModalOpen} toggle={newProjectModalToggle}>
         <form
-                class="new"
-                action="/projects"
-                method="post"
+                method="POST"
                 enctype="multipart/form-data"
                 id="createProjectForm"
                 use:enhance
         >
             <div class="mb-3">
                 <label for="projectName" class="form-label">Name *</label>
-                <input type="text" class="form-control" id="projectName" name="projectName" required>
+                <input type="text" class="form-control" id="projectName" name="name" required>
             </div>
 
             <div class="mb-3">
-                <label for="partPrefix" class="form-label">Part Number Prefix *</label>
-                <input type="text" class="form-control" id="partPrefix" name="partPrefix" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="projectPhoto" class="form-label">Cover Image</label>
-                <input class="form-control" type="file" name="projectPhoto" id="projectPhoto">
+                <label for="slugInput" class="form-label">Slug * (Short Project Name)</label>
+                <input type="text" class="form-control" id="slugInput" name="slug" required>
             </div>
 
         </form>
         <div slot="footer">
-            <button type="submit" form="createProjectForm" class="btn btn-success mb-3 float-end" formaction="/?create">Create</button>
+            <button type="submit" form="createProjectForm" class="btn btn-success mb-3 float-end" formaction="?/create" on:click={newProjectModalToggle}>Create</button>
         </div>
     </Modal>
 </div>

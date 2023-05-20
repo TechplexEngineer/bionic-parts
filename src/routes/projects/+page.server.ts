@@ -1,15 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
-import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
-import type {GetOpts} from "$lib/OnshapeAPI";
-
-const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
-const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
-
-const Onshape = new OnshapeApi({
-	accessKey: accessKey,
-	secretKey: secretKey,
-	debug: true
-});
+import {projects as projectsSchema} from "$lib/schemas";
+import type {ProjectModel} from "$lib/schemas";
 
 enum ProjectStatus {
 	Active = "Active",
@@ -54,46 +45,21 @@ const projects = [
 	}
 ]
 
-export const load = (() => {
+export const load = (async ({locals:{db}}) => {
+	const projects = await db.select().from(projectsSchema).all();
+
 	return {
 		projects
 	};
 }) satisfies PageServerLoad;
 
-interface runQueryData {
-	resource: string
-	did: string
-	wvm: string
-	wvmid: string
-	eid: string
-	subresource: string
-	httpMethod: string
-	body: string
-}
-
 export const actions = {
-	/**
-	 * Run a raw Onshape API request
-	 */
-	runQuery: async ({ request }) => {
-		const formData = await request.formData();
-		const data = Object.fromEntries(formData) as unknown as runQueryData;
 
-		if (data.httpMethod == "get") {
-			const opts: GetOpts = {
-				resource: data.resource,
-				d: data.did,
-				e: data.eid,
-				subresource: data.subresource || undefined
-			};
-			opts[data.wvm as WVM] = data.wvmid;
+	create: async ({ request , locals: {db}}) => {
 
-			return {
-				opts: opts,
-				output: await Onshape.get(opts),
-				// out2: await Onshape.GetParts(data.did, WVM.V, data.wvmid, data.eid)
-			}
-		}
-		// NOTE: Only GET is supported as this is published online
+		const data = Object.fromEntries(await request.formData()) as unknown as ProjectModel;
+		await db.insert(projectsSchema).values(data).run();
+
+		return {};
 	}
 } satisfies Actions;

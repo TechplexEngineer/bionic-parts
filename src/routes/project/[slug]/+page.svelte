@@ -8,6 +8,8 @@
 
     export let data: PageData;
 
+    console.log("Project Page Data", data);
+
 </script>
 
 <div class="container">
@@ -27,14 +29,23 @@
         <thead>
         <tr>
             <th>Name</th>
+            <th>Source Element (Assembly or Part Studio)</th>
+            <th>Source Document</th>
             <th>Version</th>
             <th>Id</th>
+            <th>Status</th>
         </tr>
         </thead>
         <tbody>
+        {#each data.parts as part}
         <tr>
+            <td>{part.name}</td>
             <td></td>
+            <td></td>
+            <td>{part.releasedVersion}</td>
+            <td>{part.partId}</td>
         </tr>
+        {/each}
         </tbody>
     </table>
 

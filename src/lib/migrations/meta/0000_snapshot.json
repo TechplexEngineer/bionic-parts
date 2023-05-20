@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "fa317195-3518-40df-878d-0bd589295957",
+  "id": "0243106c-a455-4565-80aa-788792f8f6eb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "parts": {
@@ -28,6 +28,51 @@
         },
         "onshapeReleasedVersion": {
           "name": "onshapeReleasedVersion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    },
+    "projects": {
+      "name": "projects",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "onshapeDocIds": {
+          "name": "onshapeDocIds",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mainAssembly": {
+          "name": "mainAssembly",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
           "type": "text",
           "primaryKey": false,
           "notNull": false

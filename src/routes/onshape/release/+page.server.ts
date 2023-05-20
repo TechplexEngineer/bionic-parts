@@ -1,5 +1,5 @@
 import type { PageServerLoad, Actions } from './$types';
-import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
+import OnshapeApi, {GetPartsResponse, WVM} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 
 import {parts as partsSchema} from "$lib/schemas";
@@ -31,6 +31,7 @@ interface Part {
 	name: string
 	// id: string
 	state: PartReleaseState
+	rawPartData: GetPartsResponse
 }
 
 
@@ -111,10 +112,6 @@ const normalizeSearchParams = (params: URLSearchParams) => {
 		userId: objParams.userId,
 	} as OnshapeFrameQueryParams;
 }
-interface QueryResult {
-	onshapePartId: string,
-	onshapeReleasedVersion: string
-}
 
 export const load = (async (event) => {
     const searchParams: OnshapeFrameQueryParams = normalizeSearchParams(event.url.searchParams);
@@ -137,18 +134,6 @@ export const load = (async (event) => {
 		};
 	}
 	const releasedParts = await db.select().from(partsSchema).all();
-	console.log("releasedParts", releasedParts);
-	// const res1 = await db.exec(`CREATE TABLE IF NOT EXISTS releasedParts (id INTEGER, projectId INTEGER, onshapePartId TEXT, onshapeReleasedVersion TEXT, userNotes TEXT )`);
-	// // console.log(res1);
-	// const res = await db.prepare("SELECT id, projectId, onshapePartId, onshapeReleasedVersion, userNotes FROM releasedParts").all()
-	// releasedParts = (res.results as unknown as QueryResult[]).map((r) => {
-	// 	return {
-	// 		partId: r.onshapePartId,
-	// 		releasedVersion: r.onshapeReleasedVersion
-	// 	}
-	// });
-	// console.log("releasedParts", releasedParts);
-
 
 	// const versions = await Onshape.GetDocumentVersions(searchParams.did);
 	// console.log("versions", versions);
@@ -172,7 +157,8 @@ export const load = (async (event) => {
 				wv: searchParams.wv,
 				wvid: searchParams.wvid,
 				eid: searchParams.eid,
-			}, releasedParts)
+			}, releasedParts),
+			rawPartData: p
 		} as Part
 	})
 
@@ -193,7 +179,11 @@ export const actions = {
 	release: async ({ request, locals: {db}}) => {
 
 		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
-		await db.insert(partsSchema).values({partId: data.partId, releasedVersion: data.versionId}).run();
+		await db.insert(partsSchema).values({
+			projectId: 2, //@todo need to determine this based on the document ID
+			partId: data.partId,
+			releasedVersion: data.versionId
+		}).run();
 
 		return {};
 	},
