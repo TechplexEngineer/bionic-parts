@@ -1,5 +1,5 @@
 import { fail } from '@sveltejs/kit';
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from '../../../../.svelte-kit/types/src/routes';
 import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
 import type {GetOpts} from "$lib/OnshapeAPI";
 

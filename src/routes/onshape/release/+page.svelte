@@ -5,7 +5,7 @@
 
 
 <script lang="ts">
-    import type {PageData} from './$types';
+    import type {PageData} from '../../../../.svelte-kit/types/src/routes';
     import {PartReleaseState} from "$lib/common";
     import {enhance} from '$app/forms';
 

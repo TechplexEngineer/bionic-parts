@@ -1,4 +1,4 @@
-import type { PageServerLoad, Actions } from './$types';
+import type { PageServerLoad, Actions } from '../../../../.svelte-kit/types/src/routes';
 import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
@@ -121,6 +121,7 @@ interface QueryResult {
 
 export const load = (async (event) => {
     const searchParams: OnshapeFrameQueryParams = normalizeSearchParams(event.url.searchParams);
+	console.log("load", searchParams);
 
 	if (typeof searchParams.did === "undefined") {
 		return {
