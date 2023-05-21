@@ -1,13 +1,21 @@
-
-import { TrelloClient } from 'trello.js';
+import {TrelloClient} from 'trello.js';
 import fetchAdapter from "@haverstack/axios-fetch-adapter"
 
+const key = import.meta.env.VITE_TRELLO_KEY;
+if (!key) {
+    throw new Error('Missing trello key');
+}
+const token = import.meta.env.VITE_TRELLO_TOKEN;
+if (!token) {
+    throw new Error('Missing trello token');
+}
+
 const trelloClient = new TrelloClient({
-	key: import.meta.env.VITE_TRELLO_KEY,
-	token: import.meta.env.VITE_TRELLO_TOKEN,
+    key: key,
+    token: token,
     baseRequestConfig: {
-		adapter: fetchAdapter
-	}
+        adapter: fetchAdapter
+    }
 });
 
 export default trelloClient;
