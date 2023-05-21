@@ -1,6 +1,9 @@
 <script>
 	import '../app.scss';
 	import './styles.css';
+
+	// disable SSR everywhere
+	export const ssr = false
 </script>
 
 
