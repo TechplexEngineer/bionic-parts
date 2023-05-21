@@ -32,7 +32,11 @@ if (import.meta.env.DEV) {
 
 const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<DrizzleD1Database> => {
     let db;
-    console.log(JSON.stringify(import.meta,null,2))
+    console.log("meta", JSON.stringify(import.meta,null,2))
+    console.log("mode", import.meta.env.MODE)
+    console.log("prod", import.meta.env.PROD)
+    console.log("dev", import.meta.env.DEV)
+    console.log("ssr", import.meta.env.SSR)
     console.log("BIONIC_PARTS_DB", platform, platform?.env, platform?.env?.BIONIC_PARTS_DB)
     if (platform?.env?.BIONIC_PARTS_DB) {
         db = platform.env?.BIONIC_PARTS_DB;
