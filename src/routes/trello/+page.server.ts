@@ -1,14 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
-import {projects as projectsSchema} from "$lib/schemas";
-import type {ProjectModel} from "$lib/schemas";
 
-import { TrelloClient } from 'trello.js';
-
-const trelloClient = new TrelloClient({
-	key: import.meta.env.VITE_TRELLO_KEY,
-	token: import.meta.env.VITE_TRELLO_TOKEN,
-});
-
+import trelloClient from "$lib/trello";
 
 export const load = (async ({locals:{db}}) => {
 	return {

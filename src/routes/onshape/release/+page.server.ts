@@ -6,16 +6,14 @@ import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
-import { TrelloClient } from 'trello.js';
-import fetchAdapter from "@haverstack/axios-fetch-adapter"
-
-const trelloClient = new TrelloClient({
-	key: import.meta.env.VITE_TRELLO_KEY,
-	token: import.meta.env.VITE_TRELLO_TOKEN,
-	baseRequestConfig: {
-		adapter: fetchAdapter
-	}
-});
+import trelloClient from "$lib/trello";
+// const trelloClient = new TrelloClient({
+// 	key: import.meta.env.VITE_TRELLO_KEY,
+// 	token: import.meta.env.VITE_TRELLO_TOKEN,
+// 	baseRequestConfig: {
+// 		adapter: fetchAdapter
+// 	}
+// });
 
 const Onshape = new OnshapeApi({
 	accessKey: import.meta.env.VITE_ONSHAPE_ACCESS_KEY,
