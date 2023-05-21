@@ -7,10 +7,14 @@ import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
 import { TrelloClient } from 'trello.js';
+import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 
 const trelloClient = new TrelloClient({
 	key: import.meta.env.VITE_TRELLO_KEY,
 	token: import.meta.env.VITE_TRELLO_TOKEN,
+	baseRequestConfig: {
+		adapter: fetchAdapter
+	}
 });
 
 const Onshape = new OnshapeApi({
@@ -211,15 +215,15 @@ export const actions = {
 		}).run();
 		console.log("here2")
 
-// 		const backlogListId = "6468e280779ad802bb3775d4";
-// 		await trelloClient.cards.createCard({
-// 			name: `${data.partName} - ${version.name}`,
-// 			desc: ` ${cardTitle}
-// Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
-// 			`,
-// 			idList: backlogListId,
-// 		});
-// 		console.log("here3")
+		const backlogListId = "6468e280779ad802bb3775d4";
+		await trelloClient.cards.createCard({
+			name: `${data.partName} - ${version.name}`,
+			desc: ` ${cardTitle}
+Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
+			`,
+			idList: backlogListId,
+		});
+		console.log("here3")
 
 		return {};
 	},

@@ -46,6 +46,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@vespaiach/axios-fetch-adapter": "^0.3.1",
 		"drizzle-orm": "^0.26.0",
 		"svelte-select": "^5.6.1",
 		"trello.js": "^1.2.5"
