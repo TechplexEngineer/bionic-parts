@@ -10,6 +10,7 @@ import { BTTranslationRequestInfo_State } from './BTTranslationRequestInfo';
 import type { GetBillOfMaterialsOptions } from './GetBillOfMaterialsOptions';
 import type {GetDocumentVersionsResponse} from "$lib/OnshapeAPI/GetDocumentVersionsResponse";
 import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
+import type {BTMetadataObjectInfo} from "$lib/OnshapeAPI/BTMetadataObjectInfo";
 
 export const uint8ArrayToByteString = function (input: Uint8Array): string {
     return String.fromCharCode.apply(null, input as any)
@@ -364,16 +365,23 @@ export default class OnshapeAPI {
 		return await res.json();
 	}
 
-	public async GetDocument(documentId: string): Promise<GetDocumentResponse | ErrorResponse> {
+	public async GetDocument(documentId: string): Promise<GetDocumentResponse/* | ErrorResponse*/> {
 		const opts: GetOpts = {
 			path: `/api/documents/${documentId}`
 		};
 		return (await this.get(opts)) as any;
 	}
 
-	public async GetDocumentVersions(documentId: string): Promise<GetDocumentVersionsResponse[] | ErrorResponse> {
+	public async GetDocumentVersions(documentId: string): Promise<GetDocumentVersionsResponse[]/* | ErrorResponse*/> {
 		const opts: GetOpts = {
 			path: `/api/documents/${documentId}/versions`
+		};
+		return (await this.get(opts)) as any;
+	}
+
+	public async GetDocumentVersionById(documentId: string, versionId: string): Promise<GetDocumentVersionsResponse/* | ErrorResponse*/> {
+		const opts: GetOpts = {
+			path: `/api/documents/${documentId}/versions/${versionId}`
 		};
 		return (await this.get(opts)) as any;
 	}
@@ -601,8 +609,19 @@ export default class OnshapeAPI {
 		);
 	}
 
-	public async GetElementMetadata() {
-		//	/metadata/d/{did}/{wvm}/{wvmid}/e/{eid}
+	public async GetElementMetadata(
+			documentId: string,
+			wvm: WVM,
+			wvmId: string,
+			elementId: string
+	):Promise<BTMetadataObjectInfo> {
+		const opts: GetOpts = {
+			resource: "metadata",
+			d: documentId,
+			e: elementId
+		}
+		opts[wvm] = wvmId;
+		return (await this.get(opts as any)) as any;
 	}
 
 	public async GetOutOfDateElements(

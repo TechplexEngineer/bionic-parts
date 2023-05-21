@@ -1,16 +1,21 @@
 import type { PageServerLoad, Actions } from './$types';
-import OnshapeApi, {GetPartsResponse, WVM} from '$lib/OnshapeAPI';
+import OnshapeApi, {WVM} from '$lib/OnshapeAPI';
+import type {GetPartsResponse} from '$lib/OnshapeAPI';
 import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 
 import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
-const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
-const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
+import { TrelloClient } from 'trello.js';
+
+const trelloClient = new TrelloClient({
+	key: import.meta.env.VITE_TRELLO_KEY,
+	token: import.meta.env.VITE_TRELLO_TOKEN,
+});
 
 const Onshape = new OnshapeApi({
-	accessKey: accessKey,
-	secretKey: secretKey,
+	accessKey: import.meta.env.VITE_ONSHAPE_ACCESS_KEY,
+	secretKey: import.meta.env.VITE_ONSHAPE_SECRET_KEY,
 	debug: false
 });
 
@@ -115,7 +120,7 @@ const normalizeSearchParams = (params: URLSearchParams) => {
 
 export const load = (async (event) => {
     const searchParams: OnshapeFrameQueryParams = normalizeSearchParams(event.url.searchParams);
-	console.log("load", searchParams);
+	// console.log("load", searchParams);
 
 	if (typeof searchParams.did === "undefined") {
 		return {
@@ -172,18 +177,44 @@ export const load = (async (event) => {
 interface RequestData {
 	partId: string,
 	versionId: string,
+
+	iframeParams: string
+	partName: string,
+	// elementName: string, //onshape tab name
+	// documentName: string
+
 }
 
 export const actions = {
 
-	release: async ({ request, locals: {db}}) => {
-
+	release: async ({ request, locals: {db}, url:{searchParams}}) => {
 		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
+		const iframeParams: OnshapeFrameQueryParams = JSON.parse(data.iframeParams);
+		// console.log("data", iframeParams)
+
+		const doc = await Onshape.GetDocument(iframeParams.did);
+		// console.log("doc", doc.name)
+		const element = await Onshape.GetElementMetadata(iframeParams.did, iframeParams.wv, iframeParams.wvid, iframeParams.eid)
+		const elementName = element.properties.find(p=> p.name == "Name")?.value;
+		// console.log("element", JSON.stringify(elementName,null,4))
+
+		const version = await Onshape.GetDocumentVersionById(iframeParams.did, iframeParams.wvid)
+
+		const cardTitle = `${doc.name} - ${elementName} - ${data.partName} - ${version.name}`;
+		// console.log("cardTitle", cardTitle)
+
 		await db.insert(partsSchema).values({
-			projectId: 2, //@todo need to determine this based on the document ID
+			//projectId: 2, //@todo need to determine this based on the document ID
 			partId: data.partId,
 			releasedVersion: data.versionId
 		}).run();
+
+		const backlogListId = "6468e280779ad802bb3775d4";
+		await trelloClient.cards.createCard({
+			name: cardTitle,
+			// desc: "Description",
+			idList: backlogListId,
+		})
 
 		return {};
 	},

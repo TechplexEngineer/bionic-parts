@@ -43,7 +43,9 @@
                         <td>{part.name}
                             <form id={part.id} method="POST" use:enhance>
                                 <input type="hidden" name="partId" value={part.id}>
+                                <input type="hidden" name="partName" value={part.name}>
                                 <input type="hidden" name="versionId" value={data.searchParams.wvid}>
+                                <input type="hidden" name="iframeParams" value={JSON.stringify(data.searchParams)}>
                             </form>
                         </td>
                         <td>{part.state}</td>
