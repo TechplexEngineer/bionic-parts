@@ -215,15 +215,15 @@ export const actions = {
 		}).run();
 		console.log("here2")
 
-		const backlogListId = "6468e280779ad802bb3775d4";
-		await trelloClient.cards.createCard({
-			name: `${data.partName} - ${version.name}`,
-			desc: ` ${cardTitle}
-Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
-			`,
-			idList: backlogListId,
-		});
-		console.log("here3")
+// 		const backlogListId = "6468e280779ad802bb3775d4";
+// 		await trelloClient.cards.createCard({
+// 			name: `${data.partName} - ${version.name}`,
+// 			desc: ` ${cardTitle}
+// Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
+// 			`,
+// 			idList: backlogListId,
+// 		});
+// 		console.log("here3")
 
 		return {};
 	},
