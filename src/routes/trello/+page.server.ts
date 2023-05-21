@@ -2,7 +2,6 @@ import type {PageServerLoad, Actions} from './$types';
 
 import trelloClient from "$lib/trello";
 import Onshape from "$lib/onshape";
-import * as fs from "fs";
 
 export const load = (async ({locals: {db}}) => {
     return {};
