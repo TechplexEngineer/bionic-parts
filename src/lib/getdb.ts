@@ -4,7 +4,7 @@ import {drizzle} from "drizzle-orm/d1";
 import type {DrizzleD1Database} from "drizzle-orm/d1";
 import {migrate} from "drizzle-orm/d1/migrator";
 
-let getDevDb = async (): Promise<D1Database> => {
+let getDevDb = async (): Promise<any> => {
     // throw new Error("Not in a dev env, but attempted to access dev db");
     console.log("ERROR: Not in a dev env, but attempted to access dev db")
 };
@@ -32,12 +32,6 @@ if (import.meta.env.DEV) {
 
 const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<DrizzleD1Database> => {
     let db;
-    console.log("meta", JSON.stringify(import.meta,null,2))
-    console.log("mode", import.meta.env.MODE)
-    console.log("prod", import.meta.env.PROD)
-    console.log("dev", import.meta.env.DEV)
-    console.log("ssr", import.meta.env.SSR)
-    console.log("BIONIC_PARTS_DB", platform, platform?.env, platform?.env?.BIONIC_PARTS_DB)
     if (platform?.env?.BIONIC_PARTS_DB) {
         db = platform.env?.BIONIC_PARTS_DB;
     } else {
