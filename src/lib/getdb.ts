@@ -5,7 +5,8 @@ import type {DrizzleD1Database} from "drizzle-orm/d1";
 import {migrate} from "drizzle-orm/d1/migrator";
 
 let getDevDb = async (): Promise<D1Database> => {
-    throw new Error("Not in a dev env, but attempted to access dev db");
+    // throw new Error("Not in a dev env, but attempted to access dev db");
+    console.log("ERROR: Not in a dev env, but attempted to access dev db")
 };
 
 
