@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "0243106c-a455-4565-80aa-788792f8f6eb",
+  "id": "3ece0f07-dd4e-4b6e-8bc2-a40ce92b14fa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "parts": {
@@ -16,9 +16,10 @@
         },
         "projectId": {
           "name": "projectId",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "autoincrement": false
         },
         "onshapePartId": {
           "name": "onshapePartId",

@@ -4,11 +4,11 @@
 </svelte:head>
 
 <script lang="ts">
-    import type { PageData } from './$types';
+    // import type { PageData } from './$types';
     import {enhance} from '$app/forms';
 
     // populated with data from the get endpoint
-    export let data: PageData;
+    // export let data: PageData;
 
 </script>
 

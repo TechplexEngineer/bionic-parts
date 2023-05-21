@@ -4,3 +4,8 @@ name = "bionic-parts"
 build.command = "npm run build"
 
 
+[[d1_databases]]
+binding = "BIONIC_PARTS_DB" # i.e. available in your Worker on env.DB
+database_name = "bionic-parts"
+database_id = "661d8be1-f791-41d4-9daf-ebb369f24cc7"
+migrations_dir = "./src/lib/migrations"

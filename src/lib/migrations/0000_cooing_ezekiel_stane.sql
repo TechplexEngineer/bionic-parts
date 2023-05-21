@@ -1,6 +1,6 @@
 CREATE TABLE `parts` (
 	`id` integer PRIMARY KEY NOT NULL,
-	`projectId` text,
+	`projectId` integer,
 	`onshapePartId` text NOT NULL,
 	`onshapeReleasedVersion` text
 );

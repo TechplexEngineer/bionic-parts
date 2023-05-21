@@ -43,12 +43,15 @@ const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<Drizz
     } else {
         db = await getDevDb();
     }
-    const ddb = drizzle(db as any);
 
-    if (!import.meta.env.SSR) {
+    console.log("db", db, !!db)
+
+
+    if (import.meta.env.DEV) { //we can only apply migrations in dev
+        const ddb = drizzle(db as any);
         await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });
+        return ddb;
     }
-
 
     return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
