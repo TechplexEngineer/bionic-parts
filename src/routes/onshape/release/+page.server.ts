@@ -7,8 +7,6 @@ import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
 import { TrelloClient } from 'trello.js';
-// import fetchAdapter from "$lib/fetch-adapter";
-// import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 import fetchAdapter from "@haverstack/axios-fetch-adapter"
 
 const trelloClient = new TrelloClient({
@@ -196,36 +194,33 @@ export const actions = {
 	release: async ({ request, locals: {db}, url:{searchParams}}) => {
 		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
 		const iframeParams: OnshapeFrameQueryParams = JSON.parse(data.iframeParams);
-		console.log("data", JSON.stringify(iframeParams,null,4))
+		// console.log("data", JSON.stringify(iframeParams,null,4))
 
 		const doc = await Onshape.GetDocument(iframeParams.did);
-		console.log("doc", doc.name)
+		// console.log("doc", doc.name)
 		const element = await Onshape.GetElementMetadata(iframeParams.did, iframeParams.wv, iframeParams.wvid, iframeParams.eid)
-		console.log("raw element")
+		// console.log("raw element")
 		const elementName = element.properties.find(p=> p.name == "Name")?.value;
-		console.log("element", JSON.stringify(elementName,null,4))
+		// console.log("element", JSON.stringify(elementName,null,4))
 
 		const version = await Onshape.GetDocumentVersionById(iframeParams.did, iframeParams.wvid)
 
 		const cardTitle = `${doc.name} - ${elementName} - ${data.partName} - ${version.name}`;
 		// console.log("cardTitle", cardTitle)
-		console.log("here")
 		await db.insert(partsSchema).values({
 			//projectId: 2, //@todo need to determine this based on the document ID
 			partId: data.partId,
 			releasedVersion: data.versionId
 		}).run();
-		console.log("here2")
 
-// 		const backlogListId = "6468e280779ad802bb3775d4";
-// 		await trelloClient.cards.createCard({
-// 			name: `${data.partName} - ${version.name}`,
-// 			desc: ` ${cardTitle}
-// Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
-// 			`,
-// 			idList: backlogListId,
-// 		});
-// 		console.log("here3")
+		const backlogListId = "6468e280779ad802bb3775d4";
+		await trelloClient.cards.createCard({
+			name: `${data.partName} - ${version.name}`,
+			desc: ` ${cardTitle}
+Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
+			`,
+			idList: backlogListId,
+		});
 
 		return {};
 	},
