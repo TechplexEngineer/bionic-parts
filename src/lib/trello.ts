@@ -1,4 +1,5 @@
 import {TrelloClient} from "$lib/trelloAPI";
+import type {Card} from "$lib/trelloAPI/api/models";
 
 
 const key = import.meta.env.VITE_TRELLO_KEY;
@@ -17,3 +18,46 @@ const trelloClient = new TrelloClient({
 });
 
 export default trelloClient;
+
+export const backlogListId_2024 = "6468e280779ad802bb3775d4";
+
+
+export interface CreateCardWithPhotoAndLinkParams {
+    trelloListId: string;
+    server: string;
+    did: string;
+    wv: string;
+    wvid: string;
+    eid: string;
+
+    docName: string;
+    thumb: Blob;
+
+}
+
+export const createCardWithPhotoAndLink = async (params: CreateCardWithPhotoAndLinkParams): Promise<Card> => {
+    const card = await trelloClient.cards.createCard({
+        name: "test card 124",
+        desc: "Description",
+        idList: params.trelloListId,
+    });
+    console.log("card", card.id);
+
+    const onshapeUrl = `${params.server}/documents/${params.did}/${params.wv}/${params.wvid}/e/${params.eid}`
+
+    await trelloClient.cards.createCardAttachment({
+        id: card.id,
+        url: onshapeUrl,
+        name: `Part released from: '${params.docName}'`
+    });
+
+    // const thumb = await Onshape.GetPartThumbnail(params.partId, params.thumbWidth, params.thumbHeight);
+
+    await trelloClient.cards.createCardAttachment({
+        id: card.id,
+        file: params.thumb,
+        name: "thumbnail.png",
+        mimeType: "image/png",
+    });
+    return card;
+}
