@@ -38,9 +38,6 @@ const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<Drizz
         db = await getDevDb();
     }
 
-    console.log("db", db, !!db)
-
-
     if (import.meta.env.DEV) { //we can only apply migrations in dev
         const ddb = drizzle(db as any);
         await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });

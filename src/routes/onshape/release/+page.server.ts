@@ -7,14 +7,15 @@ import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
 import { TrelloClient } from 'trello.js';
+import fetchAdapter from "$lib/fetch-adapter";
 // import fetchAdapter from "@vespaiach/axios-fetch-adapter";
 
 const trelloClient = new TrelloClient({
 	key: import.meta.env.VITE_TRELLO_KEY,
 	token: import.meta.env.VITE_TRELLO_TOKEN,
-	// baseRequestConfig: {
-	// 	adapter: fetchAdapter
-	// }
+	baseRequestConfig: {
+		adapter: fetchAdapter
+	}
 });
 
 const Onshape = new OnshapeApi({
