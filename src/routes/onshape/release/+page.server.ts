@@ -212,7 +212,7 @@ export const actions = {
 		}).run();
 
 		const backlogListId = "6468e280779ad802bb3775d4";
-		await trelloClient.cards.createCard({
+		const card = await trelloClient.cards.createCard({
 			name: `${data.partName} - ${version.name}`,
 			desc: ` ${cardTitle}
 Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}

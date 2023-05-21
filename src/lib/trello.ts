@@ -1,5 +1,5 @@
-import {TrelloClient} from 'trello.js';
-import fetchAdapter from "@haverstack/axios-fetch-adapter"
+import {TrelloClient} from "$lib/trelloAPI";
+
 
 const key = import.meta.env.VITE_TRELLO_KEY;
 if (!key) {
@@ -13,9 +13,7 @@ if (!token) {
 const trelloClient = new TrelloClient({
     key: key,
     token: token,
-    baseRequestConfig: {
-        adapter: fetchAdapter
-    }
+
 });
 
 export default trelloClient;

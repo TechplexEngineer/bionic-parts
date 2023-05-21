@@ -102,6 +102,8 @@ export interface ErrorResponse {
 }
 
 export const copyObject = function (object: any) {
+	return JSON.parse(JSON.stringify(object));
+	console.log("copyObject", object);
 	if (object === null || typeof object !== 'object') {
 		return object;
 	}
@@ -477,6 +479,17 @@ export default class OnshapeAPI {
 			}
 		};
 		opts[wvm] = wvmId;
+		return (await this.get(opts as any)) as any;
+	}
+
+	public async GetPartThumbnail(partId: string, width: number, height: number, format='image/png'): Promise<Response> {
+		const opts: GetOpts = {
+			path: `/api/thumbnails/${partId}/s/${width}x${height}`,
+			headers: {
+				Accept: format
+			},
+			rawResponse: true
+		};
 		return (await this.get(opts as any)) as any;
 	}
 
