@@ -31,6 +31,7 @@ if (import.meta.env.DEV) {
 
 const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<DrizzleD1Database> => {
     let db;
+    console.log("BIONIC_PARTS_DB", platform, platform?.env, platform?.env?.BIONIC_PARTS_DB)
     if (platform?.env?.BIONIC_PARTS_DB) {
         db = platform.env?.BIONIC_PARTS_DB;
     } else {
