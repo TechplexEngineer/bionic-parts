@@ -32,6 +32,7 @@ if (import.meta.env.DEV) {
 
 const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<DrizzleD1Database> => {
     let db;
+    console.log(JSON.stringify(import.meta,null,2))
     console.log("BIONIC_PARTS_DB", platform, platform?.env, platform?.env?.BIONIC_PARTS_DB)
     if (platform?.env?.BIONIC_PARTS_DB) {
         db = platform.env?.BIONIC_PARTS_DB;
@@ -40,7 +41,7 @@ const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<Drizz
     }
     const ddb = drizzle(db as any);
 
-    await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });
+    // await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });
 
     return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
