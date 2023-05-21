@@ -52,12 +52,13 @@
                         <td>{part.id}</td>
                         <td>
                             {#if part.state === PartReleaseState.NeverReleased}
-                                <button form={part.id} class="btn btn-info btn-sm" formaction="?/release">Release
+                                <button form={part.id} class="btn btn-info btn-sm" formaction="?/release" type="submit">
+                                    Release
                                 </button>
                             {:else if part.state === PartReleaseState.Released}
                                 {'No Actions'}
                             {:else if part.state === PartReleaseState.ChangedSinceLastRelease}
-                                <button form={part.id} class="btn btn-info btn-sm" formaction="?/re_release">
+                                <button form={part.id} class="btn btn-info btn-sm" formaction="?/re_release" type="submit">
                                     Re-Release
                                 </button>
                             {/if}

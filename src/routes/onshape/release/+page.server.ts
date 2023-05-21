@@ -28,7 +28,7 @@ interface OnshapeFrameQueryParams {
     clientId: string,
     companyId: string,
     locale: string,
-    server: string,
+    server: string, //https://cad.onshape.com
     userId: string,
 }
 
@@ -190,7 +190,7 @@ export const actions = {
 	release: async ({ request, locals: {db}, url:{searchParams}}) => {
 		const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
 		const iframeParams: OnshapeFrameQueryParams = JSON.parse(data.iframeParams);
-		// console.log("data", iframeParams)
+		console.log("data", iframeParams)
 
 		const doc = await Onshape.GetDocument(iframeParams.did);
 		// console.log("doc", doc.name)
@@ -211,8 +211,10 @@ export const actions = {
 
 		const backlogListId = "6468e280779ad802bb3775d4";
 		await trelloClient.cards.createCard({
-			name: cardTitle,
-			// desc: "Description",
+			name: `${data.partName} - ${version.name}`,
+			desc: ` ${cardTitle}
+Part released from: ${iframeParams.server}/documents/${iframeParams.did}/${iframeParams.wv}/${iframeParams.wvid}/e/${iframeParams.eid}
+			`,
 			idList: backlogListId,
 		})
 
