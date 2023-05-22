@@ -7,6 +7,7 @@ import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
 import trelloClient, {backlogListId_2024, createCardWithPhotoAndLink} from "$lib/trello";
+import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 // const trelloClient = new TrelloClient({
 // 	key: import.meta.env.VITE_TRELLO_KEY,
 // 	token: import.meta.env.VITE_TRELLO_TOKEN,
@@ -21,18 +22,6 @@ const Onshape = new OnshapeApi({
     debug: false
 });
 
-interface OnshapeFrameQueryParams {
-    did: string,
-    wv: WVM.W | WVM.V, //w or v
-    cfg: string,
-    wvid: string
-    eid: string,
-    clientId: string,
-    companyId: string,
-    locale: string,
-    server: string, //https://cad.onshape.com
-    userId: string,
-}
 
 interface Part {
     name: string
@@ -86,7 +75,7 @@ const getPartState = async (currentRev: CurrentRev, releasedParts: PartModel[]):
     // 1. check if the part has ever been released
     const releasedPart = releasedParts.find(p => p.partId === currentRev.partId)
     if (typeof releasedPart !== "undefined") {
-        if (await hasPartChanged(currentRev, releasedPart)) {
+        if (await hasPartChanged(currentRev, releasedPart!)) {
             //  --- Yes => ChangedSinceLastRelease
             return PartReleaseState.ChangedSinceLastRelease;
         } else {
