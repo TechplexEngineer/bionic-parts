@@ -23,6 +23,8 @@ export const backlogListId_2024 = "6468e280779ad802bb3775d4";
 
 
 export interface CreateCardWithPhotoAndLinkParams {
+    cardTitle: string;
+    cardDesc: string;
     trelloListId: string;
     server: string;
     did: string;
@@ -37,8 +39,8 @@ export interface CreateCardWithPhotoAndLinkParams {
 
 export const createCardWithPhotoAndLink = async (params: CreateCardWithPhotoAndLinkParams): Promise<Card> => {
     const card = await trelloClient.cards.createCard({
-        name: "test card 124",
-        desc: "Description",
+        name: params.cardTitle,
+        desc: params.cardDesc,
         idList: params.trelloListId,
     });
     console.log("card", card.id);

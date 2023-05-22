@@ -6,7 +6,7 @@ import {hasReleasedPartChanged, PartReleaseState} from "$lib/common";
 import {parts as partsSchema} from "$lib/schemas";
 import type {PartModel} from "$lib/schemas";
 
-import trelloClient from "$lib/trello";
+import trelloClient, {backlogListId_2024, createCardWithPhotoAndLink} from "$lib/trello";
 // const trelloClient = new TrelloClient({
 // 	key: import.meta.env.VITE_TRELLO_KEY,
 // 	token: import.meta.env.VITE_TRELLO_TOKEN,
@@ -203,15 +203,31 @@ export const actions = {
         const version = await Onshape.GetDocumentVersionById(iframeParams.did, iframeParams.wvid)
 
         const parts = await Onshape.GetParts(iframeParams.did, iframeParams.wv, iframeParams.wvid, iframeParams.eid, {withThumbnails: true});
-        console.log("parts", JSON.stringify(parts, null, 4))
+        // console.log("parts", JSON.stringify(parts.find(p => p.partId == data.partId)?.thumbnailInfo.id, null, 4))
 
-        // const cardTitle = `${doc.name} - ${elementName} - ${data.partName} - ${version.name}`;
+        const cardTitle = `${doc.name} - ${elementName} - ${data.partName} - ${version.name}`;
         // // console.log("cardTitle", cardTitle)
         // await db.insert(partsSchema).values({
         // 	//projectId: 2, //@todo need to determine this based on the document ID
         // 	partId: data.partId,
         // 	releasedVersion: data.versionId
         // }).run();
+
+        const thumbId = parts.find(p => p.partId == data.partId)?.thumbnailInfo.id;
+        const thumb = await Onshape.GetPartThumbnail(thumbId, 600, 340);
+
+        await createCardWithPhotoAndLink({
+            cardTitle: cardTitle,
+            cardDesc: "",
+            trelloListId: backlogListId_2024,
+            did: iframeParams.did,
+            wv: iframeParams.wv,
+            wvid: iframeParams.wvid,
+            eid: iframeParams.eid,
+            server: iframeParams.server,
+            docName: doc.name,
+            thumb: await thumb.blob()
+        })
 
 
         return {};

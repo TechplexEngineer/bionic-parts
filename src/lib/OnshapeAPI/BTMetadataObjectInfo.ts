@@ -1,4 +1,3 @@
-
 export interface BTMetadataObjectInfo {
     href: string
     jsonType: string,
@@ -9,26 +8,37 @@ export interface BTMetadataObjectInfo {
 export interface BTThumbnailInfo {
     href: string
     id: string
+    sizes: BTThumbnailSizeInfo[]
+}
+
+export interface BTThumbnailSizeInfo {
+    href: string,
+    mediaType: string,
+    renderMode: string,
+    sheetName: string,
+    size: string,
+    uniqueId: string
+    viewOrientation: string
 }
 
 export interface BTMetadataPropertyInfo {
-    name:                     string;
-    value:                    null;
-    defaultValue:             null;
-    computedPropertyError:    null;
-    propertySource:           number;
-    validator:                null[];
-    required:                 boolean;
-    editable:                 boolean;
-    valueType:                string;
-    propertyId:               string;
-    editableInUi:             boolean;
-    enumValues:               null;
-    schemaId:                 string;
-    uiHints:                  null[];
+    name: string;
+    value: null;
+    defaultValue: null;
+    computedPropertyError: null;
+    propertySource: number;
+    validator: null[];
+    required: boolean;
+    editable: boolean;
+    valueType: string;
+    propertyId: string;
+    editableInUi: boolean;
+    enumValues: null;
+    schemaId: string;
+    uiHints: null[];
     computedAssemblyProperty: boolean;
-    computedProperty:         boolean;
-    multivalued:              boolean;
+    computedProperty: boolean;
+    multivalued: boolean;
 }
 
 // {

@@ -10,7 +10,7 @@ import {BTTranslationRequestInfo_State} from './BTTranslationRequestInfo';
 import type {GetBillOfMaterialsOptions} from './GetBillOfMaterialsOptions';
 import type {GetDocumentVersionsResponse} from "$lib/OnshapeAPI/GetDocumentVersionsResponse";
 import type {BTRootDiffInfo} from "$lib/OnshapeAPI/BTRootDiffInfo";
-import type {BTMetadataObjectInfo} from "$lib/OnshapeAPI/BTMetadataObjectInfo";
+import type {BTMetadataObjectInfo, BTThumbnailInfo} from "$lib/OnshapeAPI/BTMetadataObjectInfo";
 
 export const uint8ArrayToByteString = function (input: Uint8Array): string {
     return String.fromCharCode.apply(null, input as any)
@@ -193,6 +193,7 @@ export interface GetPartsResponse {
     appearance: Appearance;
     meshState: string;
     name: string;
+    thumbnailInfo: BTThumbnailInfo;
 }
 
 export interface Appearance {
@@ -489,9 +490,9 @@ export default class OnshapeAPI {
         return (await this.get(opts as any)) as any;
     }
 
-    public async GetPartThumbnail(partId: string, width: number, height: number, format = 'image/png'): Promise<Response> {
+    public async GetPartThumbnail(thumbId: string, width: number, height: number, format = 'image/png'): Promise<Response> {
         const opts: GetOpts = {
-            path: `/api/thumbnails/${partId}/s/${width}x${height}`,
+            path: `/api/thumbnails/${thumbId}/s/${width}x${height}`,
             headers: {
                 Accept: format
             },
