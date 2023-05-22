@@ -79,6 +79,9 @@ const hasPartChanged = async (c: CurrentRev, releasedPart: PartModel): Promise<b
 
 const getPartState = async (currentRev: CurrentRev, releasedParts: PartModel[]): Promise<PartReleaseState> => {
 
+    // put this here for performance testing.
+    return PartReleaseState.NeverReleased;
+
     // return PartReleaseState.NeverReleased;
     // 1. check if the part has ever been released
     const releasedPart = releasedParts.find(p => p.partId === currentRev.partId)
