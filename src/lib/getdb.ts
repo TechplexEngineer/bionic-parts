@@ -12,12 +12,12 @@ let getDevDb = async (): Promise<any> => {
 
 if (import.meta.env.DEV) {
     const fs = await import("fs/promises");
-    const {D1Database:D1D, D1DatabaseAPI} = await import("@miniflare/d1");
+    const {D1Database: D1D, D1DatabaseAPI} = await import("@miniflare/d1");
     const {createSQLiteDB} = await import("@miniflare/shared");
 
     let devDb: D1Database;
 
-    getDevDb = async ():Promise<D1Database> => {
+    getDevDb = async (): Promise<D1Database> => {
         if (!devDb) {
             const basePath = ".wrangler/state/d1";
             await fs.mkdir(basePath, {recursive: true});
@@ -30,7 +30,7 @@ if (import.meta.env.DEV) {
     };
 }
 
-const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<DrizzleD1Database> => {
+const getDbFromPlatform = async (platform: App.Platform | undefined): Promise<DrizzleD1Database> => {
     let db;
     if (platform?.env?.BIONIC_PARTS_DB) {
         db = platform.env?.BIONIC_PARTS_DB;
@@ -38,11 +38,11 @@ const getDbFromPlatform = async (platform: App.Platform|undefined):Promise<Drizz
         db = await getDevDb();
     }
 
-    if (import.meta.env.DEV) { //we can only apply migrations in dev
-        const ddb = drizzle(db as any);
-        await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });
-        return ddb;
-    }
+    // if (import.meta.env.DEV) { //we can only apply migrations in dev
+    //     const ddb = drizzle(db as any);
+    //     await migrate(ddb, { migrationsFolder: "./src/lib/migrations" });
+    //     return ddb;
+    // }
 
     return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };

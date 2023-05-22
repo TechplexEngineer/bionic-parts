@@ -71,7 +71,9 @@ const hasPartChanged = async (c: CurrentRev, releasedPart: PartModel): Promise<b
     const res = await Onshape.ComparePartstudios(c.did, c.wv, c.wvid, c.eid, {
         versionId: releasedPart.releasedVersion,
     });
-    return hasReleasedPartChanged(releasedPart.partId, res)
+    const hasChanged = hasReleasedPartChanged(releasedPart.partId, res)
+    // console.log("hasChanged", releasedPart.partId, hasChanged, JSON.stringify(res, null, 2));
+    return hasChanged
 }
 
 
@@ -189,7 +191,7 @@ interface RequestData {
 const partRelease: Action = async ({request, locals: {db}, url: {searchParams}}) => {
     const data = Object.fromEntries(await request.formData()) as unknown as RequestData;
     const iframeParams: OnshapeFrameQueryParams = JSON.parse(data.iframeParams);
-    console.log("data", JSON.stringify(iframeParams, null, 4))
+    // console.log("data", JSON.stringify(iframeParams, null, 4))
 
     const doc = await Onshape.GetDocument(iframeParams.did);
     // console.log("doc", doc.name)

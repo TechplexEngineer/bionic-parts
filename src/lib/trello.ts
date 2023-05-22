@@ -42,6 +42,7 @@ export const createCardWithPhotoAndLink = async (params: CreateCardWithPhotoAndL
         name: params.cardTitle,
         desc: params.cardDesc,
         idList: params.trelloListId,
+        pos: "top",
     });
     console.log("card", card.id);
 

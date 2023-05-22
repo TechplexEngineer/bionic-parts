@@ -113,3 +113,120 @@ describe("hasReleasedPartChanged", () => {
         expect(hasReleasedPartChanged("JHH", res1)).toBeFalsy();
     })
 })
+
+const res2 = {
+    "sourceVersionId": "c080ea081713baaa57431bbc",
+    "sourceMicroversionId": "86777dd24dddeb23554ba31e",
+    "targetMicroversionId": "e4f4822d26f0d6036d2de24e",
+    "targetVersionId": "4a9943812a2ae4574d5a91fa",
+    "type": "MODIFIED",
+    "collectionChanges": {
+        "sketches": [
+            {
+                "sketchEntityIds": [
+                    "GpZlcoNKlii4"
+                ],
+                "featureId": "FHJgmwFAN8H9aha_2",
+                "type": "DELETED",
+                "entityType": "sketches",
+                "sourceId": "JID"
+            },
+            {
+                "sketchEntityIds": [
+                    "",
+                    ""
+                ],
+                "featureId": "FHJgmwFAN8H9aha_2",
+                "type": "DELETED",
+                "entityType": "sketches",
+                "sourceId": "JJD"
+            },
+            {
+                "sketchEntityIds": [
+                    "GpZlcoNKlii4.center"
+                ],
+                "featureId": "FHJgmwFAN8H9aha_2",
+                "type": "DELETED",
+                "entityType": "sketches",
+                "sourceId": "JIH"
+            }
+        ],
+        "parts": [
+            {
+                "type": "MODIFIED",
+                "entityType": "parts",
+                "targetId": "JHD",
+                "sourceId": "JHD",
+                "changes": {
+                    "metadata": {
+                        "type": "MODIFIED",
+                        "changes": {
+                            "state": {
+                                "type": "MODIFIED",
+                                "sourceValue": "RELEASED",
+                                "targetValue": "IN_PROGRESS"
+                            }
+                        }
+                    },
+                    "geometry": {
+                        "type": "MODIFIED",
+                        "geometryChangeMessages": [
+                            "EDGE_COUNT_CHANGED: From 14 to 12 in ",
+                            "FACE_COUNT_CHANGED: From 7 to 6 in ",
+                            "Mass property mismatch: Mass in  changed from [2.955653550773089E-5, 2.955557955661529E-5, 2.9557491458846494E-5] to [3.2774128E-5, 3.277310387233731E-5, 3.2775152127662684E-5]: Index 0 missed by 3.2156124134908185E-6, for ranges [ 2.955557955661529E-5, 2.9557491458846494E-5], [ 3.277310387233731E-5, 3.2775152127662684E-5]; gap is 168189.16579554867%% of range 1 and 156992.7524981195%% of range 2.",
+                            "Mass property mismatch: Volume in  changed from [2.955653550773089E-5, 2.955557955661529E-5, 2.9557491458846494E-5] to [3.2774128E-5, 3.277310387233731E-5, 3.2775152127662684E-5]: Index 0 missed by 3.2156124134908185E-6, for ranges [ 2.955557955661529E-5, 2.9557491458846494E-5], [ 3.277310387233731E-5, 3.2775152127662684E-5]; gap is 168189.16579554867%% of range 1 and 156992.7524981195%% of range 2.",
+                            "Mass property mismatch: Periphery in  changed from [0.007211661218646247, 0.007211630300187107, 0.007211692137105387] to [0.0064516, 0.006451567998005333, 0.006451632001994667]: Index 0 missed by 7.599982981924399E-4, for ranges [ 0.007211630300187107, 0.007211692137105387], [ 0.006451567998005333, 0.006451632001994667]; gap is 1229036.5033185754%% of range 1 and 1187423.3248561174%% of range 2.",
+                            "EDGE_COUNT_CHANGED: From 14 to 12, [JLB, JLF] are missing, ",
+                            "FACE_COUNT_CHANGED: From 7 to 6, [JHG, JHK] are added, [JLC, JLG, JLK] are missing, "
+                        ]
+                    }
+                }
+            },
+            {
+                "type": "MODIFIED",
+                "entityType": "parts",
+                "targetId": "JHH",
+                "sourceId": "JHH",
+                "changes": {
+                    "metadata": {
+                        "type": "MODIFIED",
+                        "changes": {
+                            "state": {
+                                "type": "MODIFIED",
+                                "sourceValue": "IN_PROGRESS",
+                                "targetValue": "RELEASED"
+                            }
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "changes": {
+        "microversion": {
+            "type": "MODIFIED",
+            "sourceValue": "6abacc965b1ad2ea5f4d5544",
+            "targetValue": "5d2050612d73558f38de0245"
+        }
+    }
+}
+
+describe("hasReleasedPartChangedv2", () => {
+    // let instance = null;
+    //
+    // beforeEach(() => {
+    //     //create instance of the component and mount it
+    // })
+    //
+    // afterEach(() => {
+    //     //destory/unmount instance
+    // })
+
+    test("Expected parts are changed", () => {
+        expect(hasReleasedPartChanged("JHD", res1)).toBeTruthy();
+    })
+
+    test("others are not", () => {
+        expect(hasReleasedPartChanged("JHH", res1)).toBeFalsy();
+    })
+})
