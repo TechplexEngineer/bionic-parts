@@ -207,11 +207,11 @@ export const actions = {
 
         const cardTitle = `${doc.name} - ${elementName} - ${data.partName} - ${version.name}`;
         // // console.log("cardTitle", cardTitle)
-        // await db.insert(partsSchema).values({
-        // 	//projectId: 2, //@todo need to determine this based on the document ID
-        // 	partId: data.partId,
-        // 	releasedVersion: data.versionId
-        // }).run();
+        await db.insert(partsSchema).values({
+            //projectId: 2, //@todo need to determine this based on the document ID
+            partId: data.partId,
+            releasedVersion: data.versionId
+        }).run();
 
         const thumbId = parts.find(p => p.partId == data.partId)?.thumbnailInfo.id;
         const thumb = await Onshape.GetPartThumbnail(thumbId, 600, 340);
