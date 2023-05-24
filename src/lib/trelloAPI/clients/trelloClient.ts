@@ -20,6 +20,7 @@ import {
   Webhooks,
 } from '../api';
 
+// Note this is a convenient accessor, but does not allow for tree shaking
 export class TrelloClient extends BaseClient {
   actions = new Actions(this);
   applications = new Applications(this);

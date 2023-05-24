@@ -1,5 +1,5 @@
-import { TrelloID } from './trelloID';
+import type {TrelloID} from './trelloID';
 
 export interface Checklist {
-  id?: TrelloID;
+    id: TrelloID;
 }

@@ -14,7 +14,6 @@ if (!token) {
 const trelloClient = new TrelloClient({
     key: key,
     token: token,
-
 });
 
 export default trelloClient;
@@ -26,11 +25,8 @@ export interface CreateCardWithPhotoAndLinkParams {
     cardTitle: string;
     cardDesc: string;
     trelloListId: string;
-    server: string;
-    did: string;
-    wv: string;
-    wvid: string;
-    eid: string;
+
+    onshapeUrl: string;
 
     docName: string;
     thumb: Blob;
@@ -44,17 +40,12 @@ export const createCardWithPhotoAndLink = async (params: CreateCardWithPhotoAndL
         idList: params.trelloListId,
         pos: "top",
     });
-    console.log("card", card.id);
-
-    const onshapeUrl = `${params.server}/documents/${params.did}/${params.wv}/${params.wvid}/e/${params.eid}`
 
     await trelloClient.cards.createCardAttachment({
         id: card.id,
-        url: onshapeUrl,
+        url: params.onshapeUrl,
         name: `Part released from: '${params.docName}'`
     });
-
-    // const thumb = await Onshape.GetPartThumbnail(params.partId, params.thumbWidth, params.thumbHeight);
 
     await trelloClient.cards.createCardAttachment({
         id: card.id,

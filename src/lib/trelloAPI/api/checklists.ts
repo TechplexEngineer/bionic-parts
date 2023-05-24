@@ -1,12 +1,13 @@
 import type * as Parameters from './parameters';
 import type {Client} from '../clients';
 import type {RequestConfig} from '../types';
+import type {Checklist} from "$lib/trelloAPI/api/models";
 
 export class Checklists {
     constructor(private client: Client) {
     }
 
-    async createChecklist<T = unknown>(
+    async createChecklist<T = Checklist>(
         parameters: Parameters.CreateChecklist,
     ): Promise<T> {
         const config: RequestConfig = {
@@ -23,7 +24,7 @@ export class Checklists {
         return this.client.sendRequest(config);
     }
 
-    async getChecklist<T = unknown>(parameters: Parameters.GetChecklist): Promise<T> {
+    async getChecklist<T = Checklist>(parameters: Parameters.GetChecklist): Promise<T> {
         const config: RequestConfig = {
             url: `/checklists/${parameters.id}`,
             method: 'GET',
@@ -39,7 +40,7 @@ export class Checklists {
     }
 
     /** Update an existing checklist. */
-    async updateChecklist<T = unknown>(
+    async updateChecklist<T = Checklist>(
         parameters: Parameters.UpdateChecklist,
     ): Promise<T> {
         const config: RequestConfig = {

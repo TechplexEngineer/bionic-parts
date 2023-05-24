@@ -1,8 +1,6 @@
-import type {WVM} from "$lib/OnshapeAPI";
-
 export interface OnshapeFrameQueryParams {
     did: string,
-    wv: WVM.W | WVM.V, //w or v
+    wv: string, //"w" | "v",
     cfg: string,
     wvid: string
     eid: string,

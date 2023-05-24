@@ -8,10 +8,6 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
 
-	ssr: {
-		noExternal: ['@popperjs/core']
-	},
-
 	css: {
 		preprocessorOptions: {
 			scss: {

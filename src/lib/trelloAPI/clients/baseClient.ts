@@ -57,7 +57,6 @@ export class BaseClient implements Client {
             token: this.config.token,
         });
         const url = `${this.config.baseUrl}/${rawRequestConfig.url}?${params}`;
-        console.log("trello:", url);
         const response = await fetch(url, {
             method: rawRequestConfig.method,
             headers: rawRequestConfig.headers,
@@ -65,7 +64,7 @@ export class BaseClient implements Client {
         });
 
         if (200 <= response.status && response.status <= 299) {
-            return await response.json<T>();
+            return await response.json();
         }
 
         throw new Error(`Trello API error Status: ${response.status} RequestBody: ${await response.text()}`);

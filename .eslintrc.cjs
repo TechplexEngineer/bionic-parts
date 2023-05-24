@@ -11,7 +11,8 @@ module.exports = {
 	parserOptions: {
 		sourceType: 'module',
 		ecmaVersion: 2020,
-		extraFileExtensions: ['.svelte']
+		extraFileExtensions: ['.svelte'],
+		project: './tsconfig.json'
 	},
 	env: {
 		browser: true,
@@ -26,5 +27,8 @@ module.exports = {
 				parser: '@typescript-eslint/parser'
 			}
 		}
-	]
+	],
+	rules: {
+		"@typescript-eslint/switch-exhaustiveness-check": "error"
+	}
 };

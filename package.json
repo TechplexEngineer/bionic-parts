@@ -1,6 +1,7 @@
 {
 	"name": "bionic-parts",
 	"version": "0.0.1",
+	"private": true,
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -10,29 +11,19 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write .",
-		"generate": "drizzle-kit generate:sqlite",
-		"up": "drizzle-kit up:sqlite --schema=src/schema.ts"
+		"format": "prettier --plugin-search-dir . --write ."
 	},
 	"devDependencies": {
-		"@fontsource/fira-mono": "^4.5.10",
-		"@miniflare/d1": "^2.14.0",
-		"@miniflare/shared": "^2.14.0",
-		"@neoconfetti/svelte": "^1.0.0",
 		"@playwright/test": "^1.28.1",
 		"@popperjs/core": "^2.11.7",
 		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/adapter-cloudflare": "^2.2.4",
 		"@sveltejs/kit": "^1.5.0",
-		"@types/cookie": "^0.5.1",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"bootstrap": "^5.2.3",
-		"drizzle-kit": "^0.18.0",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.26.0",
-		"miniflare": "^3.0.0",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
 		"sass": "^1.62.0",
@@ -46,7 +37,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"drizzle-orm": "^0.26.0",
+		"bootstrap": "^5.2.3",
 		"svelte-select": "^5.6.1"
 	}
 }
