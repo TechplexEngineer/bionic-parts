@@ -33,9 +33,10 @@ const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams
         cfg: objParams.cfg,
     };
 }
-
-console.log("import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI", import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI)
-
+const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
+if (!redirectUrl) {
+    throw new Error("No Onshape oauth redirect url set");
+}
 
 export const load = (async (event) => {
     const searchParams = normalizeSearchParams(event.url.searchParams);
@@ -55,10 +56,12 @@ export const load = (async (event) => {
             error: "Parts can only be released from a version"
         };
     }
+    const base64 = btoa;
 
     // check if the user is logged in
     // if not, send them to onshape to
     const tokenInfo = event.cookies.get('sessionid');
+    console.log("tokenInfo", tokenInfo);
     const isLoggedIn = !!tokenInfo;
     if (!isLoggedIn) {
         // Your application must first must direct the user to
@@ -67,11 +70,11 @@ export const load = (async (event) => {
         const authUrl = new URL("https://oauth.onshape.com/oauth/authorize");
         authUrl.searchParams.append("response_type", "code"); //required
         authUrl.searchParams.append("client_id", searchParams.clientId); //required
-        authUrl.searchParams.append("redirect_uri", import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI); // optional
+        authUrl.searchParams.append("redirect_uri", redirectUrl); // optional
         // authUrl.searchParams.append("scope", ); // optional
-        // authUrl.searchParams.append("state", JSON.stringify({})); // optional
+        authUrl.searchParams.append("state", base64(JSON.stringify({searchParams}))); // optional, need this to tell the app what doc we are in after all the redirects
         authUrl.searchParams.append("company_id", searchParams.companyId); // optional
-        console.log("redirectUrl", authUrl.toString())
+        // console.log("redirectUrl", authUrl.toString())
         throw redirect(307, authUrl.toString());
     }
 
@@ -135,11 +138,11 @@ const partRelease: Action = async ({request, url: {searchParams}}) => {
         name: `${data.part.name} - ${version.name}`,
         desc: `Part Number: ${data.part.partNumber || "unset"}
 
+${data.notes}
+
 Document Name: ${doc.name}
 Tab Name: ${tabName}
-Release Date: ${getNiceDate()}
-
-${data.notes}`,
+Release Date: ${getNiceDate()}`,
         idList: backlogListId_2024,
         pos: "top",
     });
