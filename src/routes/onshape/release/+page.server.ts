@@ -80,11 +80,32 @@ export const load = (async (event) => {
         withThumbnails: true,
         // _configuration: searchParams.cfg, //@todo
     });
-    const pageParts = partInDoc.map((p) => ({part: p, state: PartReleaseState.NeverReleased}));
+    const pageParts = partInDoc.map((p) => ({
+        part: p, state: PartReleaseState.NeverReleased
+    }));
+
+    const tab = await Onshape.MetadataApi.getWMVEMetadata({
+        did: searchParams.did,
+        wvm: searchParams.wv as any,
+        wvmid: searchParams.wvid,
+        eid: searchParams.eid
+    });
+    console.log("tab", tab.properties);
+    const title3SubsystemName = tab.properties?.find(p => p.name == "Title 3")?.value;
+    const tabName = tab.properties?.find(p => p.name == "Name")?.value;
+    if (!title3SubsystemName) {
+        return {
+            searchParams,
+            parts: [],
+            title3SubsystemName,
+            error: `Subsystem name MUST be set in Title 3 field of ${tabName}. (Close and reopen the tab to refresh the data.)`
+        };
+    }
 
     return {
         searchParams,
-        parts: pageParts
+        parts: pageParts,
+        subsystemName: title3SubsystemName,
     }
 }) satisfies PageServerLoad;
 

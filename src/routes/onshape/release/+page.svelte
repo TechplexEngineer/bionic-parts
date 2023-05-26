@@ -68,6 +68,7 @@
         {:else if stage === Stages.options}
             <Options
                     selectedPart={selectedPart}
+                    subsystemName={data.subsystemName}
                     on:cancel={()=>{stage = Stages.partlist; selectedPart = null;}}
                     on:submit={handleSubmit}
             ></Options>

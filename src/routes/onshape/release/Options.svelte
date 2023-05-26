@@ -7,7 +7,8 @@
 
     const dispatch = createEventDispatcher();
 
-    export let selectedPart: BTPartMetadataInfo
+    export let selectedPart: BTPartMetadataInfo;
+    export let subsystemName: string;
 
     const enumToSelectOptions = (e: any) => {
         return Object.keys(e).map((key) => {
@@ -21,7 +22,7 @@
         Machined = 'Machined',
         Printed = '3D Printed',
         Cots = 'Purchased',
-        Magic = 'Magic'
+        // Magic = 'Magic'
     }
 
     let mfgMethod; //bound to the value of the select
@@ -30,33 +31,76 @@
     enum Machines {
         //key = value (shown to user)
         Lathe = 'Lathe',
+        CNCLathe = 'CNC Lathe',
         Mill = 'Mill',
+        CNCMill = 'CNC Mill (Velox/Tormach)',
         DrillPress = 'Drill Press',
         LaserCutter = 'Laser Cutter',
-        WaterJet = 'Water Jet',
-        CNCMill = 'CNC Mill (Velox/Tormach)',
-        CNCLathe = 'CNC Lathe',
-        Router = 'Router',
         Bandsaw = 'Bandsaw',
         TableSaw = 'Table Saw',
         ChopSaw = 'Chop Saw',
     }
 
     let machinesUsed; //bound to the value of the select
-    let machinesAvailable = enumToSelectOptions(Machines);
+    const machinesAvailable = enumToSelectOptions(Machines);
 
     enum Printers {
         //key = value (shown to user)
         Prusa = 'Prusa',
-        FormLabs = 'Ultimaker',
+        FormLabs = 'Formlabs',
+        Other = "Other (See Description)"
     }
 
-    let notes = `What stock should be used?
-    -
+    const printersAvailable = enumToSelectOptions(Printers)
+    let printerUsed; //bound to the value of the select
+
+    enum PrusaPrinterMaterials {
+        //key = value (shown to user)
+        PLA = 'PLA',
+        PETG = 'PETG',
+        Nylon = 'Nylon',
+        Other = "Other (See Description)"
+    }
+
+    enum FormLabsPrinterMaterials {
+        //key = value (shown to user)
+        SLSNylon = 'SLS Nylon',
+        SLSTPU = 'SLS TPU',
+        EResin = 'Engineering Resin',
+        FResin = 'Fast Resin',
+        Other = "Other (See Description)"
+    }
+
+    const getMaterialsAvailableForPrinter = (printerUsed: Printers) => {
+        switch (printerUsed) {
+            case Printers.Prusa:
+                return enumToSelectOptions(PrusaPrinterMaterials);
+            case Printers.FormLabs:
+                return enumToSelectOptions(FormLabsPrinterMaterials);
+            default:
+                return [];
+        }
+    }
+
+    $: printerMaterialsAvailable = getMaterialsAvailableForPrinter(printerUsed?.label);
+    let printerMaterialUsed; //bound to the value of the select
+
+    let cotsLink; //bound to the value of
+
+
+    // https://stackoverflow.com/a/34064434/429544
+    function htmlDecode(input) {
+        const doc = new DOMParser().parseFromString(input, "text/html");
+        return doc.documentElement.textContent;
+    }
+
+    let notes = htmlDecode(`What stock should be used?
+    - ${selectedPart.material?.displayName || ''}
+
 How should the part be made, what steps should be followed?
-    1.
-    2.
-    3. `;
+    1.&nbsp;
+    2.&nbsp;
+    3.&nbsp;`);
 
     const handleSubmit = (e) => {
         //@todo do any validation here
@@ -70,7 +114,7 @@ How should the part be made, what steps should be followed?
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve();
-            }, 10*1000); // units are miliseconds
+            }, 10 * 1000); // units are miliseconds
         });
     }
 
@@ -78,7 +122,14 @@ How should the part be made, what steps should be followed?
 </script>
 <h1>Part Release</h1>
 <div class="mb-3">
-    <strong>Current Part:</strong> {selectedPart?.name} {selectedPart?.partNumber || ''}
+    <div class="row">
+        <div class="col">
+            <strong>Current Part:</strong> {selectedPart?.name} {selectedPart?.partNumber || ''}
+        </div>
+        <div class="col">
+            <strong>Subsystem:</strong> {subsystemName}
+        </div>
+    </div>
 </div>
 <div class="row">
     <div class="col">
@@ -96,12 +147,37 @@ How should the part be made, what steps should be followed?
 </div>
 
 
-<!--{#if mfgMethod?.value === MfgMethods.Machined}-->
-<!--    <div class="mb-3">-->
-<!--        <label for="machines" class="form-label">Machines Used (select all)</label>-->
-<!--        <Select id="machines" items={machinesAvailable} bind:value={machinesUsed} multiple></Select>-->
-<!--    </div>-->
-<!--{/if}-->
+{#if mfgMethod?.label === MfgMethods.Machined}
+    <div class="mb-3">
+        <label for="machines" class="form-label">Machines Used (select all)</label>
+        <Select id="machines" items={machinesAvailable} bind:value={machinesUsed} multiple></Select>
+    </div>
+{/if}
+
+{#if mfgMethod?.label === MfgMethods.Printed}
+    <div class="row">
+        <div class="col">
+            <div class="mb-3">
+                <label for="printer" class="form-label">Printer</label>
+                <Select id="printer" items={printersAvailable} bind:value={printerUsed}></Select>
+            </div>
+        </div>
+        <div class="col">
+            <div class="mb-3">
+                <label for="material" class="form-label">Material</label>
+                <Select id="material" items={printerMaterialsAvailable} bind:value={printerMaterialUsed}></Select>
+            </div>
+        </div>
+    </div>
+{/if}
+
+{#if mfgMethod?.label === MfgMethods.Cots}
+    <div class="mb-3">
+        <label for="link" class="form-label">Purchase Link</label>
+        <input type="text" class="form-control" id="link" placeholder="http://mcmaster.com/..."
+               bind:value={cotsLink}>
+    </div>
+{/if}
 
 <div class="mb-3">
     <label for="notes" class="form-label">Notes:</label>
@@ -111,7 +187,7 @@ How should the part be made, what steps should be followed?
 <div class="d-flex justify-content-between">
     <button class="btn btn-warning" on:click={() => dispatch("cancel")}>Cancel</button>
     <SpinButton class="btn-success" onClick={handleSubmit}>Send part to Trello</SpinButton>
-<!--    <button class="btn btn-success" on:click=>Send part to Trello</button>-->
+    <!--    <button class="btn btn-success" on:click=>Send part to Trello</button>-->
 </div>
 
 <style>
