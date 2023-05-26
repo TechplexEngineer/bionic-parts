@@ -69,8 +69,8 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     console.log("Setting Cookie", cookieValue);
     cookies.set("sessionid", cookieValue, {
         path: "/",
-        secure: import.meta.env.DEV ? true : undefined, // needed for dev
-        sameSite: import.meta.env.DEV ? "none" : undefined, // needed for dev
+        secure: true, // needed for dev
+        sameSite: "none", // needed for dev
     })
 
     // Build the redirect url and include the state args
