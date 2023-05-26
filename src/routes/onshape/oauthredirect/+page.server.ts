@@ -1,13 +1,10 @@
 import type {PageServerLoad} from './$types';
 import {redirect} from "@sveltejs/kit";
 import {base64decode} from "$lib/util";
+import {setOauthTokenInCookie} from "$lib/onshape";
+import type {Oauth2Token} from "$lib/onshape";
 
-interface OauthTokenBody {
-    access_token: string,
-    token_type: string, //Bearer
-    expires_in: number, //3600
-    refresh_token: string,
-}
+
 const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
 if (!clientId) {
     throw new Error("No Onshape oauth client id set");
@@ -49,8 +46,8 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     });
 
 
-    const body = await res.json() as unknown as OauthTokenBody;
-    const expiryTimestamp = Date.now() + (.75 * body.expires_in)*1000
+    const body = await res.json() as unknown as Oauth2Token;
+
 
     const stateStr = searchParams.get("state")
 
@@ -60,16 +57,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
 
     const state: {searchParams: {[key:string]: any}} = JSON.parse(base64decode(stateStr || ""));
 
-    const cookieValue = JSON.stringify({
-        ...body,
-        expiryTimestamp
-    });
-    console.log("Setting Cookie", cookieValue);
-    cookies.set("sessionid", cookieValue, {
-        path: "/",
-        secure: true, // needed for dev (and prod?)
-        sameSite: "none", // needed for dev (and prod?)
-    })
+    setOauthTokenInCookie(cookies, "onshapeOauthToken", body)
 
     // Build the redirect url and include the state args
 

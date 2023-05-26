@@ -38,6 +38,7 @@
         stage = Stages.options; // move to next state
     }
     const handleSubmit = async ({detail}: { detail: PartRelease }) => {
+        stage = Stages.partlist; // back to part list (Putting this before the fetch makes the UI seem snappier even though the trello api is slow)
         const res = await fetch('?/release', {
             method: 'POST',
             body: JSON.stringify({
@@ -45,7 +46,7 @@
                 params: Object.fromEntries($page.url.searchParams) as unknown as OnshapeFrameQueryParams
             } satisfies PartRelease),
         });
-        stage = Stages.partlist; // back to part list
+
     }
 
 

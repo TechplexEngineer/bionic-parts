@@ -71,7 +71,7 @@ export const load = (async (event) => {
         throw redirect(307, authUrl.toString());
     }
 
-    const Onshape = await getOnshapeClient(event.cookies, "sessionid");
+    const Onshape = await getOnshapeClient(event.cookies, cookieName);
 
     const partInDoc = await Onshape.PartApi.getPartsWMVE({
         ...searchParams,
@@ -95,7 +95,7 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     // console.log("data", data);
     //@todo validate data
 
-    const Onshape = await getOnshapeClient(cookies, "sessionid");
+    const Onshape = await getOnshapeClient(cookies, cookieName);
 
     const currentUser = await Onshape.UserApi.sessionInfo()
 

@@ -43,6 +43,19 @@ export const getOauthTokenFromCookie = (cookies: Cookies, cookieName: string) =>
     return tokenInfo;
 }
 
+export const setOauthTokenInCookie = (cookies: Cookies, cookieName: string, tokenInfo: Oauth2Token) => {
+    const expiryTimestamp = Date.now() + (.75 * tokenInfo.expires_in)*1000
+    const cookieValue = JSON.stringify({
+        ...tokenInfo,
+        expiryTimestamp
+    });
+    cookies.set(cookieName, cookieValue, {
+        path: "/",
+        secure: true, // needed for dev (and prod?)
+        sameSite: "none", // needed for dev (and prod?)
+    })
+}
+
 export const getOnshapeClient = async (cookies: Cookies, cookieName: string) => {
 	const tokenInfo = getOauthTokenFromCookie(cookies, cookieName);
 	const Onshape = new OnshapeClient(new Configuration({
@@ -71,7 +84,7 @@ export const getOnshapeClient = async (cookies: Cookies, cookieName: string) => 
                         redirectUrl: redirectUrl,
                     });
                     const tokenResponse = await res.json();
-                    console.log("tokenResponse", tokenResponse);
+                    // console.log("tokenResponse", tokenResponse);
                     if (context.init.headers) {
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore

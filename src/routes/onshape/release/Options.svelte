@@ -3,6 +3,7 @@
     import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
     import {createEventDispatcher} from 'svelte';
     import type {PartRelease} from "./PartRelease";
+    import SpinButton from "$lib/SpinButton.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -66,6 +67,11 @@ How should the part be made, what steps should be followed?
             // machinesUsed: machinesUsed?.map((m) => m.value),
             notes: notes
         } satisfies PartRelease)
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve();
+            }, 10*1000); // units are miliseconds
+        });
     }
 
 
@@ -104,7 +110,8 @@ How should the part be made, what steps should be followed?
 
 <div class="d-flex justify-content-between">
     <button class="btn btn-warning" on:click={() => dispatch("cancel")}>Cancel</button>
-    <button class="btn btn-success" on:click={handleSubmit}>Send part to Trello</button>
+    <SpinButton class="btn-success" onClick={handleSubmit}>Send part to Trello</SpinButton>
+<!--    <button class="btn btn-success" on:click=>Send part to Trello</button>-->
 </div>
 
 <style>
