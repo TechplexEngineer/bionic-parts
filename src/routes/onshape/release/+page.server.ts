@@ -5,9 +5,10 @@ import Onshape from "$lib/onshape";
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
 import trelloClient, {backlogListId_2024} from "$lib/trello";
-import onshape from "$lib/onshape";
 import type {PartRelease} from "./PartRelease";
 import {getNiceDate, ordinalSuffixOf} from "$lib/util";
+import {redirect} from "@sveltejs/kit";
+
 
 
 interface Part {
@@ -33,11 +34,11 @@ const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams
     };
 }
 
-let pageParts: Part[] = [];
+console.log("import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI", import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI)
+
 
 export const load = (async (event) => {
     const searchParams = normalizeSearchParams(event.url.searchParams);
-    // console.log("load", searchParams);
 
     if (typeof searchParams.did === "undefined") {
         return {
@@ -55,35 +56,40 @@ export const load = (async (event) => {
         };
     }
 
+    // check if the user is logged in
+    // if not, send them to onshape to
+    const tokenInfo = event.cookies.get('sessionid');
+    const isLoggedIn = !!tokenInfo;
+    if (!isLoggedIn) {
+        // Your application must first must direct the user to
+        // https://oauth.onshape.com/oauth/authorize?response_type=code&client_id=<your client id>.
+        // You may optionally add the redirect_uri, scope, state and company_id query parameters.
+        const authUrl = new URL("https://oauth.onshape.com/oauth/authorize");
+        authUrl.searchParams.append("response_type", "code"); //required
+        authUrl.searchParams.append("client_id", searchParams.clientId); //required
+        authUrl.searchParams.append("redirect_uri", import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI); // optional
+        // authUrl.searchParams.append("scope", ); // optional
+        // authUrl.searchParams.append("state", JSON.stringify({})); // optional
+        authUrl.searchParams.append("company_id", searchParams.companyId); // optional
+        console.log("redirectUrl", authUrl.toString())
+        throw redirect(307, authUrl.toString());
+    }
+
     const partInDoc = await Onshape.PartApi.getPartsWMVE({
         ...searchParams,
         wvm: searchParams.wv,
         wvmid: searchParams.wvid,
         eid: searchParams.eid,
         withThumbnails: true,
-        // _configuration: searchParams.cfg,
+        // _configuration: searchParams.cfg, //@todo
     });
-    pageParts = partInDoc.map((p) => ({part: p, state: PartReleaseState.NeverReleased}));
+    const pageParts = partInDoc.map((p) => ({part: p, state: PartReleaseState.NeverReleased}));
 
     return {
         searchParams,
         parts: pageParts
     }
-
-
-}) satisfies PageServerLoad<{ parts: Part[] }>;
-
-
-interface RequestData {
-    partId: string,
-    versionId: string,
-
-    iframeParams: string | OnshapeFrameQueryParams
-    partName: string,
-    partJson: string | BTPartMetadataInfo,
-
-
-}
+}) satisfies PageServerLoad;
 
 const partRelease: Action = async ({request, url: {searchParams}}) => {
     console.log("Action!");
