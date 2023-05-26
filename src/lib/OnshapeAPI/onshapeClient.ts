@@ -41,7 +41,7 @@ import {BaseClient} from "$lib/OnshapeAPI/baseClient";
 import * as runtime from "$lib/OnshapeAPI/onshape_api/runtime";
 
 // Note this is a convenient accessor, but does not allow for tree shaking
-export class OnshapeClient extends BaseClient {
+export class  OnshapeClient extends BaseClient {
 
     AccountApi = new AccountApi(this.configuration);
     AliasApi = new AliasApi(this.configuration);
@@ -80,6 +80,7 @@ export class OnshapeClient extends BaseClient {
     WebhookApi = new WebhookApi(this.configuration);
     WorkflowApi = new WorkflowApi(this.configuration);
     RawRequest = new RawRequest(this.configuration);
+    Oauth = Oauth;
 
 }
 
@@ -110,5 +111,56 @@ class RawRequest extends runtime.BaseAPI {
             body: params.body,
         }, params.initOverrides);
 
+    }
+}
+
+
+export interface OauthTokenParams {
+    grantType: 'authorization_code' | 'refresh_token',
+    code?: string, // if grantType is authorization_code
+    refreshToken?: string, // if grantType is refresh_token
+    clientId: string,
+    clientSecret: string,
+    redirectUrl: string,
+}
+export const Oauth = {
+    async token(args:OauthTokenParams) {
+        const rawParams: Record<string, string> = {
+            'grant_type': args.grantType,
+            'client_id': args.clientId,
+            "client_secret": args.clientSecret,
+            "redirect_uri": args.redirectUrl,
+        }
+        if (args.grantType === 'authorization_code') {
+            if (!args.code) throw Error("Missing code");
+            rawParams['code'] = args.code;
+        }
+        if (args.grantType === 'refresh_token') {
+            if (!args.refreshToken) throw Error("Missing refreshToken");
+            rawParams['refresh_token'] = args.refreshToken;
+        }
+        const params = new URLSearchParams(rawParams);
+
+        return await fetch("https://oauth.onshape.com/oauth/token", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params
+        });
+    },
+
+    buildAuthorizeUrl(args:{clientId: string, redirectUrl: string, state: string, companyId: string, scope?: string}) {
+        // Your application must first must direct the user to
+        // https://oauth.onshape.com/oauth/authorize?response_type=code&client_id=<your client id>.
+        // You may optionally add the redirect_uri, scope, state and company_id query parameters.
+        const authUrl = new URL("https://oauth.onshape.com/oauth/authorize");
+        authUrl.searchParams.append("response_type", "code"); //required
+        authUrl.searchParams.append("client_id", args.clientId); //required
+        authUrl.searchParams.append("redirect_uri", args.redirectUrl); // optional
+        if (args.scope) authUrl.searchParams.append("scope", args.scope); // optional
+        authUrl.searchParams.append("state", args.state); // optional, but required for us as we need this to tell the app what doc we are in after all the redirects
+        authUrl.searchParams.append("company_id", args.companyId); // optional
+        return authUrl;
     }
 }

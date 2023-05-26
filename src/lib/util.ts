@@ -44,3 +44,6 @@ export const ordinalSuffixOf = (i: number) => {
     }
     return i + "th";
 }
+
+export const base64 = btoa;
+export const base64decode = atob;

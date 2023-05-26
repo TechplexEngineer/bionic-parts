@@ -1,20 +1,17 @@
 import type {PageServerLoad, Actions, Action} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 
-import Onshape from "$lib/onshape";
+// import Onshape from "$lib/onshape";
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
 import trelloClient, {backlogListId_2024} from "$lib/trello";
 import type {PartRelease} from "./PartRelease";
-import {getNiceDate, ordinalSuffixOf} from "$lib/util";
+import {base64, base64decode, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
+import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
+import {cookieName, getOnshapeClient, hasInitialToken} from "$lib/onshape";
 
 
-
-interface Part {
-    part: BTPartMetadataInfo,
-    state: PartReleaseState
-}
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -35,7 +32,11 @@ const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams
 }
 const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
 if (!redirectUrl) {
-    throw new Error("No Onshape oauth redirect url set");
+    throw new Error("No VITE_ONSHAPE_OAUTH_REDIRECT_URI set");
+}
+const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
+if (!clientId) {
+    throw new Error("No VITE_ONSHAPE_OAUTH_CLIENT_ID set");
 }
 
 export const load = (async (event) => {
@@ -56,27 +57,21 @@ export const load = (async (event) => {
             error: "Parts can only be released from a version"
         };
     }
-    const base64 = btoa;
+
 
     // check if the user is logged in
-    // if not, send them to onshape to
-    const tokenInfo = event.cookies.get('sessionid');
-    console.log("tokenInfo", tokenInfo);
-    const isLoggedIn = !!tokenInfo;
-    if (!isLoggedIn) {
-        // Your application must first must direct the user to
-        // https://oauth.onshape.com/oauth/authorize?response_type=code&client_id=<your client id>.
-        // You may optionally add the redirect_uri, scope, state and company_id query parameters.
-        const authUrl = new URL("https://oauth.onshape.com/oauth/authorize");
-        authUrl.searchParams.append("response_type", "code"); //required
-        authUrl.searchParams.append("client_id", searchParams.clientId); //required
-        authUrl.searchParams.append("redirect_uri", redirectUrl); // optional
-        // authUrl.searchParams.append("scope", ); // optional
-        authUrl.searchParams.append("state", base64(JSON.stringify({searchParams}))); // optional, need this to tell the app what doc we are in after all the redirects
-        authUrl.searchParams.append("company_id", searchParams.companyId); // optional
-        // console.log("redirectUrl", authUrl.toString())
+    // if not, send them to onshape to authenticate
+    if (!await hasInitialToken(event.cookies, cookieName)) {
+        const authUrl = Oauth.buildAuthorizeUrl({
+            clientId: clientId,
+            redirectUrl: redirectUrl,
+            state: base64(JSON.stringify({searchParams})),
+            companyId: searchParams.companyId
+        })
         throw redirect(307, authUrl.toString());
     }
+
+    const Onshape = await getOnshapeClient(event.cookies, "sessionid");
 
     const partInDoc = await Onshape.PartApi.getPartsWMVE({
         ...searchParams,
@@ -94,11 +89,15 @@ export const load = (async (event) => {
     }
 }) satisfies PageServerLoad;
 
-const partRelease: Action = async ({request, url: {searchParams}}) => {
+const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     console.log("Action!");
     const data = (await request.json()) as PartRelease;
     // console.log("data", data);
     //@todo validate data
+
+    const Onshape = await getOnshapeClient(cookies, "sessionid");
+
+    const currentUser = await Onshape.UserApi.sessionInfo()
 
     let thumbnailBlob = null;
     const thumbnailInfo = data.part.thumbnailInfo
@@ -142,7 +141,8 @@ ${data.notes}
 
 Document Name: ${doc.name}
 Tab Name: ${tabName}
-Release Date: ${getNiceDate()}`,
+Release Date: ${getNiceDate()}
+Released By: ${currentUser.name}`,
         idList: backlogListId_2024,
         pos: "top",
     });

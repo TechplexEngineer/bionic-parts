@@ -1,5 +1,6 @@
 import type {PageServerLoad} from './$types';
 import {redirect} from "@sveltejs/kit";
+import {base64decode} from "$lib/util";
 
 interface OauthTokenBody {
     access_token: string,
@@ -38,7 +39,6 @@ export const load = (async ({url: {searchParams}, cookies}) => {
         "client_secret": clientSecret,
         "redirect_uri": redirectUrl,
     });
-    // console.log("params", params.toString())
 
     const res = await fetch("https://oauth.onshape.com/oauth/token", {
         method: "POST",
@@ -47,8 +47,6 @@ export const load = (async ({url: {searchParams}, cookies}) => {
         },
         body: params
     });
-
-    const base64decode = atob;
 
 
     const body = await res.json() as unknown as OauthTokenBody;
@@ -69,8 +67,8 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     console.log("Setting Cookie", cookieValue);
     cookies.set("sessionid", cookieValue, {
         path: "/",
-        secure: true, // needed for dev
-        sameSite: "none", // needed for dev
+        secure: true, // needed for dev (and prod?)
+        sameSite: "none", // needed for dev (and prod?)
     })
 
     // Build the redirect url and include the state args
