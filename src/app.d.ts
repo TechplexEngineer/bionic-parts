@@ -14,8 +14,12 @@ declare global {
     }
 
     interface ImportMetaEnv {
-        VITE_ONSHAPE_ACCESS_KEY?: string;
-        VITE_ONSHAPE_SECRET_KEY?: string;
+        // VITE_ONSHAPE_OAUTH_CLIENT_ID?: string;
+        // VITE_ONSHAPE_OAUTH_SECRET?: string;
+        VITE_ONSHAPE_OAUTH_CLIENT_ID?: string;
+        VITE_ONSHAPE_OAUTH_CLIENT_SECRET?: string;
+        VITE_ONSHAPE_OAUTH_REDIRECT_URI?: string;
+
         VITE_TRELLO_KEY?: string;
         VITE_TRELLO_TOKEN?: string;
     }
