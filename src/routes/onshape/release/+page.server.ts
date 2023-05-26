@@ -10,8 +10,7 @@ import {base64, base64decode, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
 import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
 import {cookieName, getOnshapeClient, hasInitialToken} from "$lib/onshape";
-
-
+import * as child_process from "child_process";
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -97,7 +96,7 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
 
     const Onshape = await getOnshapeClient(cookies, cookieName);
 
-    const currentUser = await Onshape.UserApi.sessionInfo()
+    const currentUser = await Onshape.UserApi.sessionInfo();
 
     let thumbnailBlob = null;
     const thumbnailInfo = data.part.thumbnailInfo

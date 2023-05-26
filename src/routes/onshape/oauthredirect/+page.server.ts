@@ -1,7 +1,7 @@
 import type {PageServerLoad} from './$types';
 import {redirect} from "@sveltejs/kit";
 import {base64decode} from "$lib/util";
-import {setOauthTokenInCookie} from "$lib/onshape";
+import {cookieName, setOauthTokenInCookie} from "$lib/onshape";
 import type {Oauth2Token} from "$lib/onshape";
 
 
@@ -47,7 +47,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
 
 
     const body = await res.json() as unknown as Oauth2Token;
-
+    setOauthTokenInCookie(cookies, cookieName, body)
 
     const stateStr = searchParams.get("state")
 
@@ -55,9 +55,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
         console.log("ERROR! State was not returned with the token response");
     }
 
-    const state: {searchParams: {[key:string]: any}} = JSON.parse(base64decode(stateStr || ""));
-
-    setOauthTokenInCookie(cookies, "onshapeOauthToken", body)
+    const state: { searchParams: { [key: string]: any } } = JSON.parse(base64decode(stateStr || ""));
 
     // Build the redirect url and include the state args
 

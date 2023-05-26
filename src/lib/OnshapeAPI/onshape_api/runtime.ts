@@ -138,7 +138,7 @@ export class BaseAPI {
         if (response && (response.status >= 200 && response.status < 300)) {
             return response;
         }
-        throw new ResponseError(response, 'Response returned an error code: ' + await response?.text());
+        throw new ResponseError(response, `Response to ${context.method} ${context.path} returned an error code: ` + await response?.text());
     }
 
     private async createFetchParams(context: RequestOpts, initOverrides?: RequestInit | InitOverrideFunction) {
