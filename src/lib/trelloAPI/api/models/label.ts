@@ -1,9 +1,9 @@
-import { Color } from './color';
-import { TrelloID } from './trelloID';
+import type { Color } from './color';
+import type { TrelloID } from './trelloID';
 
 export interface Label {
   /** The ID of the label. */
-  id?: TrelloID;
+  id: TrelloID;
   /** The ID of the board the label is on. */
   idBoard?: TrelloID;
   /** The name displayed for the label. */

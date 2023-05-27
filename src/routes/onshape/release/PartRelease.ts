@@ -6,5 +6,6 @@ export interface PartRelease {
     qty: number,
     mfgMethod: string,
     notes: string,
-    params: OnshapeFrameQueryParams
+    params: OnshapeFrameQueryParams,
+    subsystemName: string,
 }

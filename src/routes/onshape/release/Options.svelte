@@ -109,8 +109,9 @@ How should the part be made, what steps should be followed?
             qty: qty,
             mfgMethod: mfgMethod?.value,
             // machinesUsed: machinesUsed?.map((m) => m.value),
-            notes: notes
-        } satisfies PartRelease)
+            notes: notes,
+            subsystemName: subsystemName,
+        } satisfies Omit<PartRelease, 'params'>)
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve();

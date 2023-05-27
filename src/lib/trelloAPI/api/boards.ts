@@ -2,6 +2,8 @@ import type * as Models from './models';
 import type * as Parameters from './parameters';
 import type {Client} from '../clients';
 import type {RequestConfig} from '../types';
+import type {Labels} from "$lib/trelloAPI/api/labels";
+import type {Label} from "./models";
 
 export class Boards {
     constructor(private client: Client) {
@@ -212,7 +214,7 @@ export class Boards {
     }
 
     /** Get all of the Labels on a Board. */
-    async getBoardLabels<T = unknown>(parameters: Parameters.GetBoardLabels): Promise<T> {
+    async getBoardLabels<T = Label[]>(parameters: Parameters.GetBoardLabels): Promise<T> {
         const config: RequestConfig = {
             url: `/boards/${parameters.id}/labels`,
             method: 'GET',
@@ -226,7 +228,7 @@ export class Boards {
     }
 
     /** Create a new Label on a Board. */
-    async createBoardLabel<T = unknown>(
+    async createBoardLabel<T = Label>(
         parameters: Parameters.CreateBoardLabel,
     ): Promise<T> {
         const config: RequestConfig = {
@@ -238,7 +240,7 @@ export class Boards {
             },
         };
 
-        return this.client.sendRequest(config);
+        return this.client.sendRequest<T>(config);
     }
 
     /** Get the Lists on a Board */

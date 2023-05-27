@@ -1,16 +1,13 @@
 import type {PageServerLoad, Actions, Action} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 
-// import Onshape from "$lib/onshape";
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
-import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
-import trelloClient, {backlogListId_2024} from "$lib/trello";
+import trelloClient, {backlogListId_2024, boardId_2024, validLabelColors} from "$lib/trello";
 import type {PartRelease} from "./PartRelease";
-import {base64, base64decode, getNiceDate, ordinalSuffixOf} from "$lib/util";
+import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
 import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
 import {cookieName, getOnshapeClient, hasInitialToken} from "$lib/onshape";
-import * as child_process from "child_process";
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -90,7 +87,7 @@ export const load = (async (event) => {
         wvmid: searchParams.wvid,
         eid: searchParams.eid
     });
-    console.log("tab", tab.properties);
+
     const title3SubsystemName = tab.properties?.find(p => p.name == "Title 3")?.value;
     const tabName = tab.properties?.find(p => p.name == "Name")?.value;
     if (!title3SubsystemName) {
@@ -196,6 +193,35 @@ Released By: ${currentUser.name}`,
                 pos: "bottom",
             })
         }
+    }
+    if (data.subsystemName) {
+        const labels = await trelloClient.boards.getBoardLabels({
+            id: boardId_2024,
+        });
+
+        // pick a random color from the list of valid label colors
+        const labelColor = validLabelColors[Math.floor(Math.random() * validLabelColors.length)]
+
+        let label = labels.find(l => (l.name == data.subsystemName))
+        if (!label) {
+            // create label
+            label = await trelloClient.boards.createBoardLabel({
+                id: boardId_2024,
+                name: data.subsystemName,
+                color: labelColor
+            })
+        }
+        if (!label) {
+            console.log("Failed to create label")
+        } else {
+            //add label to card
+            await trelloClient.cards.addCardLabel({
+                id: card.id,
+                value: label.id
+            })
+        }
+    } else {
+        console.log("No subsystem name")
     }
 
 

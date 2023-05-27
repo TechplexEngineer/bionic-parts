@@ -19,6 +19,40 @@ const trelloClient = new TrelloClient({
 export default trelloClient;
 
 export const backlogListId_2024 = "6468e280779ad802bb3775d4";
+export const boardId_2024 = "6468e2101517f18d3231250f";
+
+export const validLabelColors = [
+    "green",
+    "yellow",
+    "orange",
+    "red",
+    "purple",
+    "blue",
+    "sky",
+    "lime",
+    "pink",
+    "black",
+    "green_dark",
+    "yellow_dark",
+    "orange_dark",
+    "red_dark",
+    "purple_dark",
+    "blue_dark",
+    "sky_dark",
+    "lime_dark",
+    "pink_dark",
+    "black_dark",
+    "green_light",
+    "yellow_light",
+    "orange_light",
+    "red_light",
+    "purple_light",
+    "blue_light",
+    "sky_light",
+    "lime_light",
+    "pink_light",
+    "black_light"
+];
 
 
 export interface CreateCardWithPhotoAndLinkParams {
