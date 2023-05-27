@@ -108,6 +108,11 @@ How should the part be made, what steps should be followed?
             part: selectedPart,
             qty: qty,
             mfgMethod: mfgMethod?.value,
+            machinesUsed: machinesUsed?.map((m) => m.label),
+            printerUsed: printerUsed?.label,
+            printerMaterialUsed: printerMaterialUsed?.label,
+            cotsLink: cotsLink,
+
             // machinesUsed: machinesUsed?.map((m) => m.value),
             notes: notes,
             subsystemName: subsystemName,
@@ -136,7 +141,8 @@ How should the part be made, what steps should be followed?
     <div class="col">
         <div class="mb-3">
             <label for="qty" class="form-label">Quantity to make:</label>
-            <input type="number" class="form-control" id="qty" placeholder="Please enter a number" bind:value={qty}>
+            <input type="number" class="form-control" id="qty" placeholder="Please enter a number" bind:value={qty}
+                   required>
         </div>
     </div>
     <div class="col">

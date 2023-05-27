@@ -21,6 +21,8 @@ export default trelloClient;
 export const backlogListId_2024 = "6468e280779ad802bb3775d4";
 export const boardId_2024 = "6468e2101517f18d3231250f";
 
+export const memberId_blake = "4fbe441a74cbfcae72246f58";
+
 export const validLabelColors = [
     "green",
     "yellow",

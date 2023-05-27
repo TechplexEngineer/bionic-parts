@@ -2,7 +2,7 @@ import type {PageServerLoad, Actions, Action} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
-import trelloClient, {backlogListId_2024, boardId_2024, validLabelColors} from "$lib/trello";
+import trelloClient, {backlogListId_2024, boardId_2024, memberId_blake, validLabelColors} from "$lib/trello";
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
@@ -109,7 +109,7 @@ export const load = (async (event) => {
 const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     console.log("Action!");
     const data = (await request.json()) as PartRelease;
-    // console.log("data", data);
+    console.log("data", data);
     //@todo validate data
 
     const Onshape = await getOnshapeClient(cookies, cookieName);
@@ -169,6 +169,19 @@ Released By: ${currentUser.name}`,
         url: doc.href,
         name: `Part released from: '${doc.name}'`
     });
+
+    if (data.cotsLink) {
+        await trelloClient.cards.createCardAttachment({
+            id: card.id,
+            url: data.cotsLink,
+            name: `Purchase ${data.qty}: '${data.cotsLink}'`
+        });
+
+        await trelloClient.cards.addCardMember({
+            id: card.id,
+            value: memberId_blake
+        })
+    }
 
     if (thumbnailBlob) {
         await trelloClient.cards.createCardAttachment({
