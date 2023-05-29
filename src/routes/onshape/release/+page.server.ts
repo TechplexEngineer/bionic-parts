@@ -1,4 +1,4 @@
-import type {PageServerLoad, Actions, Action} from './$types';
+import type {Action, Actions, PageServerLoad} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
@@ -6,8 +6,12 @@ import trelloClient, {backlogListId_2024, boardId_2024, memberId_blake, validLab
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
-import {cookieName, getOnshapeClient, hasInitialToken} from "$lib/onshape";
+import {ExportStlRequest, Oauth} from "$lib/OnshapeAPI";
+import type {OauthStateData} from "$lib/onshape";
+import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
+import {MfgMethods, Printers, PrusaPrinterMaterials} from "./options";
+import type {IncomingWebhook} from "../../api/onshape/webhook/incommingWebhook";
+import type {WebhookUserData} from "../../api/onshape/webhook/webhookUserData";
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -61,13 +65,13 @@ export const load = (async (event) => {
         const authUrl = Oauth.buildAuthorizeUrl({
             clientId: clientId,
             redirectUrl: redirectUrl,
-            state: base64(JSON.stringify({searchParams})),
+            state: base64(JSON.stringify({searchParams, action: "release"} satisfies OauthStateData)),
             companyId: searchParams.companyId
         })
         throw redirect(307, authUrl.toString());
     }
 
-    const Onshape = await getOnshapeClient(event.cookies, cookieName);
+    const Onshape = await getOnshapeClientFromCookies(event.cookies, cookieName);
 
     const partInDoc = await Onshape.PartApi.getPartsWMVE({
         ...searchParams,
@@ -112,7 +116,7 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     console.log("data", data);
     //@todo validate data
 
-    const Onshape = await getOnshapeClient(cookies, cookieName);
+    const Onshape = await getOnshapeClientFromCookies(cookies, cookieName);
 
     const currentUser = await Onshape.UserApi.sessionInfo();
 
@@ -236,6 +240,132 @@ Released By: ${currentUser.name}`,
     } else {
         console.log("No subsystem name")
     }
+
+    if (data.mfgMethod == MfgMethods.Machined) {
+        // attach step file
+        // create webhook
+        const webhookData = {
+            cardId: "",
+            tokenInfo: getOauthTokenFromCookie(cookies, cookieName)!, // this is safe because we should error out above if the cookie is missing
+        } satisfies WebhookUserData
+        await Onshape.WebhookApi.createWebhook({
+            // "clientId": "string",
+            // "companyId": "string",
+            // "id": "string",
+            "data": JSON.stringify(webhookData), // data that can be used ot identify webhook
+            "description": "string", // message that is retrieved when webhooks are listed
+            "documentId": "string",
+            // "externalSessionId": "string", // is this for client apps?
+            "events": [
+                "onshape.model.translation.complete"
+            ],
+            // "filter": "string", // what are th syntax options?
+            // "isTransient": true, // what does this mean?
+            // "linkDocumentId": "string", // when does this need to be provided?
+            "options": {
+                "collapseEvents": true
+            },
+            "url": "https://parts.team4909.org/api/onshape/webhook", // where to callback to
+            // "projectId": "string", // does this have to do with release projects?
+            // "userId": "string", // does this matter?
+            // "versionId": "string", // how are these fiferent than a filter?
+            // "workspaceId": "string"
+            // "elementId": "string",
+            // "partId": "string",
+            // "folderId": "string",
+        } as any);
+
+
+        // request translation
+        const did = data.params.did;
+        const wvm = data.params.wv as any;
+        const wvmid = data.params.wvid;
+        const res = await Onshape.RawRequest.rawRequest({
+            path: `/documents/d/${did}/${wvm}/${wvmid}/translate`,
+            method: "POST",
+            body: {
+                "elementId": data.params.eid,
+                "elementIds": null,
+                "formatName": "STEP",
+                "flattenAssemblies": false,
+                "yAxisIsUp": false,
+                "triggerAutoDownload": false, //was true, but I think that this adds to the onshape notification queue
+                "storeInDocument": false,
+                // "linkDocumentId": "da2bc7f409791a8720b27217",
+                // "linkDocumentWorkspaceId": "997b8fe669ef3a2ee893ee0e",
+                // "connectionId": "5m0D0blm",
+                "stepVersionString": "AP242",
+                "versionString": "",
+                "partIds": data.part.partId, //eg. JHG or comma separated
+                "includeExportIds": false,
+                "grouping": true, //what is this?
+                "ignoreExportRulesForContents": true,
+                // "destinationName": "Part Studio 1 - Part 1 - Main",
+                // "configuration": "List_QUDRhyBNPXwmGx=Default", //@todo
+                "cloudStorageAccountId": null,
+                "emailLink": false,
+                "emailTo": null,
+                "emailSubject": null,
+                "emailMessage": null,
+                "sendCopyToMe": null,
+                "passwordRequired": null,
+                "password": null,
+                "validForDays": null,
+                "fromUserId": null,
+                "useIgesCompatibilityMode": false
+            }
+        });
+        const trans = res.json() as unknown as {
+            skippedEmptyElements: boolean,
+            translationEventKey: string,
+            translationId: string
+        }
+        console.log("translation response", trans)
+    } else if (data.mfgMethod == MfgMethods.Printed) {
+        // attach stl file
+
+        // setup webhook
+        // request translation
+        const res = await Onshape.PartApi.exportStlRaw({
+            did: data.params.did,
+            wvm: data.params.wv,
+            wvmid: data.params.wvid,
+            eid: data.params.eid,
+            partid: data.part.partId!
+        } satisfies ExportStlRequest)
+        res.raw.blob()
+
+        // hopefully we don't need this
+        // https://cad.onshape.com/api/documents/d/da2bc7f409791a8720b27217/v/e6dfc5a88fdafa4560bfa609/e/dfc0766722250803423263f8/export
+        // {
+        //     "format": "STL",
+        //     "microversion": "96995ebabae27bdbaebed96d",
+        //     "destinationName": "#2023-05-29 14:11:56#QUANTITY#Part Release Testing#V5 Set Material on Part 1##Part 1#",
+        //     "mode": "binary",
+        //     "scale": "1.0",
+        //     "resolution": "fine",
+        //     "units": "millimeter",
+        //     "grouping": "true",
+        //     "angleTolerance": "0.04363323129985824",
+        //     "chordTolerance": "0.06",
+        //     "minFacetWidth": "0.0254",
+        //     "triggerAutoDownload": "true",
+        //     "storeInDocument": "false",
+        //     "linkDocumentId": "da2bc7f409791a8720b27217",
+        //     "linkDocumentWorkspaceId": "17fb1ce669b69e4be4639e4c",
+        //     "configuration": "List_QUDRhyBNPXwmGx=Default",
+        //     "partIds": "JHD"
+        // }
+        if (data.printerUsed == Printers.FormLabs) {
+            // tag chris
+        }
+        if (data.printerUsed == Printers.Prusa && data.printerMaterialUsed == PrusaPrinterMaterials.NylonX) {
+            // tag scott
+        }
+
+    }
+
+    // await Onshape.TranslationApi.createTranslation()
 
 
     return {}

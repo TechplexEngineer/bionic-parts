@@ -4,6 +4,7 @@
     import {createEventDispatcher} from 'svelte';
     import type {PartRelease} from "./PartRelease";
     import SpinButton from "$lib/SpinButton.svelte";
+    import {FormLabsPrinterMaterials, Machines, MfgMethods, Printers, PrusaPrinterMaterials} from "./options";
 
     const dispatch = createEventDispatcher();
 
@@ -17,59 +18,18 @@
     };
     let qty; //bound to the value of the select
 
-    enum MfgMethods {
-        //key = value (shown to user)
-        Machined = 'Machined',
-        Printed = '3D Printed',
-        Cots = 'Purchased',
-        // Magic = 'Magic'
-    }
 
     let mfgMethod; //bound to the value of the select
     let mfgMethods: { value: any, label: string, created?: boolean }[] = enumToSelectOptions(MfgMethods);
 
-    enum Machines {
-        //key = value (shown to user)
-        Lathe = 'Lathe',
-        CNCLathe = 'CNC Lathe',
-        Mill = 'Mill',
-        CNCMill = 'CNC Mill (Velox/Tormach)',
-        DrillPress = 'Drill Press',
-        LaserCutter = 'Laser Cutter',
-        Bandsaw = 'Bandsaw',
-        TableSaw = 'Table Saw',
-        ChopSaw = 'Chop Saw',
-    }
 
     let machinesUsed; //bound to the value of the select
     const machinesAvailable = enumToSelectOptions(Machines);
 
-    enum Printers {
-        //key = value (shown to user)
-        Prusa = 'Prusa',
-        FormLabs = 'Formlabs',
-        Other = "Other (See Description)"
-    }
 
     const printersAvailable = enumToSelectOptions(Printers)
     let printerUsed; //bound to the value of the select
 
-    enum PrusaPrinterMaterials {
-        //key = value (shown to user)
-        PLA = 'PLA',
-        PETG = 'PETG',
-        Nylon = 'Nylon',
-        Other = "Other (See Description)"
-    }
-
-    enum FormLabsPrinterMaterials {
-        //key = value (shown to user)
-        SLSNylon = 'SLS Nylon',
-        SLSTPU = 'SLS TPU',
-        EResin = 'Engineering Resin',
-        FResin = 'Fast Resin',
-        Other = "Other (See Description)"
-    }
 
     const getMaterialsAvailableForPrinter = (printerUsed: Printers) => {
         switch (printerUsed) {

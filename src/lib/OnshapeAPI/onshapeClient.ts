@@ -41,7 +41,7 @@ import {BaseClient} from "$lib/OnshapeAPI/baseClient";
 import * as runtime from "$lib/OnshapeAPI/onshape_api/runtime";
 
 // Note this is a convenient accessor, but does not allow for tree shaking
-export class  OnshapeClient extends BaseClient {
+export class OnshapeClient extends BaseClient {
 
     AccountApi = new AccountApi(this.configuration);
     AliasApi = new AliasApi(this.configuration);
@@ -123,8 +123,9 @@ export interface OauthTokenParams {
     clientSecret: string,
     redirectUrl: string,
 }
+
 export const Oauth = {
-    async token(args:OauthTokenParams) {
+    async token(args: OauthTokenParams) {
         const rawParams: Record<string, string> = {
             'grant_type': args.grantType,
             'client_id': args.clientId,
@@ -150,7 +151,13 @@ export const Oauth = {
         });
     },
 
-    buildAuthorizeUrl(args:{clientId: string, redirectUrl: string, state: string, companyId: string, scope?: string}) {
+    buildAuthorizeUrl(args: {
+        clientId: string,
+        redirectUrl: string,
+        state: string,
+        companyId?: string,
+        scope?: string
+    }) {
         // Your application must first must direct the user to
         // https://oauth.onshape.com/oauth/authorize?response_type=code&client_id=<your client id>.
         // You may optionally add the redirect_uri, scope, state and company_id query parameters.
@@ -160,7 +167,7 @@ export const Oauth = {
         authUrl.searchParams.append("redirect_uri", args.redirectUrl); // optional
         if (args.scope) authUrl.searchParams.append("scope", args.scope); // optional
         authUrl.searchParams.append("state", args.state); // optional, but required for us as we need this to tell the app what doc we are in after all the redirects
-        authUrl.searchParams.append("company_id", args.companyId); // optional
+        if (args.companyId) authUrl.searchParams.append("company_id", args.companyId); // optional
         return authUrl;
     }
 }

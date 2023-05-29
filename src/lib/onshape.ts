@@ -1,13 +1,23 @@
 import type {Cookies} from "@sveltejs/kit";
 
-// const accessKey = import.meta.env.VITE_ONSHAPE_ACCESS_KEY;
-// if (!accessKey) {
-// 	throw Error("Missing VITE_ONSHAPE_ACCESS_KEY")
-// }
-// const secretKey = import.meta.env.VITE_ONSHAPE_SECRET_KEY;
-// if (!secretKey) {
-// 	throw Error("Missing VITE_ONSHAPE_SECRET_KEY")
-// }
+export const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
+if (!clientId) {
+    throw new Error("No Onshape oauth client id set");
+}
+export const clientSecret = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_SECRET;
+if (!clientSecret) {
+    throw new Error("No Onshape oauth client secret set");
+}
+export const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI;
+if (!redirectUrl) {
+    throw new Error("No Onshape oauth redirect url set");
+}
+
+export interface OauthStateData {
+    searchParams: { [key: string]: any }
+    action: "release" | "webhook/register"
+}
+
 
 import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
 import APIKeyAuthMiddleware from "$lib/OnshapeAPI/authMiddleware";
@@ -96,10 +106,7 @@ export const setOauthTokenInCookie = (cookies: Cookies, cookieName: string, toke
     })
 }
 
-export const getOnshapeClient = async (cookies: Cookies, cookieName: string) => {
-    const tokenInfo = getOauthTokenFromCookie(cookies, cookieName);
-
-
+export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?: (token: Oauth2Token) => void) => {
     const Onshape = new OnshapeClient(new Configuration({
         middleware: [{
             pre: async (context) => {
@@ -108,7 +115,7 @@ export const getOnshapeClient = async (cookies: Cookies, cookieName: string) => 
                     const res = await doTokenRefresh(tokenInfo.refresh_token);
                     const tokenResponse = await res.json() as unknown as Oauth2Token;
 
-                    setOauthTokenInCookie(cookies, cookieName, tokenResponse);
+                    refreshCb && refreshCb(tokenResponse)
 
                     // console.log("tokenResponse", tokenResponse);
                     if (context.init.headers) {
@@ -131,4 +138,12 @@ export const getOnshapeClient = async (cookies: Cookies, cookieName: string) => 
         }]
     }));
     return Onshape;
+}
+
+export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName: string) => {
+    const tokenInfo = getOauthTokenFromCookie(cookies, cookieName);
+
+    return await getOnshapeClient(tokenInfo, (tokenResponse) => {
+        setOauthTokenInCookie(cookies, cookieName, tokenResponse);
+    });
 }

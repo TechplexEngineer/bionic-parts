@@ -1,22 +1,10 @@
 import type {PageServerLoad} from './$types';
 import {redirect} from "@sveltejs/kit";
 import {base64decode} from "$lib/util";
-import {cookieName, setOauthTokenInCookie} from "$lib/onshape";
+import {clientId, clientSecret, cookieName, redirectUrl, setOauthTokenInCookie} from "$lib/onshape";
+import type {OauthStateData} from "$lib/onshape";
 import type {Oauth2Token} from "$lib/onshape";
 
-
-const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
-if (!clientId) {
-    throw new Error("No Onshape oauth client id set");
-}
-const clientSecret = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_SECRET;
-if (!clientSecret) {
-    throw new Error("No Onshape oauth client secret set");
-}
-const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI;
-if (!redirectUrl) {
-    throw new Error("No Onshape oauth redirect url set");
-}
 
 export const load = (async ({url: {searchParams}, cookies}) => {
     const inParams = Object.fromEntries(searchParams);
@@ -32,9 +20,9 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     const params = new URLSearchParams({
         'grant_type': 'authorization_code',
         'code': code,
-        'client_id': clientId,
-        "client_secret": clientSecret,
-        "redirect_uri": redirectUrl,
+        'client_id': clientId!,
+        "client_secret": clientSecret!,
+        "redirect_uri": redirectUrl!,
     });
 
     const res = await fetch("https://oauth.onshape.com/oauth/token", {
@@ -55,7 +43,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
         console.log("ERROR! State was not returned with the token response");
     }
 
-    const state: { searchParams: { [key: string]: any } } = JSON.parse(base64decode(stateStr || ""));
+    const state: OauthStateData = JSON.parse(base64decode(stateStr || ""));
 
     // Build the redirect url and include the state args
 
@@ -67,7 +55,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
             redirSearchParams.append(key, value);
         }
     }
-    const redirUrl = `/onshape/release?${redirSearchParams}`
+    const redirUrl = `/onshape/${state.action}?${redirSearchParams}`
     // console.log("redirUrl", redirUrl.toString());
 
     throw redirect(302, redirUrl) //@todo need state
