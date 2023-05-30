@@ -11,7 +11,7 @@ import {
     CompanyApi,
     DocumentApi,
     DrawingApi,
-    ElementApi,
+    ElementApi, ExportPartStudioStlRequest,
     ExportRuleApi,
     FeatureStudioApi,
     FolderApi,
@@ -39,6 +39,7 @@ import {
 import type {HTTPMethod} from "$lib/OnshapeAPI";
 import {BaseClient} from "$lib/OnshapeAPI/baseClient";
 import * as runtime from "$lib/OnshapeAPI/onshape_api/runtime";
+import {cookieName, getOauthTokenFromCookie, Oauth2Token} from "$lib/onshape";
 
 // Note this is a convenient accessor, but does not allow for tree shaking
 export class OnshapeClient extends BaseClient {
@@ -79,12 +80,12 @@ export class OnshapeClient extends BaseClient {
     VersionApi = new VersionApi(this.configuration);
     WebhookApi = new WebhookApi(this.configuration);
     WorkflowApi = new WorkflowApi(this.configuration);
-    RawRequest = new RawRequest(this.configuration);
+    request = new Raw(this.configuration);
     Oauth = Oauth;
 
 }
 
-class RawRequest extends runtime.BaseAPI {
+class Raw extends runtime.BaseAPI {
     public async rawRequest(params: {
         method: HTTPMethod,
         path: string,
@@ -111,6 +112,36 @@ class RawRequest extends runtime.BaseAPI {
             body: params.body,
         }, params.initOverrides);
 
+    }
+
+    public async exportPartStudioStl(requestParameters: ExportPartStudioStlRequest, token: Oauth2Token): Promise<Response> {
+        const psapi = new PartStudioApi(this.configuration)
+
+        try {
+            //we expect this to always generate a redirect
+            await psapi.exportPartStudioStlRaw(requestParameters, {
+                credentials: "include",
+                redirect: "manual",
+                headers: {
+                    "Accept": "application/vnd.onshape.v1+octet-stream"
+                }
+            });
+        } catch (e: any) {
+            const redirRes: Response = e.response;
+            const redirLocation = redirRes.headers.get("location");
+            if (redirRes.status !== 307 || !redirLocation) {
+                //sorry can't help you
+                throw e;
+            }
+
+            return await fetch(redirLocation, {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token.access_token, //@todo use this.configuration.accessToken() instead
+                }
+            });
+        }
+        return Promise.reject("Should never get here");
     }
 }
 

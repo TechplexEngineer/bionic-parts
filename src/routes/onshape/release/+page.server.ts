@@ -6,11 +6,11 @@ import trelloClient, {backlogListId_2024, boardId_2024, memberId_blake, validLab
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {ExportStlRequest, Oauth} from "$lib/OnshapeAPI";
+import type {ExportStlRequest} from "$lib/OnshapeAPI";
+import {Oauth} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
 import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {MfgMethods, Printers, PrusaPrinterMaterials} from "./options";
-import type {IncomingWebhook} from "../../api/onshape/webhook/incommingWebhook";
 import type {WebhookUserData} from "../../api/onshape/webhook/webhookUserData";
 
 
@@ -79,7 +79,7 @@ export const load = (async (event) => {
         wvmid: searchParams.wvid,
         eid: searchParams.eid,
         withThumbnails: true,
-        // _configuration: searchParams.cfg, //@todo
+        _configuration: searchParams.cfg, //@todo
     });
     const pageParts = partInDoc.map((p) => ({
         part: p, state: PartReleaseState.NeverReleased
@@ -113,7 +113,7 @@ export const load = (async (event) => {
 const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     console.log("Action!");
     const data = (await request.json()) as PartRelease;
-    console.log("data", data);
+    // console.log("data", data);
     //@todo validate data
 
     const Onshape = await getOnshapeClientFromCookies(cookies, cookieName);
@@ -130,7 +130,7 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
             const thumbnailLinkPath = "/thumbnails" + thumbnailLink.split("/thumbnails")[1];
 
             // get the thumbnail
-            const res = await Onshape.RawRequest.rawRequest({
+            const res = await Onshape.request.rawRequest({
                 method: "GET",
                 path: thumbnailLinkPath,
                 initOverrides: {
@@ -154,8 +154,9 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     });
     const tabName = tab.properties?.find(p => p.name == "Name")?.value;
 
+    const cardName = `${data.part.name} - ${version.name}`;
     const card = await trelloClient.cards.createCard({
-        name: `${data.part.name} - ${version.name}`,
+        name: cardName,
         desc: `Part Number: ${data.part.partNumber || "unset"}
 
 ${data.notes}
@@ -241,14 +242,21 @@ Released By: ${currentUser.name}`,
         console.log("No subsystem name")
     }
 
+    console.log("mfgMethod", data.mfgMethod);
+
     if (data.mfgMethod == MfgMethods.Machined) {
         // attach step file
-        // create webhook
+        console.log("create webhook");
+
+        // this is safe because we should error out above if the cookie is missing
+        const tokenInfo = getOauthTokenFromCookie(cookies, cookieName)!;
+        console.log("tokenInfo", tokenInfo);
+
         const webhookData = {
             cardId: "",
-            tokenInfo: getOauthTokenFromCookie(cookies, cookieName)!, // this is safe because we should error out above if the cookie is missing
+            tokenInfo: tokenInfo,
         } satisfies WebhookUserData
-        await Onshape.WebhookApi.createWebhook({
+        const wh = await Onshape.WebhookApi.createWebhook({
             // "clientId": "string",
             // "companyId": "string",
             // "id": "string",
@@ -276,11 +284,11 @@ Released By: ${currentUser.name}`,
         } as any);
 
 
-        // request translation
+        console.log("request translation");
         const did = data.params.did;
         const wvm = data.params.wv as any;
         const wvmid = data.params.wvid;
-        const res = await Onshape.RawRequest.rawRequest({
+        const res = await Onshape.request.rawRequest({
             path: `/documents/d/${did}/${wvm}/${wvmid}/translate`,
             method: "POST",
             body: {
@@ -315,7 +323,7 @@ Released By: ${currentUser.name}`,
                 "useIgesCompatibilityMode": false
             }
         });
-        const trans = res.json() as unknown as {
+        const trans = await res.json() as unknown as {
             skippedEmptyElements: boolean,
             translationEventKey: string,
             translationId: string
@@ -323,17 +331,32 @@ Released By: ${currentUser.name}`,
         console.log("translation response", trans)
     } else if (data.mfgMethod == MfgMethods.Printed) {
         // attach stl file
+        console.log("attach stl file");
 
         // setup webhook
         // request translation
-        const res = await Onshape.PartApi.exportStlRaw({
-            did: data.params.did,
-            wvm: data.params.wv,
-            wvmid: data.params.wvid,
-            eid: data.params.eid,
-            partid: data.part.partId!
-        } satisfies ExportStlRequest)
-        res.raw.blob()
+        // const res = await Onshape.PartApi.exportStlRaw({
+        //     did: data.params.did,
+        //     wvm: data.params.wv,
+        //     wvmid: data.params.wvid,
+        //     eid: data.params.eid,
+        //     partid: data.part.id!
+        // } satisfies ExportStlRequest)
+
+        const res = await Onshape.request.exportPartStudioStl({
+            did: "da2bc7f409791a8720b27217",
+            wvm: "v",
+            wvmid: "e6dfc5a88fdafa4560bfa609",
+            eid: "dfc0766722250803423263f8",
+            units: "millimeter", // @todo if you put MILLIMETER you get an invalid stl file, should get an error
+        }, await getOauthTokenFromCookie(cookies, cookieName)!);
+
+
+        await trelloClient.cards.createCardAttachment({
+            id: card.id,
+            file: await res.blob(),
+            name: `${cardName}.stl`
+        })
 
         // hopefully we don't need this
         // https://cad.onshape.com/api/documents/d/da2bc7f409791a8720b27217/v/e6dfc5a88fdafa4560bfa609/e/dfc0766722250803423263f8/export

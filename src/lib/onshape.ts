@@ -122,12 +122,16 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         context.init.headers.Authorization = `Bearer ${tokenResponse.access_token}`;
+                    } else {
+                        console.log("ERROR! NO HEADERS 1");
                     }
                 } else {
                     if (context.init.headers) {
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         context.init.headers.Authorization = `Bearer ${tokenInfo.access_token}`;
+                    } else {
+                        console.log("ERROR! NO HEADERS 2");
                     }
                 }
                 return {url: context.url, init: context.init}

@@ -198,6 +198,7 @@ export class BaseAPI {
         }
         let response: Response | undefined = undefined;
         try {
+            console.log(`Requesting ${fetchParams.url}`, fetchParams.init);
             response = await (this.configuration.fetchApi || fetch)(fetchParams.url, fetchParams.init);
         } catch (e) {
             for (const middleware of this.middleware) {

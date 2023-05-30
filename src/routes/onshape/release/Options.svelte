@@ -63,11 +63,19 @@ How should the part be made, what steps should be followed?
     3.&nbsp;`);
 
     const handleSubmit = (e) => {
+        if (typeof qty !== "number") {
+            alert("Please enter a number for the quantity");
+            return;
+        }
+        if (mfgMethod == MfgMethods.Cots && !cotsLink) {
+            alert("Please enter a link where the part can be purchased");
+            return;
+        }
         //@todo do any validation here
         dispatch("submit", {
             part: selectedPart,
             qty: qty,
-            mfgMethod: mfgMethod?.value,
+            mfgMethod: mfgMethod?.label,
             machinesUsed: machinesUsed?.map((m) => m.label),
             printerUsed: printerUsed?.label,
             printerMaterialUsed: printerMaterialUsed?.label,
@@ -77,10 +85,10 @@ How should the part be made, what steps should be followed?
             notes: notes,
             subsystemName: subsystemName,
         } satisfies Omit<PartRelease, 'params'>)
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             setTimeout(() => {
                 resolve();
-            }, 10 * 1000); // units are miliseconds
+            }, 10 * 1000); // units are milliseconds
         });
     }
 

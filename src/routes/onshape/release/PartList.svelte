@@ -44,7 +44,7 @@ Here is a list of parts that can be released to manufacturing:
     {#each parts as p}
         {@const obj = fixType(parts, p)}
         <tr>
-            <td><span title={obj.part}>{obj.part.name}</span></td>
+            <td><span title="{obj.part.id} - {obj.part.partId}">{obj.part.name}</span></td>
             <td>
                 {#if obj.state === PartReleaseState.NeverReleased}
                     <button class="btn btn-info btn-sm" on:click={handleReleaseClick(obj.part)} type="button">
