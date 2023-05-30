@@ -242,8 +242,6 @@ Released By: ${currentUser.name}`,
         console.log("No subsystem name")
     }
 
-    console.log("mfgMethod", data.mfgMethod);
-
     if (data.mfgMethod == MfgMethods.Machined) {
         // attach step file
         console.log("create webhook");
@@ -253,81 +251,94 @@ Released By: ${currentUser.name}`,
         console.log("tokenInfo", tokenInfo);
 
         const webhookData = {
-            cardId: "",
+            cardId: card.id,
             tokenInfo: tokenInfo,
         } satisfies WebhookUserData
         const wh = await Onshape.WebhookApi.createWebhook({
-            // "clientId": "string",
-            // "companyId": "string",
-            // "id": "string",
-            "data": JSON.stringify(webhookData), // data that can be used ot identify webhook
-            "description": "string", // message that is retrieved when webhooks are listed
-            "documentId": "string",
-            // "externalSessionId": "string", // is this for client apps?
-            "events": [
-                "onshape.model.translation.complete"
-            ],
-            // "filter": "string", // what are th syntax options?
-            // "isTransient": true, // what does this mean?
-            // "linkDocumentId": "string", // when does this need to be provided?
-            "options": {
-                "collapseEvents": true
-            },
-            "url": "https://parts.team4909.org/api/onshape/webhook", // where to callback to
-            // "projectId": "string", // does this have to do with release projects?
-            // "userId": "string", // does this matter?
-            // "versionId": "string", // how are these fiferent than a filter?
-            // "workspaceId": "string"
-            // "elementId": "string",
-            // "partId": "string",
-            // "folderId": "string",
-        } as any);
-
-
-        console.log("request translation");
-        const did = data.params.did;
-        const wvm = data.params.wv as any;
-        const wvmid = data.params.wvid;
-        const res = await Onshape.request.raw({
-            path: `/documents/d/${did}/${wvm}/${wvmid}/translate`,
-            method: "POST",
-            body: {
-                "elementId": data.params.eid,
-                "elementIds": null,
-                "formatName": "STEP",
-                "flattenAssemblies": false,
-                "yAxisIsUp": false,
-                "triggerAutoDownload": false, //was true, but I think that this adds to the onshape notification queue
-                "storeInDocument": false,
-                // "linkDocumentId": "da2bc7f409791a8720b27217",
-                // "linkDocumentWorkspaceId": "997b8fe669ef3a2ee893ee0e",
-                // "connectionId": "5m0D0blm",
-                "stepVersionString": "AP242",
-                "versionString": "",
-                "partIds": data.part.partId, //eg. JHG or comma separated
-                "includeExportIds": false,
-                "grouping": true, //what is this?
-                "ignoreExportRulesForContents": true,
-                // "destinationName": "Part Studio 1 - Part 1 - Main",
-                // "configuration": "List_QUDRhyBNPXwmGx=Default", //@todo
-                "cloudStorageAccountId": null,
-                "emailLink": false,
-                "emailTo": null,
-                "emailSubject": null,
-                "emailMessage": null,
-                "sendCopyToMe": null,
-                "passwordRequired": null,
-                "password": null,
-                "validForDays": null,
-                "fromUserId": null,
-                "useIgesCompatibilityMode": false
+            bTWebhookParams: {
+                // "clientId": "string",
+                // "companyId": "string",
+                // "id": "string",
+                "data": JSON.stringify(webhookData), // data that can be used ot identify webhook
+                "description": `Webhook for step file translation ${cardName}`, // message that is retrieved when webhooks are listed
+                "documentId": data.params.did,
+                // "externalSessionId": "string", // is this for client apps?
+                "events": [
+                    "onshape.model.translation.complete"
+                ],
+                // "filter": "string", // what are th syntax options?
+                // "isTransient": true, // what does this mean?
+                // "linkDocumentId": "string", // when does this need to be provided?
+                "options": {
+                    "collapseEvents": true
+                },
+                "url": "https://parts.team4909.org/api/onshape/webhook", // where to callback to
+                // "projectId": "string", // does this have to do with release projects?
+                // "userId": "string", // does this matter?
+                // "versionId": "string", // how are these different than a filter?
+                // "workspaceId": "string"
+                // "elementId": "string",
+                // "partId": "string",
+                // "folderId": "string",
             }
         });
-        const trans = await res.json() as unknown as {
-            skippedEmptyElements: boolean,
-            translationEventKey: string,
-            translationId: string
-        }
+        console.log("webhook created", wh);
+
+
+        console.log("-------------request translation\n\n");
+        const trans = await Onshape.PartStudioApi.createPartStudioTranslation({
+            did: data.params.did,
+            wv: data.params.wv,
+            wvid: data.params.wvid,
+            eid: data.params.eid,
+            bTTranslateFormatParams: {
+                formatName: "STEP",
+                storeInDocument: false,
+                partIds: data.part.partId,
+                // linkDocumentId
+                // _configuration
+            }
+        })
+        // const res = await Onshape.request.raw({
+        //     path: `/documents/d/${did}/${wvm}/${wvmid}/translate`,
+        //     method: "POST",
+        //     body: {
+        //         "elementId": data.params.eid,
+        //         "elementIds": null,
+        //         "formatName": "STEP",
+        //         "flattenAssemblies": false,
+        //         "yAxisIsUp": false,
+        //         "triggerAutoDownload": false, //was true, but I think that this adds to the onshape notification queue
+        //         "storeInDocument": false,
+        //         "linkDocumentId": "da2bc7f409791a8720b27217",
+        //         "linkDocumentWorkspaceId": "997b8fe669ef3a2ee893ee0e",
+        //         // "connectionId": "5m0D0blm",
+        //         "stepVersionString": "AP242",
+        //         "versionString": "",
+        //         "partIds": data.part.partId, //eg. JHG or comma separated
+        //         "includeExportIds": false,
+        //         "grouping": true, //what is this?
+        //         "ignoreExportRulesForContents": true,
+        //         "destinationName": "Part Studio 1 - Part 1 - Main",
+        //         "configuration": "List_QUDRhyBNPXwmGx=Default", //@todo
+        //         "cloudStorageAccountId": null,
+        //         "emailLink": false,
+        //         "emailTo": null,
+        //         "emailSubject": null,
+        //         "emailMessage": null,
+        //         "sendCopyToMe": null,
+        //         "passwordRequired": null,
+        //         "password": null,
+        //         "validForDays": null,
+        //         "fromUserId": null,
+        //         "useIgesCompatibilityMode": false
+        //     }
+        // });
+        // const trans = await res.json() as unknown as {
+        //     skippedEmptyElements: boolean,
+        //     translationEventKey: string,
+        //     translationId: string
+        // }
         console.log("translation response", trans)
     } else if (data.mfgMethod == MfgMethods.Printed) {
         // attach stl file

@@ -133,6 +133,7 @@ class Raw extends runtime.BaseAPI {
                 //sorry can't help you
                 throw e;
             }
+            console.log("Got redirect to " + redirLocation);
 
             return await fetch(redirLocation, {
                 method: "GET",
