@@ -32,7 +32,7 @@ export const actions = {
             let path = `/${data.resource}/d/${data.did}/${data.wvm}/${data.wvmid}/e/${data.eid}`;
             if (data.subresource) path += `/${data.subresource}`
 
-            const res = await Onshape.request.rawRequest({
+            const res = await Onshape.request.raw({
                 method: "GET",
                 path: path,
             })
@@ -49,6 +49,14 @@ export const actions = {
         console.log("test");
 
         const Onshape = await getOnshapeClientFromCookies(cookies, cookieName);
+
+        // const res = await Onshape.request.raw({
+        //     method: "GET",
+        //     path: "/partstudios/d/da2bc7f409791a8720b27217/v/e6dfc5a88fdafa4560bfa609/e/dfc0766722250803423263f8/stl",
+        // }, {
+        //     redirect: "manual",
+        // });
+        // console.log("res", res);
 
         const res = await Onshape.request.exportPartStudioStl({
             did: "da2bc7f409791a8720b27217",

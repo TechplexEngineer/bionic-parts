@@ -130,7 +130,7 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
             const thumbnailLinkPath = "/thumbnails" + thumbnailLink.split("/thumbnails")[1];
 
             // get the thumbnail
-            const res = await Onshape.request.rawRequest({
+            const res = await Onshape.request.raw({
                 method: "GET",
                 path: thumbnailLinkPath,
                 initOverrides: {
@@ -288,7 +288,7 @@ Released By: ${currentUser.name}`,
         const did = data.params.did;
         const wvm = data.params.wv as any;
         const wvmid = data.params.wvid;
-        const res = await Onshape.request.rawRequest({
+        const res = await Onshape.request.raw({
             path: `/documents/d/${did}/${wvm}/${wvmid}/translate`,
             method: "POST",
             body: {
