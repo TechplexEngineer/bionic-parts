@@ -12,11 +12,12 @@ import trelloClient, {
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {Oauth} from "$lib/OnshapeAPI";
+import {GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
 import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {MfgMethods, Printers, PrusaPrinterMaterials} from "./options";
 import type {WebhookUserData} from "../../api/onshape/webhook/webhookUserData";
+import {getPartState} from "./partState";
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -78,16 +79,19 @@ export const load = (async (event) => {
 
     const Onshape = await getOnshapeClientFromCookies(event.cookies, cookieName);
 
-    const partInDoc = await Onshape.PartApi.getPartsWMVE({
-        ...searchParams,
+    const getPartsParams: GetPartsWMVERequest = {
+        did: searchParams.did,
         wvm: searchParams.wv,
         wvmid: searchParams.wvid,
         eid: searchParams.eid,
-        withThumbnails: true,
-        _configuration: searchParams.cfg, //@todo
-    });
+        withThumbnails: true
+    };
+    if (searchParams.cfg && searchParams.cfg !== "{$configuration}") {
+        getPartsParams._configuration = searchParams.cfg;
+    }
+    const partInDoc = await Onshape.PartApi.getPartsWMVE(getPartsParams);
     const pageParts = partInDoc.map((p) => ({
-        part: p, state: PartReleaseState.NeverReleased
+        part: p, state: PartReleaseState.NeverReleased //await getPartState(p)
     }));
 
     const tab = await Onshape.MetadataApi.getWMVEMetadata({
@@ -174,7 +178,7 @@ Tab Name: ${tabName}
 Release Date: ${getNiceDate()}
 Released By: ${currentUser.name}
 Version: ${version.name}
-${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}}`,
+${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         idList: backlogListId_2024,
         pos: "top",
     });
