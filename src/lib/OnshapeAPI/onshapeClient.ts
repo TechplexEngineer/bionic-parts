@@ -127,7 +127,7 @@ class Raw extends runtime.BaseAPI {
                 }
             });
         } catch (e: any) {
-            console.log("Got error " + e);
+            console.log("Got error ", e);
             const redirRes: Response = e.response;
             const redirLocation = redirRes.headers.get("location");
             if (redirRes.status !== 307 || !redirLocation) {
