@@ -120,7 +120,6 @@ class Raw extends runtime.BaseAPI {
         try {
             //we expect this to always generate a redirect
             await psapi.exportPartStudioStlRaw(requestParameters, {
-                credentials: "include",
                 redirect: "manual",
                 headers: {
                     "Accept": "application/vnd.onshape.v1+octet-stream"
