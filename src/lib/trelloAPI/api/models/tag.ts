@@ -1,6 +1,6 @@
-import { TrelloID } from './trelloID';
+import type {TrelloID} from './trelloID';
 
 export interface Tag {
-  id?: TrelloID;
-  name?: string;
+    id?: TrelloID;
+    name?: string;
 }

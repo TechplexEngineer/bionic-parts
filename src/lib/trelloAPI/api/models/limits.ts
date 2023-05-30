@@ -1,7 +1,7 @@
-import { LimitsObject } from './limitsObject';
+import type {LimitsObject} from './limitsObject';
 
 export interface Limits {
-  attachments?: {
-    perBoard?: LimitsObject;
-  };
+    attachments?: {
+        perBoard?: LimitsObject;
+    };
 }

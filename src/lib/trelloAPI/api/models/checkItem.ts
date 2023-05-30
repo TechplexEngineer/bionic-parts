@@ -1,10 +1,10 @@
-import { TrelloID } from './trelloID';
+import type {TrelloID} from './trelloID';
 
 export interface CheckItem {
-  idChecklist?: TrelloID;
-  state?: string;
-  id?: TrelloID;
-  name?: string;
-  nameData?: string;
-  pos?: string;
+    idChecklist?: TrelloID;
+    state?: string;
+    id?: TrelloID;
+    name?: string;
+    nameData?: string;
+    pos?: string;
 }

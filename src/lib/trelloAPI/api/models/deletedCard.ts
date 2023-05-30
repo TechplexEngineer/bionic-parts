@@ -1,5 +1,5 @@
-import { Limits } from './limits';
+import type {Limits} from './limits';
 
 export interface DeletedCard {
-  limits: Limits;
+    limits: Limits;
 }

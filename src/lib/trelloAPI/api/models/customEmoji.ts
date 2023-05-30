@@ -1,7 +1,7 @@
-import { TrelloID } from './trelloID';
+import type {TrelloID} from './trelloID';
 
 export interface CustomEmoji {
-  id?: TrelloID;
-  url?: string;
-  name?: string;
+    id?: TrelloID;
+    url?: string;
+    name?: string;
 }

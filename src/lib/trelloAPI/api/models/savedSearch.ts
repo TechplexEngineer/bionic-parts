@@ -1,8 +1,8 @@
-import { TrelloID } from './trelloID';
+import type {TrelloID} from './trelloID';
 
 export interface SavedSearch {
-  id?: TrelloID;
-  name?: string;
-  query?: string;
-  pos?: string | number;
+    id?: TrelloID;
+    name?: string;
+    query?: string;
+    pos?: string | number;
 }
