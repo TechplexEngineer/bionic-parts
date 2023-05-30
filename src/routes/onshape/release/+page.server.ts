@@ -12,7 +12,6 @@ import trelloClient, {
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import type {ExportStlRequest} from "$lib/OnshapeAPI";
 import {Oauth} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
 import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
