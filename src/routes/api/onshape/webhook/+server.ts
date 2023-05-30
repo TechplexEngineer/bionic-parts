@@ -76,8 +76,13 @@ export const POST = (async (event) => {
                 id: event.cardId,
                 file: file,
                 name: `${translation.name}.step`
-            })
-            // @todo delete webhook, could return an error which would remove the webhook
+            });
+
+            if (body.webhookId) {
+                await Onshape.WebhookApi.unregisterWebhook({webhookid: body.webhookId})
+            } else {
+                console.log("no webhook id to unregister")
+            }
         }
     } catch (e) {
         console.log("Error processing webhook", e, body)
