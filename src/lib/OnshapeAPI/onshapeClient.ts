@@ -86,7 +86,7 @@ export class OnshapeClient extends BaseClient {
 }
 
 class Raw extends runtime.BaseAPI {
-    public async rawRequest(params: {
+    public async raw(params: {
         method: HTTPMethod,
         path: string,
         queryParameters?: { [key: string]: any },
