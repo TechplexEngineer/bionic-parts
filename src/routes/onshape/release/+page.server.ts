@@ -164,13 +164,18 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     const card = await trelloClient.cards.createCard({
         name: cardName,
         desc: `Part Number: ${data.part.partNumber || "unset"}
+${data.printerUsed ? `Printer Used: ${data.printerUsed}` : ""}
+${data.printerMaterialUsed ? `Material Used: ${data.printerMaterialUsed}` : ""}
+${data.machinesUsed ? `Machines Used: ${data.machinesUsed.join(", ")}` : ""}
 
 ${data.notes}
 
 Document Name: ${doc.name}
 Tab Name: ${tabName}
 Release Date: ${getNiceDate()}
-Released By: ${currentUser.name}`,
+Released By: ${currentUser.name}
+Version: ${version.name}
+${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}}`,
         idList: backlogListId_2024,
         pos: "top",
     });
@@ -310,16 +315,6 @@ Released By: ${currentUser.name}`,
     } else if (data.mfgMethod == MfgMethods.Printed) {
         // attach stl file
         console.log("attach stl file");
-
-        // setup webhook
-        // request translation
-        // const res = await Onshape.PartApi.exportStlRaw({
-        //     did: data.params.did,
-        //     wvm: data.params.wv,
-        //     wvmid: data.params.wvid,
-        //     eid: data.params.eid,
-        //     partid: data.part.id!
-        // } satisfies ExportStlRequest)
 
         const res = await Onshape.request.exportPartStudioStl({
             did: "da2bc7f409791a8720b27217",
