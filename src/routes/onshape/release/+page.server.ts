@@ -2,7 +2,13 @@ import type {Action, Actions, PageServerLoad} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
-import trelloClient, {backlogListId_2024, boardId_2024, memberId_blake, validLabelColors} from "$lib/trello";
+import trelloClient, {
+    backlogListId_2024,
+    boardId_2024,
+    memberId_blake,
+    memberId_chrisj, memberId_scott,
+    validLabelColors
+} from "$lib/trello";
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
@@ -299,46 +305,7 @@ Released By: ${currentUser.name}`,
                 // _configuration
             }
         })
-        // const res = await Onshape.request.raw({
-        //     path: `/documents/d/${did}/${wvm}/${wvmid}/translate`,
-        //     method: "POST",
-        //     body: {
-        //         "elementId": data.params.eid,
-        //         "elementIds": null,
-        //         "formatName": "STEP",
-        //         "flattenAssemblies": false,
-        //         "yAxisIsUp": false,
-        //         "triggerAutoDownload": false, //was true, but I think that this adds to the onshape notification queue
-        //         "storeInDocument": false,
-        //         "linkDocumentId": "da2bc7f409791a8720b27217",
-        //         "linkDocumentWorkspaceId": "997b8fe669ef3a2ee893ee0e",
-        //         // "connectionId": "5m0D0blm",
-        //         "stepVersionString": "AP242",
-        //         "versionString": "",
-        //         "partIds": data.part.partId, //eg. JHG or comma separated
-        //         "includeExportIds": false,
-        //         "grouping": true, //what is this?
-        //         "ignoreExportRulesForContents": true,
-        //         "destinationName": "Part Studio 1 - Part 1 - Main",
-        //         "configuration": "List_QUDRhyBNPXwmGx=Default", //@todo
-        //         "cloudStorageAccountId": null,
-        //         "emailLink": false,
-        //         "emailTo": null,
-        //         "emailSubject": null,
-        //         "emailMessage": null,
-        //         "sendCopyToMe": null,
-        //         "passwordRequired": null,
-        //         "password": null,
-        //         "validForDays": null,
-        //         "fromUserId": null,
-        //         "useIgesCompatibilityMode": false
-        //     }
-        // });
-        // const trans = await res.json() as unknown as {
-        //     skippedEmptyElements: boolean,
-        //     translationEventKey: string,
-        //     translationId: string
-        // }
+
         console.log("translation response", trans)
     } else if (data.mfgMethod == MfgMethods.Printed) {
         // attach stl file
@@ -369,32 +336,19 @@ Released By: ${currentUser.name}`,
             name: `${cardName}.stl`
         })
 
-        // hopefully we don't need this
-        // https://cad.onshape.com/api/documents/d/da2bc7f409791a8720b27217/v/e6dfc5a88fdafa4560bfa609/e/dfc0766722250803423263f8/export
-        // {
-        //     "format": "STL",
-        //     "microversion": "96995ebabae27bdbaebed96d",
-        //     "destinationName": "#2023-05-29 14:11:56#QUANTITY#Part Release Testing#V5 Set Material on Part 1##Part 1#",
-        //     "mode": "binary",
-        //     "scale": "1.0",
-        //     "resolution": "fine",
-        //     "units": "millimeter",
-        //     "grouping": "true",
-        //     "angleTolerance": "0.04363323129985824",
-        //     "chordTolerance": "0.06",
-        //     "minFacetWidth": "0.0254",
-        //     "triggerAutoDownload": "true",
-        //     "storeInDocument": "false",
-        //     "linkDocumentId": "da2bc7f409791a8720b27217",
-        //     "linkDocumentWorkspaceId": "17fb1ce669b69e4be4639e4c",
-        //     "configuration": "List_QUDRhyBNPXwmGx=Default",
-        //     "partIds": "JHD"
-        // }
         if (data.printerUsed == Printers.FormLabs) {
             // tag chris
+            await trelloClient.cards.addCardMember({
+                id: card.id,
+                value: memberId_chrisj
+            })
         }
         if (data.printerUsed == Printers.Prusa && data.printerMaterialUsed == PrusaPrinterMaterials.NylonX) {
             // tag scott
+            await trelloClient.cards.addCardMember({
+                id: card.id,
+                value: memberId_scott
+            })
         }
 
     }
