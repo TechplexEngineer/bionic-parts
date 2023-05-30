@@ -58,7 +58,8 @@ export const POST = (async (event) => {
             // @todo delete webhook
         }
     } catch (e) {
-        console.log("Expected event data to be json. got:", body.data)
+        console.log("Error processing webhook", e, body)
+        // console.log("Expected event data to be json. got:", body.data)
     }
     return new Response();
 
