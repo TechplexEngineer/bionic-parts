@@ -320,10 +320,10 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         console.log("attach stl file");
 
         const res = await Onshape.request.exportPartStudioStl({
-            did: "da2bc7f409791a8720b27217",
+            did: data.params.did,
             wvm: "v",
-            wvmid: "e6dfc5a88fdafa4560bfa609",
-            eid: "dfc0766722250803423263f8",
+            wvmid: data.params.wvid,
+            eid: data.params.eid,
             units: "millimeter", // @todo if you put MILLIMETER you get an invalid stl file, should get an error
         }, await getOauthTokenFromCookie(cookies, cookieName)!);
 
