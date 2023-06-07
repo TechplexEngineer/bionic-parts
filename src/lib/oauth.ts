@@ -1,5 +1,6 @@
 import type {Cookies} from "@sveltejs/kit";
 
+
 export interface Oauth2Token {
     access_token: string;
     token_type: string; //"bearer",
