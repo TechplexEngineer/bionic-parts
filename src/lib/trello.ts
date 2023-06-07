@@ -44,7 +44,7 @@ function hash_function(base_string: string, secretKey: string) {
     let result;
     func().then(r => result = r);
     while (result === undefined) {// Wait result from async_function
-        for (let i = 0; i < 10e7; i++) {
+        for (let i = 0; i < 10e7; i++) { //10e7 about 30ms
         } // Do nothing (just wait
     }
     return result;
