@@ -2,6 +2,7 @@ import {TrelloClient} from "$lib/trelloAPI";
 import type {Card} from "$lib/trelloAPI/api/models";
 import type {Cookies} from "@sveltejs/kit";
 import {getOauthTokenFromCookie, Oauth2Token, setOauthTokenInCookie} from "$lib/oauth";
+import OAuth from "oauth-1.0a";
 
 
 const key = import.meta.env.VITE_TRELLO_KEY;
@@ -30,6 +31,31 @@ export const memberId_scott = "58befa0d3fe5a5bea520ad7f";
 export const trelloCookieName = "parts_trello_sessionid";
 
 export const trelloAuthorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
+
+// function takes a base_string and key and uses web crypto to return a hash
+function hash_function(base_string: string, secretKey: string) {
+    const func = async () => {
+        const enc = new TextEncoder(/*"utf-8"*/);
+        const algorithm = {name: "HMAC", hash: "SHA-256"};
+        const cryptoKey = await crypto.subtle.importKey("raw", enc.encode(secretKey), algorithm, false, ["sign", "verify"]);
+        return await crypto.subtle.sign("HMAC", cryptoKey, enc.encode(base_string))
+    }
+
+    let result;
+    func().then(r => result = r);
+    while (result === undefined) {// Wait result from async_function
+        for (let i = 0; i < 10e7; i++) {
+        } // Do nothing (just wait
+    }
+    return result;
+}
+
+const oauth = new OAuth({
+    consumer: {key: '<your consumer key>', secret: '<your consumer secret>'},
+    signature_method: 'HMAC-SHA1',
+    hash_function,
+})
+
 //
 // const doTokenRefresh = async (refresh_token: string) => {
 //     const clientId = import.meta.env.VITE_;
