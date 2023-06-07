@@ -23,6 +23,6 @@ const partHasChanged = (currentRev: BTPartMetadataInfo, releasedPart: BTPartMeta
     }
     return false
 }
-const getLatestReleasedVersion = (part: BTPartMetadataInfo) => {
-    return 0
+const getLatestReleasedVersion = (part: BTPartMetadataInfo): BTPartMetadataInfo => {
+    return {} as BTPartMetadataInfo
 }

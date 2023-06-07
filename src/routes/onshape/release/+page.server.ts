@@ -6,18 +6,18 @@ import trelloClient, {
     backlogListId_2024,
     boardId_2024,
     memberId_blake,
-    memberId_chrisj, memberId_scott,
+    memberId_chrisj, memberId_scott, trelloAuthorizeURL, trelloCookieName,
     validLabelColors
 } from "$lib/trello";
 import type {PartRelease} from "./PartRelease";
 import {base64, getNiceDate, ordinalSuffixOf} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
+import {Oauth} from "$lib/OnshapeAPI";
+import type {GetPartsWMVERequest} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
-import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
+import {onshapeCookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {MfgMethods, Printers, PrusaPrinterMaterials} from "./options";
 import type {WebhookUserData} from "../../api/onshape/webhook/webhookUserData";
-import {getPartState} from "./partState";
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -36,14 +36,25 @@ const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams
         cfg: objParams.cfg,
     };
 }
-const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
-if (!redirectUrl) {
+const onshapeRedirectUri = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
+if (!onshapeRedirectUri) {
     throw new Error("No VITE_ONSHAPE_OAUTH_REDIRECT_URI set");
 }
 const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
 if (!clientId) {
     throw new Error("No VITE_ONSHAPE_OAUTH_CLIENT_ID set");
 }
+
+const trelloRedirectUrl = import.meta.env.VITE_TRELLO_OAUTH_REDIRECT_URI
+if (!trelloRedirectUrl) {
+    throw new Error("No VITE_TRELLO_OAUTH_REDIRECT_URI set");
+}
+
+const trelloAPIKey = import.meta.env.VITE_TRELLO_KEY;
+if (!trelloAPIKey) {
+    throw new Error('Missing VITE_TRELLO_KEY api key');
+}
+
 
 export const load = (async (event) => {
     const searchParams = normalizeSearchParams(event.url.searchParams);
@@ -65,19 +76,47 @@ export const load = (async (event) => {
     }
 
 
-    // check if the user is logged in
+    // check if the user is logged in to onshape
     // if not, send them to onshape to authenticate
-    if (!await hasInitialToken(event.cookies, cookieName)) {
+    // would be nice to store the user token in a session store that isn't a cookie so team members don't have to reauth each meeting
+    // since the lab computers will remove the cookies
+    if (!await hasInitialToken(event.cookies, onshapeCookieName)) {
         const authUrl = Oauth.buildAuthorizeUrl({
             clientId: clientId,
-            redirectUrl: redirectUrl,
+            redirectUrl: onshapeRedirectUri,
             state: base64(JSON.stringify({searchParams, action: "release"} satisfies OauthStateData)),
             companyId: searchParams.companyId
         })
         throw redirect(307, authUrl.toString());
     }
 
-    const Onshape = await getOnshapeClientFromCookies(event.cookies, cookieName);
+    const token = getOauthTokenFromCookie(event.cookies, trelloCookieName);
+    if (!token) {
+        console.log("No trello token found in cookie, doing login");
+
+        const authUrl = new URL(trelloAuthorizeURL);
+
+        //doc: https://developer.atlassian.com/cloud/trello/guides/rest-api/authorization/
+        // const authUrl = new URL("https://trello.com/1/authorize"); // authorize for apikey, vs trelloAuthorizeURL for oauth1.0
+        authUrl.searchParams.append("return_url", trelloRedirectUrl);
+        authUrl.searchParams.append("callback_method", "fragment");
+        authUrl.searchParams.append("scope", "read,write"); //read,write,account
+        authUrl.searchParams.append("expiration", "1day"); // 1hour, 1day, 30days, never
+        authUrl.searchParams.append("name", "Bionic Parts");
+        authUrl.searchParams.append("key", trelloAPIKey);
+        authUrl.searchParams.append("response_type", "token"); // token, fragment
+
+        throw redirect(307, authUrl.toString());
+
+    } else {
+        // refresh
+    }
+
+    // check if the user is logged in to trello
+    // if (!await hasInitialToken(event.cookies, trelloCookieName)) {
+
+
+    const Onshape = await getOnshapeClientFromCookies(event.cookies, onshapeCookieName);
 
     const getPartsParams: GetPartsWMVERequest = {
         did: searchParams.did,
@@ -125,7 +164,7 @@ const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
     // console.log("data", data);
     //@todo validate data
 
-    const Onshape = await getOnshapeClientFromCookies(cookies, cookieName);
+    const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
 
     const currentUser = await Onshape.UserApi.sessionInfo();
 
@@ -261,7 +300,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         console.log("create webhook");
 
         // this is safe because we should error out above if the cookie is missing
-        const tokenInfo = getOauthTokenFromCookie(cookies, cookieName)!;
+        const tokenInfo = getOauthTokenFromCookie(cookies, onshapeCookieName)!;
         console.log("tokenInfo", tokenInfo);
 
         const webhookData = {
@@ -325,7 +364,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             wvmid: data.params.wvid,
             eid: data.params.eid,
             units: "millimeter", // @todo if you put MILLIMETER you get an invalid stl file, should get an error
-        }, await getOauthTokenFromCookie(cookies, cookieName)!);
+        }, await getOauthTokenFromCookie(cookies, onshapeCookieName)!);
 
 
         await trelloClient.cards.createCardAttachment({

@@ -1,5 +1,7 @@
 import {TrelloClient} from "$lib/trelloAPI";
 import type {Card} from "$lib/trelloAPI/api/models";
+import type {Cookies} from "@sveltejs/kit";
+import {getOauthTokenFromCookie, Oauth2Token, setOauthTokenInCookie} from "$lib/oauth";
 
 
 const key = import.meta.env.VITE_TRELLO_KEY;
@@ -24,6 +26,49 @@ export const boardId_2024 = "6468e2101517f18d3231250f";
 export const memberId_blake = "4fbe441a74cbfcae72246f58";
 export const memberId_chrisj = "63c9bb3c250d34001593b602";
 export const memberId_scott = "58befa0d3fe5a5bea520ad7f";
+
+export const trelloCookieName = "parts_trello_sessionid";
+
+export const trelloAuthorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
+//
+// const doTokenRefresh = async (refresh_token: string) => {
+//     const clientId = import.meta.env.VITE_;
+//     if (!clientId) {
+//         throw new Error("No Onshape oauth client id set");
+//     }
+//
+//     const authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
+//
+//     `${authorizeURL}?oauth_token=${token}&name=${appName}&scope=${scope}&expiration=${expiration}`
+//
+//
+//     const res = await Oauth.token({
+//         grantType: "refresh_token",
+//         refreshToken: refresh_token,
+//         clientId: clientId,
+//         clientSecret: clientSecret,
+//         redirectUrl: redirectUrl,
+//     });
+//     return res;
+// }
+
+export const hasInitialToken = async (cookies: Cookies, cookieName: string) => {
+    const token = getOauthTokenFromCookie(cookies, cookieName);
+    if (!token) {
+        console.log("No trello token found in cookie");
+        return false;
+    }
+    try {
+        const res = await doTokenRefresh(token.refresh_token)
+        const tokenResponse = await res.json() as unknown as Oauth2Token;
+        setOauthTokenInCookie(cookies, cookieName, tokenResponse);
+    } catch (e) {
+        console.log("Error refreshing token", e);
+        return false;
+    }
+    return true;
+
+}
 
 export const validLabelColors = [
     "green",

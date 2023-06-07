@@ -1,6 +1,6 @@
 import {fail} from '@sveltejs/kit';
 import type {PageServerLoad, Actions} from './$types';
-import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies} from "$lib/onshape";
+import {onshapeCookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies} from "$lib/onshape";
 
 export const load = (() => {
     return {};
@@ -25,7 +25,7 @@ export const actions = {
         const formData = await request.formData();
         const data = Object.fromEntries(formData) as unknown as runQueryData;
 
-        const Onshape = await getOnshapeClientFromCookies(cookies, cookieName)
+        const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName)
 
         if (data.httpMethod == "get") {
 
@@ -48,7 +48,7 @@ export const actions = {
     test: async ({cookies}) => {
         console.log("test");
 
-        const Onshape = await getOnshapeClientFromCookies(cookies, cookieName);
+        const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
 
         // const res = await Onshape.request.raw({
         //     method: "GET",
@@ -63,7 +63,7 @@ export const actions = {
             wvm: "v",
             wvmid: "e6dfc5a88fdafa4560bfa609",
             eid: "dfc0766722250803423263f8"
-        }, await getOauthTokenFromCookie(cookies, cookieName)!);
+        }, await getOauthTokenFromCookie(cookies, onshapeCookieName)!);
 
         console.log(await res.blob());
 

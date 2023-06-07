@@ -1,4 +1,7 @@
 import type {Cookies} from "@sveltejs/kit";
+import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
+import type {Oauth2Token} from "$lib/oauth";
+import {setOauthTokenInCookie} from "$lib/oauth";
 
 export const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
 if (!clientId) {
@@ -19,14 +22,7 @@ export interface OauthStateData {
 }
 
 
-import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
-import APIKeyAuthMiddleware from "$lib/OnshapeAPI/authMiddleware";
-
-// export const OnshapeAPIKeyClient = new OnshapeClient(new Configuration({
-// 	middleware: [APIKeyAuthMiddleware(secretKey, accessKey)]
-// }))
-
-export const cookieName = "sessionid";
+export const onshapeCookieName = "parts_onshape_sessionid";
 
 const doTokenRefresh = async (refresh_token: string) => {
     const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
@@ -55,7 +51,7 @@ const doTokenRefresh = async (refresh_token: string) => {
 export const hasInitialToken = async (cookies: Cookies, cookieName: string) => {
     const token = getOauthTokenFromCookie(cookies, cookieName);
     if (!token) {
-        console.log("No token found in cookie");
+        console.log("No onshape token found in cookie");
         return false;
     }
     try {
@@ -68,42 +64,6 @@ export const hasInitialToken = async (cookies: Cookies, cookieName: string) => {
     }
     return true;
 
-}
-
-export interface Oauth2Token {
-    access_token: string;
-    token_type: string; //"bearer",
-    refresh_token: string;
-    expires_in: number; //253,
-    scope: string //"OAuth2ReadPII OAuth2Read"
-    expiryTimestamp?: number; // 1685069016155
-}
-
-export const getOauthTokenFromCookie = (cookies: Cookies, cookieName: string) => {
-    const rawTokenInfo = cookies.get(cookieName);
-    const isLoggedIn = !!rawTokenInfo;
-    if (!isLoggedIn) {
-        return null;
-    }
-    const tokenInfo: Oauth2Token = JSON.parse(rawTokenInfo);
-    return tokenInfo;
-}
-
-export const setOauthTokenInCookie = (cookies: Cookies, cookieName: string, tokenInfo: Oauth2Token) => {
-    if (typeof tokenInfo.refresh_token !== "string") {
-        throw new Error("Invalid tokenInfo.refresh_token");
-    }
-
-    const expiryTimestamp = Date.now() + (.75 * tokenInfo.expires_in) * 1000
-    const cookieValue = JSON.stringify({
-        ...tokenInfo,
-        expiryTimestamp
-    });
-    cookies.set(cookieName, cookieValue, {
-        path: "/",
-        secure: true, // needed for dev (and prod?)
-        sameSite: "none", // needed for dev (and prod?)
-    })
 }
 
 export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?: (token: Oauth2Token) => void) => {
