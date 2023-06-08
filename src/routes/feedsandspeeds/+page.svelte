@@ -2,6 +2,10 @@
 
     import type {MachiningParams} from "./machiningParams";
     import Results from "./Results.svelte";
+    import DiameterModal from "./modals/DiameterModal.svelte";
+    import FlutesModal from "./modals/FlutesModal.svelte";
+    import SurfaceSpeedModal from "./modals/SurfaceSpeedModal.svelte";
+    import ChipLoadModal from "./modals/ChipLoadModal.svelte";
 
     const calcMachiningPrams = ({toolDiameterIn, surfaceSpeedFPM, chipLoadIPT, numFlutes}: {
         toolDiameterIn: number,
@@ -29,6 +33,12 @@
     let numFlutes;
     let surfaceSpeedFPM;
     let chipLoadIPT;
+
+    let diameterModalOpen = false;
+    let flutesModalOpen = false;
+    let surfaceSpeedModalOpen = false;
+    let chipLoadModalOpen = false;
+
 </script>
 
 <div class="container">
@@ -46,8 +56,9 @@
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => toolDiameterIn=.25}>.25"
                     </button>
-                    <div class="btn btn-outline-primary">Details</div>
+                    <div class="btn btn-outline-primary" on:click={() => diameterModalOpen=true}>Details</div>
                 </div>
+                <DiameterModal bind:isOpen={diameterModalOpen}/>
             </div>
 
             <div class="mb-3">
@@ -58,7 +69,8 @@
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=2}>2</button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=3}>3</button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=4}>4</button>
-                    <div class="btn btn-outline-primary">Details</div>
+                    <div class="btn btn-outline-primary" on:click={() => flutesModalOpen=true}>Details</div>
+                    <FlutesModal bind:isOpen={flutesModalOpen}/>
                 </div>
             </div>
 
@@ -72,7 +84,8 @@
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=400}>400
                     </button>
-                    <div class="btn btn-outline-primary">Details</div>
+                    <div class="btn btn-outline-primary" on:click={() => surfaceSpeedModalOpen=true}>Details</div>
+                    <SurfaceSpeedModal bind:isOpen={surfaceSpeedModalOpen}/>
                 </div>
             </div>
 
@@ -88,7 +101,8 @@
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.005}>.005
                     </button>
-                    <div class="btn btn-outline-primary">Details</div>
+                    <div class="btn btn-outline-primary" on:click={() => chipLoadModalOpen=true}>Details</div>
+                    <ChipLoadModal bind:isOpen={chipLoadModalOpen}/>
                 </div>
 
             </div>

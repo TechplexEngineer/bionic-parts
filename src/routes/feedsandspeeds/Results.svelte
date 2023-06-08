@@ -1,8 +1,14 @@
 <script lang="ts">
     import type {MachiningParams} from "./machiningParams";
+    import SpindleSpeedModal from "./modals/SpindleSpeedModal.svelte";
+    import FeedRateModal from "./modals/FeedRateModal.svelte";
+    import PlungeFeedRateModal from "./modals/PlungeFeedRateModal.svelte";
 
     export let machiningParams: MachiningParams;
 
+    let spindleSpeedModalOpen = false;
+    let feedRateModalOpen = false;
+    let plungeFeedRateModalOpen = false;
 
 </script>
 
@@ -18,7 +24,8 @@
             <td>{machiningParams.spindleSpeedRPM}</td>
             <td>(rpm)</td>
             <td>
-                <div class="btn btn-outline-primary">Details</div>
+                <div class="btn btn-outline-primary" on:click={() => {spindleSpeedModalOpen = true;}}>Details</div>
+                <SpindleSpeedModal bind:isOpen={spindleSpeedModalOpen}/>
             </td>
         </tr>
         <tr>
@@ -26,7 +33,8 @@
             <td>{machiningParams.feedRateIPM}</td>
             <td>(inches/min)</td>
             <td>
-                <div class="btn btn-outline-primary">Details</div>
+                <div class="btn btn-outline-primary" on:click={() => {feedRateModalOpen = true;}}>Details</div>
+                <FeedRateModal bind:isOpen={feedRateModalOpen}/>
             </td>
         </tr>
         <tr>
@@ -34,7 +42,8 @@
             <td>{machiningParams.plungeRateIPM}</td>
             <td>(inches/min)</td>
             <td>
-                <div class="btn btn-outline-primary">Details</div>
+                <div class="btn btn-outline-primary" on:click={() => {plungeFeedRateModalOpen = true;}}>Details</div>
+                <PlungeFeedRateModal bind:isOpen={plungeFeedRateModalOpen}/>
             </td>
         </tr>
         <tr>
