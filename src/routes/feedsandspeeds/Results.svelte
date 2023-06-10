@@ -3,12 +3,16 @@
     import SpindleSpeedModal from "./modals/SpindleSpeedModal.svelte";
     import FeedRateModal from "./modals/FeedRateModal.svelte";
     import PlungeFeedRateModal from "./modals/PlungeFeedRateModal.svelte";
+    import StepOverModal from "./modals/StepOverModal.svelte";
+    import StepDownModal from "./modals/StepDownModal.svelte";
 
     export let machiningParams: MachiningParams;
 
     let spindleSpeedModalOpen = false;
     let feedRateModalOpen = false;
     let plungeFeedRateModalOpen = false;
+    let stepOverModalOpen = false;
+    let stepDownModalOpen = false;
 
 </script>
 
@@ -47,19 +51,21 @@
             </td>
         </tr>
         <tr>
-            <th>Stepover</th>
+            <th>Step Over</th>
             <td>{machiningParams.stepOverIn}</td>
             <td>(inches)</td>
             <td>
-                <div class="btn btn-outline-primary">Details</div>
+                <div class="btn btn-outline-primary" on:click={() => {stepOverModalOpen = true;}}>Details</div>
+                <StepOverModal bind:isOpen={stepOverModalOpen}/>
             </td>
         </tr>
         <tr>
-            <th>Stepdown</th>
+            <th>Step Down</th>
             <td>{machiningParams.stepDownIn}</td>
             <td>(inches)</td>
             <td>
-                <div class="btn btn-outline-primary">Details</div>
+                <div class="btn btn-outline-primary" on:click={() => {stepDownModalOpen = true;}}>Details</div>
+                <StepDownModal bind:isOpen={stepDownModalOpen}/>
             </td>
         </tr>
         </tbody>

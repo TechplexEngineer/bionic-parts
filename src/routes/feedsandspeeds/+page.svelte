@@ -82,7 +82,11 @@
                     <input type="number" id="sfm" class="form-control" bind:value={surfaceSpeedFPM}>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=200}>200
                     </button>
+                    <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=300}>300
+                    </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=400}>400
+                    </button>
+                    <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=500}>500
                     </button>
                     <div class="btn btn-outline-primary" on:click={() => surfaceSpeedModalOpen=true}>Details</div>
                     <SurfaceSpeedModal bind:isOpen={surfaceSpeedModalOpen}/>
@@ -96,6 +100,8 @@
                     <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.001}>.001"
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.002}>.002"
+                    </button>
+                    <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.003}>.003"
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.004}>.004"
                     </button>
