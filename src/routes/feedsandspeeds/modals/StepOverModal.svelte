@@ -1,5 +1,7 @@
 <script>
     import Modal from "$lib/Modal.svelte";
+    import StepOver from "./Stepover.svg";
+
 
     export let isOpen = false;
 
@@ -7,13 +9,16 @@
 
 <Modal header="Step Over" bind:isOpen={isOpen}>
 
-    <p><code>Step Over</code> is how much new material to cut on each pass.</p>
+    <img src={StepOver} alt="Showing an end mill in a piece of stock with step over illustrated"
+         class="img-fluid float-end w-50">
+    <p><code>Step Over</code> is the offset distance between two tool path cuts.</p>
 
     <p>The calculator sets the step over as 45% of the tool diameter as standard however this can be changed depending
-        on the geometric strategy used for pocketing. The maximum value you can use is 50% when rastering a pocket
-        although we've found that 45% creates a better finish. When doing concentric outlines you are limited by the
-        most acute angle in the outline (if it is 90 degrees then any more than about 30% (there's an exact number for
-        this) will leave little uncut areas behind.</p>
+        on the geometric strategy used for pocketing. The maximum value you can use is 50% when milling a pocket. A
+        better finish can be achieved using a 45% step over.</p>
+
+    <p>See <a href="https://www.grzsoftware.com/blog/choose-stepover/" target="_blank">this article by GRZ Software</a>
+        for information on choosing a step over when using a ball end mill.</p>
 
 </Modal>
 
