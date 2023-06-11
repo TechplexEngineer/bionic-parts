@@ -70,8 +70,8 @@
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=3}>3</button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=4}>4</button>
                     <div class="btn btn-outline-primary" on:click={() => flutesModalOpen=true}>Details</div>
-                    <FlutesModal bind:isOpen={flutesModalOpen}/>
                 </div>
+                <FlutesModal bind:isOpen={flutesModalOpen}/>
             </div>
 
             <h2>Parameters</h2>
@@ -89,8 +89,8 @@
                     <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=500}>500
                     </button>
                     <div class="btn btn-outline-primary" on:click={() => surfaceSpeedModalOpen=true}>Details</div>
-                    <SurfaceSpeedModal bind:isOpen={surfaceSpeedModalOpen}/>
                 </div>
+                <SurfaceSpeedModal bind:isOpen={surfaceSpeedModalOpen}/>
             </div>
 
             <div class="mb-3">
@@ -108,8 +108,8 @@
                     <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.005}>.005
                     </button>
                     <div class="btn btn-outline-primary" on:click={() => chipLoadModalOpen=true}>Details</div>
-                    <ChipLoadModal bind:isOpen={chipLoadModalOpen}/>
                 </div>
+                <ChipLoadModal bind:isOpen={chipLoadModalOpen}/>
 
             </div>
 
