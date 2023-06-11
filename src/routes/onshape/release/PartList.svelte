@@ -10,6 +10,7 @@
     const dispatch = createEventDispatcher();
 
     export let parts: Part[];
+    export let tabName: string;
 
     const handleReleaseClick = (part: BTPartMetadataInfo) => {
         $page.url.searchParams
@@ -30,7 +31,13 @@
         }
     }
 </script>
-<h1>Part List</h1>
+<div class="d-flex justify-content-between">
+    <h1>Part List: <small>{tabName}</small></h1>
+
+    <div>
+        <a class="btn btn-outline-primary" href="@todo" target="_blank">Open Trello</a>
+    </div>
+</div>
 
 Here is a list of parts that can be released to manufacturing:
 <table class="table table-striped">
@@ -62,3 +69,10 @@ Here is a list of parts that can be released to manufacturing:
     {/each}
     </tbody>
 </table>
+
+<style>
+    a[target="_blank"]::after {
+        margin: 0 3px 0 5px;
+        content: "↗";
+    }
+</style>

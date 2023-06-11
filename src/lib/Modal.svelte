@@ -7,8 +7,7 @@
     export let backdrop = true;
 </script>
 
-<div class="modal fade" class:show={isOpen} class:d-block={isOpen} id="exampleModal" tabindex="-1"
-     aria-labelledby="exampleModalLabel"
+<div class="modal fade modal-lg" class:show={isOpen} class:d-block={isOpen} tabindex="-1"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -17,6 +17,20 @@ export const getNiceDate = () => {
     });
 }
 
+export const formDataToObject = (formData: FormData) => {
+    const json = Object.fromEntries(formData.entries());
+    return Object.entries(json).reduce((acc: Record<string, string | string[]>, [key, value]) => {
+        if (key.includes("[")) {
+            const [k, i] = key.split("[");
+            acc[k] = acc[k] || [];
+            acc[k][i.slice(0, -1)] = value;
+        } else {
+            acc[key] = value;
+        }
+        return acc;
+    }, {})
+}
+
 
 /**
  * Add the proper ordinal suffix to a number

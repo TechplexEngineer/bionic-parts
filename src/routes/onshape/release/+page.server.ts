@@ -114,6 +114,7 @@ export const load = (async (event) => {
 
     return {
         searchParams,
+        tabName,
         parts: pageParts,
         subsystemName: title3SubsystemName,
     }

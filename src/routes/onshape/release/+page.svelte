@@ -16,6 +16,8 @@
 
     export let data: PageData;
 
+    console.log("data", data);
+
     let errorMessage = null;
     $: errorMessage = ("error" in data) ? data.error : undefined
 
@@ -56,12 +58,13 @@
 
 
     {#if errorMessage}
-        <h1>Part Release</h1>
+        <h1>Part Release: <small>{data.tabName}</small></h1>
         <span class="text-danger">ERROR: {errorMessage}</span>
     {:else}
         {#if stage === Stages.partlist}
             <PartList
                     parts={data.parts}
+                    tabName={data.tabName}
                     on:release={handleReleaseClick}
                     on:rerelease={handleReReleaseClick}
             ></PartList>
