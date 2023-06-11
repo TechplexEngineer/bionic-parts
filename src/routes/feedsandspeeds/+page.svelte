@@ -41,10 +41,10 @@
 
 </script>
 
-<div class="container">
+<div class="container mt-4">
     <h1>Feeds and Speeds calculator</h1>
 
-    <div class="card">
+    <div class="card mt-4">
         <div class="card-body">
             <h2>Tool Geometry</h2>
 
