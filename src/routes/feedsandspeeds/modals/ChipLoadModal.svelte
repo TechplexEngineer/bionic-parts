@@ -1,6 +1,6 @@
 <script>
     import Modal from "$lib/Modal.svelte";
-    import ChipLoad from "./ToolDiameter.svg";
+    import ChipLoad from "./ChipLoad.svg";
     import ChipLoads from "../ChipLoads.svelte"; //@todo
 
     export let isOpen = false;
@@ -9,7 +9,7 @@
 
 <Modal header="Chip Load" bind:isOpen={isOpen}>
 
-    <!--    <img src={ChipLoad} alt="Tool Diameter" class="img-fluid float-end w-50">-->
+    <img src={ChipLoad} alt="Tool Diameter" class="img-fluid float-end w-50">
     <p><code>Chip load</code> per tooth is the appropriate amount of material that one cutting edge of the tool should
         remove in a single revolution. </p>
 
