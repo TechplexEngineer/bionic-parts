@@ -1,8 +1,7 @@
 <svelte:head>
-    <title>About</title>
-    <meta name="description" content="About this app"/>
+    <title>Part Release</title>
+    <meta name="description" content="Release parts from Onshape to Trello"/>
 </svelte:head>
-
 
 <script lang="ts">
     import type {PageData} from './$types';

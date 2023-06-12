@@ -1,7 +1,7 @@
 // Inspired by https://github.com/BuilderIO/qwik/issues/3345#issuecomment-1475385715
 import type {D1Database} from "@miniflare/d1";
 import {drizzle} from "drizzle-orm/d1";
-import {DrizzleD1Database} from "drizzle-orm/d1";
+import type {DrizzleD1Database} from "drizzle-orm/d1";
 import {migrate} from "drizzle-orm/d1/migrator";
 import {eq, sql} from "drizzle-orm";
 import type {ProjectModel} from "$lib/schema";

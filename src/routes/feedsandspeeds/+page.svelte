@@ -1,3 +1,8 @@
+<svelte:head>
+    <title>Feed and Speed calculator : Bionic Parts</title>
+    <meta name="description" content="Calc feeds and speeds for CNC machining operations"/>
+</svelte:head>
+
 <script lang="ts">
 
     import type {MachiningParams} from "./machiningParams";
