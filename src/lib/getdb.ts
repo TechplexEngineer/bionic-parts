@@ -1,8 +1,12 @@
 // Inspired by https://github.com/BuilderIO/qwik/issues/3345#issuecomment-1475385715
 import type {D1Database} from "@miniflare/d1";
 import {drizzle} from "drizzle-orm/d1";
-import type {DrizzleD1Database} from "drizzle-orm/d1";
+import {DrizzleD1Database} from "drizzle-orm/d1";
 import {migrate} from "drizzle-orm/d1/migrator";
+import {eq, sql} from "drizzle-orm";
+import type {ProjectModel} from "$lib/schema";
+import {projectSchema} from "$lib/schema";
+import {SQLiteSyncDialect} from "drizzle-orm/sqlite-core";
 
 let getDevDb = async (): Promise<any> => {
     // throw new Error("Not in a dev env, but attempted to access dev db");
@@ -47,5 +51,40 @@ const getDbFromPlatform = async (platform: App.Platform | undefined): Promise<Dr
 
     // return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
+
+export class DataLayer {
+    public readonly db: DrizzleD1Database;
+
+    constructor(db: DrizzleD1Database) {
+        this.db = db;
+    }
+
+    public async getProjectBySlug(slug: string): Promise<ProjectModel> {
+        return this.db.select()
+            .from(projectSchema)
+            .where(eq(projectSchema.slug, slug)).get();
+    }
+
+    public async addNewProject(project: ProjectModel): Promise<any> {
+        this.db.insert(projectSchema).values(project).run();
+    }
+
+    public async getProjectsByOnshapeDocId(docId: string): Promise<ProjectModel[]> {
+        const qry = sql`SELECT *
+            FROM projects
+            WHERE EXISTS (
+                SELECT 1 
+                FROM json_each(json_extract(data, '$.onshape.docIds')) 
+                WHERE value = ${docId}
+            );`
+
+        return this.db.all<ProjectModel>(qry)
+    }
+
+
+    async getAllProjects() {
+        return this.db.select().from(projectSchema).all();
+    }
+}
 
 export default getDbFromPlatform;

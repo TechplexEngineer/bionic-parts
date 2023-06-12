@@ -3,11 +3,13 @@ export interface NewProjectData {
     slug: string,
     onshapeDoc: string[],
     trelloBoard: string,
+    onshapeTeamsWrite: string[],
 }
 
 export const validateNewProject = (inputData: Record<string, string | string[] | FormDataEntryValue>): {
     valid: boolean,
-    message?: string
+    message?: string,
+    value?: NewProjectData
 } => {
 
     if (!inputData.name) {
@@ -25,5 +27,8 @@ export const validateNewProject = (inputData: Record<string, string | string[] |
     if (!inputData.trelloBoardId) {
         return {valid: false, message: "Trello Board ID is required"};
     }
-    return {valid: true};
+
+    const value = inputData as unknown as NewProjectData; // @todo is there a better way to do this that is more type safe?
+
+    return {valid: true, value};
 }

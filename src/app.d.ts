@@ -1,4 +1,5 @@
 import type {DrizzleD1Database} from "drizzle-orm/d1";
+import type {DataLayer} from "$lib/getdb";
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -8,7 +9,8 @@ declare global {
 
         // Locals is a property of the RequestEvent
         interface Locals {
-            db: DrizzleD1Database;
+            rawDb: DrizzleD1Database;
+            db: DataLayer;
         }
 
         // interface PageData {}

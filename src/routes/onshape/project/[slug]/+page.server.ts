@@ -4,7 +4,7 @@ import {eq} from "drizzle-orm";
 import {redirect} from "@sveltejs/kit";
 
 export const load = (async ({params, locals: {db}}) => {
-    const project = await db.select().from(projectSchema).where(eq(projectSchema.slug, params.slug)).get();
+    const project = await db.getProjectBySlug(params.slug)
     if (!project) {
         console.log(`project with slug: ${params.slug} not found`);
         throw redirect(307, '/onshape/projects');

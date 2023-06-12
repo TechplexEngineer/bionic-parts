@@ -1,8 +1,5 @@
-import type {PageServerLoad, Actions} from './$types';
-import {projectSchema, type ProjectModel} from "$lib/schema";
-import {validateNewProject} from "./validate";
-import {fail, json, redirect} from '@sveltejs/kit';
-import {formDataToObject} from "$lib/util";
+import type {Actions, PageServerLoad} from './$types';
+import {createNewProject} from "./createNewProject";
 
 enum ProjectStatus {
     Active = "Active",
@@ -50,7 +47,7 @@ const projects = [
 
 export const load = (async ({locals: {db}}) => {
     console.log("before");
-    const projects = await db.select().from(projectSchema).all();
+    const projects = await db.getAllProjects();
     console.log("here", projects);
 
     return {
@@ -60,50 +57,5 @@ export const load = (async ({locals: {db}}) => {
 
 export const actions = {
 
-    create: async ({request, locals: {db}}) => {
-
-        const inputData = formDataToObject(await request.formData())
-
-        const validation = validateNewProject(inputData);
-        if (!validation.valid) {
-            return fail(500, {message: validation.message});
-        }
-
-        const data: ProjectModel = {
-            id: undefined as any,
-            name: inputData.name as string,
-            slug: inputData.slug as string,
-            data: {
-                onshape: {
-                    docIds: [...inputData.onshapeDoc],
-
-                },
-                trello: {
-                    boardId: inputData.trelloBoardId as string
-                }
-            }
-            // trello: {
-            //     boardId: inputData.trelloBoardId as string,
-            //     boardUrl: inputData.trelloBoardId as string
-            // },
-            // onshape: {
-            //     docIds: [...inputData.onshapeDoc],
-            // }
-            // data: JSON.stringify({
-            //     onshape: {
-            //         docIds: [...inputData.onshapeDoc],
-            //     },
-            //     trello: {
-            //         boardId: inputData.trelloBoardId as string
-            //     }
-            // })
-        };
-
-        console.log(JSON.stringify(data));
-
-
-        await db.insert(projectSchema).values(data).run();
-
-        throw redirect(307, `/onshape/project/${inputData.slug}`)
-    }
+    create: createNewProject,
 } satisfies Actions;
