@@ -27,8 +27,14 @@ interface ProjectData {
 // see https://github.com/drizzle-team/drizzle-orm/issues/749
 const dbJson = customType({
     dataType: () => 'text', // must be text for sqlite3 json operators to work
-    toDriver: (value: any) => JSON.stringify(value),
-    fromDriver: (value: any) => JSON.parse(value),
+    toDriver: (value: any) => {
+        // console.log('dbJson toDriver', value)
+        return JSON.stringify(value)
+    },
+    fromDriver: (value: any) => {
+        // console.log('dbJson fromDriver', value)
+        return JSON.parse(value)
+    },
 });
 
 

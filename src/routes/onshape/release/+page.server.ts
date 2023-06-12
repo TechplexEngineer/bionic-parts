@@ -75,15 +75,43 @@ export const load = (async (event) => {
 
     const db = event.locals.db;
 
-    const matchingProjects = await db.getProjectsByOnshapeDocId(searchParams.did)
+    const teamInfo = await Onshape.TeamApi.find({});
 
+    // console.log("team", team?.items?.map(t => t.id));
 
     // find projects that have this document in them
+    const matchingProjects = await db.getProjectsByOnshapeDocId(searchParams.did)
+    console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
+
+    const filteredProjects = matchingProjects.filter(p => {
+        // ensure the user is on a team that has access to the project
+        const teams = teamInfo.items?.map(t => t.id) || [];
+        if (!teams || teams.length === 0) {
+            return false;
+        }
+
+        // teams.includes(p.data.onshape.access.
+        // console.log("teams", p?.data?.onshape?.access)
+        // check read
+        // check write
+        const teamsWithWrite = p?.data?.onshape?.access.write?.map((w) => (w.teamId)) || []
+        const teamsWithRead = p?.data?.onshape?.access.read?.map((w) => (w.teamId)) || []
+        const perm = teamsWithWrite.concat(teamsWithRead)
+
+        // find intersection of teams and perm
+        const res = teams?.filter(t => t && perm.includes(t))
+        // console.log("intersection", res)
+
+        return !!res;
+    })
+
+    if (filteredProjects.length === 0) {
+        // ask the user to create a project
+        // throw redirect(307, `/onshape/project/create?${new URLSearchParams({did: searchParams.did}).toString()}`);
+
+    }
     // ensure the user is on a team that has access to the project
 
-    const team = await Onshape.TeamApi.find({});
-
-    console.log("team", team);
 
     const getPartsParams: GetPartsWMVERequest = {
         did: searchParams.did,
@@ -123,6 +151,7 @@ export const load = (async (event) => {
         tabName,
         parts: pageParts,
         subsystemName: title3SubsystemName,
+        projects: filteredProjects,
     }
 }) satisfies PageServerLoad;
 

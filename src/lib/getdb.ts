@@ -3,10 +3,11 @@ import type {D1Database} from "@miniflare/d1";
 import {drizzle} from "drizzle-orm/d1";
 import type {DrizzleD1Database} from "drizzle-orm/d1";
 import {migrate} from "drizzle-orm/d1/migrator";
-import {eq, sql} from "drizzle-orm";
+import {eq, getTableColumns, sql} from "drizzle-orm";
 import type {ProjectModel} from "$lib/schema";
 import {projectSchema} from "$lib/schema";
 import {SQLiteSyncDialect} from "drizzle-orm/sqlite-core";
+
 
 let getDevDb = async (): Promise<any> => {
     // throw new Error("Not in a dev env, but attempted to access dev db");
@@ -70,15 +71,38 @@ export class DataLayer {
     }
 
     public async getProjectsByOnshapeDocId(docId: string): Promise<ProjectModel[]> {
+        //broken
+        // const qry = this.db.select().from(projectSchema)
+        //     .where(sql`EXISTS (
+        //         SELECT 1
+        //         FROM json_each(json_extract(data, '$.onshape.docIds'))
+        //         WHERE value = ${docId}`);
+        // const sqliteDialect = new SQLiteSyncDialect();
+        // console.log("qry", sqliteDialect.sqlToQuery(qry));
+        // const projects = await qry.get();
+        // return projects
         const qry = sql`SELECT *
             FROM projects
             WHERE EXISTS (
-                SELECT 1 
-                FROM json_each(json_extract(data, '$.onshape.docIds')) 
+                SELECT 1
+                FROM json_each(json_extract(data, '$.onshape.docIds'))
                 WHERE value = ${docId}
             );`
+        const projects = await this.db.all<ProjectModel>(qry)
 
-        return this.db.all<ProjectModel>(qry)
+        const columns = getTableColumns(projectSchema);
+
+        const proj = projects.map(p => {
+            const newp: ProjectModel = {};
+            for (const column of Object.values(columns)) {
+                newp[column.name] = column.mapFromDriverValue(p[column.name])
+            }
+
+            return newp
+        })
+        // console.log("proj", proj)
+
+        return proj;
     }
 
 
