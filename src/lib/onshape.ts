@@ -26,7 +26,7 @@ import APIKeyAuthMiddleware from "$lib/OnshapeAPI/authMiddleware";
 // 	middleware: [APIKeyAuthMiddleware(secretKey, accessKey)]
 // }))
 
-export const cookieName = "sessionid";
+export const onshapeCookieName = "sessionid";
 
 const doTokenRefresh = async (refresh_token: string) => {
     const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
@@ -144,7 +144,7 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
     return Onshape;
 }
 
-export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName: string) => {
+export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName = onshapeCookieName) => {
     const tokenInfo = getOauthTokenFromCookie(cookies, cookieName);
 
     return await getOnshapeClient(tokenInfo, (tokenResponse) => {

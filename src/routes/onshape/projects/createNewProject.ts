@@ -29,8 +29,12 @@ export const createNewProject: Action = async ({request, locals: {db}}) => {
             }
         }
     };
-
-    await db.addNewProject(data);
+    try {
+        await db.addNewProject(data);
+    } catch (e) {
+        console.log("fail"); //@todo handle this better
+        return fail(500, {message: e?.message});
+    }
 
     return inputData;
 }

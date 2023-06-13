@@ -3,11 +3,11 @@ import {PartReleaseState} from "./PartReleaseState";
 
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 
-import {base64} from "$lib/util";
+import {base64, filterProjects} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
 import {type BTPartMetadataInfo, type GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
-import {cookieName, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
+import {onshapeCookieName, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {partRelease} from "./PartRelease";
 import type {ProjectModel} from "$lib/schema";
 
@@ -58,7 +58,7 @@ export const load = (async (event) => {
 
     // check if the user is logged in
     // if not, send them to onshape to authenticate
-    if (!await hasInitialToken(event.cookies, cookieName)) {
+    if (!await hasInitialToken(event.cookies, onshapeCookieName)) {
         const authUrl = Oauth.buildAuthorizeUrl({
             clientId: clientId,
             redirectUrl: redirectUrl,
@@ -68,10 +68,11 @@ export const load = (async (event) => {
         throw redirect(307, authUrl.toString());
     }
 
-    const Onshape = await getOnshapeClientFromCookies(event.cookies, cookieName);
+    const Onshape = await getOnshapeClientFromCookies(event.cookies, onshapeCookieName);
 
     const db = event.locals.db;
 
+    // ensure the user is on a team that has access to the project
     const teamInfo = await Onshape.TeamApi.find({});
 
     // console.log("team", team?.items?.map(t => t.id));
@@ -80,35 +81,7 @@ export const load = (async (event) => {
     const matchingProjects = await db.getProjectsByOnshapeDocId(searchParams.did)
     // console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
 
-    const filteredProjects = matchingProjects.filter(p => {
-        // ensure the user is on a team that has access to the project
-        const teams = teamInfo.items?.map(t => t.id) || [];
-        if (!teams || teams.length === 0) {
-            return false;
-        }
-
-        // teams.includes(p.data.onshape.access.
-        // console.log("teams", p?.data?.onshape?.access)
-        // check read
-        // check write
-        const teamsWithWrite = p?.data?.onshape?.access.write?.map((w) => (w.teamId)) || []
-        const teamsWithRead = p?.data?.onshape?.access.read?.map((w) => (w.teamId)) || []
-        const perm = teamsWithWrite.concat(teamsWithRead)
-
-        // find intersection of teams and perm
-        const res = teams?.filter(t => t && perm.includes(t))
-        // console.log("intersection", res)
-
-        return !!res;
-    })
-
-    if (filteredProjects.length === 0) {
-        // ask the user to create a project
-        // throw redirect(307, `/onshape/project/create?${new URLSearchParams({did: searchParams.did}).toString()}`);
-
-    }
-    // ensure the user is on a team that has access to the project
-
+    const filteredProjects = filterProjects(matchingProjects, teamInfo);
 
     const getPartsParams: GetPartsWMVERequest = {
         did: searchParams.did,

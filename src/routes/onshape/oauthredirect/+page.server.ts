@@ -1,7 +1,7 @@
 import type {PageServerLoad} from './$types';
 import {redirect} from "@sveltejs/kit";
 import {base64decode} from "$lib/util";
-import {clientId, clientSecret, cookieName, redirectUrl, setOauthTokenInCookie} from "$lib/onshape";
+import {clientId, clientSecret, onshapeCookieName, redirectUrl, setOauthTokenInCookie} from "$lib/onshape";
 import type {OauthStateData} from "$lib/onshape";
 import type {Oauth2Token} from "$lib/onshape";
 
@@ -35,7 +35,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
 
 
     const body = await res.json() as unknown as Oauth2Token;
-    setOauthTokenInCookie(cookies, cookieName, body)
+    setOauthTokenInCookie(cookies, onshapeCookieName, body)
 
     const stateStr = searchParams.get("state")
 

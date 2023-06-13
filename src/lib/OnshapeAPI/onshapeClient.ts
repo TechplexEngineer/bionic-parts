@@ -39,7 +39,7 @@ import {
 import type {HTTPMethod} from "$lib/OnshapeAPI";
 import {BaseClient} from "$lib/OnshapeAPI/baseClient";
 import * as runtime from "$lib/OnshapeAPI/onshape_api/runtime";
-import {cookieName, getOauthTokenFromCookie, Oauth2Token} from "$lib/onshape";
+import {onshapeCookieName, getOauthTokenFromCookie, Oauth2Token} from "$lib/onshape";
 
 // Note this is a convenient accessor, but does not allow for tree shaking
 export class OnshapeClient extends BaseClient {

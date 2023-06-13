@@ -10,7 +10,7 @@ import trelloClient, {
     memberId_scott,
     validLabelColors
 } from "$lib/trello";
-import {cookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies} from "$lib/onshape";
+import {onshapeCookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies} from "$lib/onshape";
 import type {WebhookUserData} from "../../api/onshape/webhook/webhookUserData";
 import type {Action} from "@sveltejs/kit";
 import {getNiceDate, ordinalSuffixOf} from "$lib/util";
@@ -35,7 +35,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
     // console.log("data", data);
     //@todo validate data
 
-    const Onshape = await getOnshapeClientFromCookies(cookies, cookieName);
+    const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
 
     const currentUser = await Onshape.UserApi.sessionInfo();
 
@@ -172,7 +172,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
 
         // this is safe because we should error out above if the cookie is missing
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const tokenInfo = getOauthTokenFromCookie(cookies, cookieName)!;
+        const tokenInfo = getOauthTokenFromCookie(cookies, onshapeCookieName)!;
         console.log("tokenInfo", tokenInfo);
 
         const webhookData = {
@@ -236,7 +236,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             wvmid: data.params.wvid,
             eid: data.params.eid,
             units: "millimeter", // @todo if you put MILLIMETER you get an invalid stl file, should get an error
-        }, await getOauthTokenFromCookie(cookies, cookieName)!);
+        }, await getOauthTokenFromCookie(cookies, onshapeCookieName)!);
 
 
         await trelloClient.cards.createCardAttachment({

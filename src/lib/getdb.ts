@@ -67,7 +67,7 @@ export class DataLayer {
     }
 
     public async addNewProject(project: ProjectModel): Promise<any> {
-        this.db.insert(projectSchema).values(project).run();
+        return this.db.insert(projectSchema).values(project).run();
     }
 
     public async getProjectsByOnshapeDocId(docId: string): Promise<ProjectModel[]> {

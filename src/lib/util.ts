@@ -1,4 +1,7 @@
 // These are a hack because webstorm doesn't understand how types move through #each blocks
+import type {BTGlobalTreeNodeListResponseBTTeamInfo} from "$lib/OnshapeAPI";
+import type {ProjectModel} from "$lib/schema";
+
 export type Unarray<T> = T extends Array<infer U> ? U : T
 
 export const fixType = <T>(array: T, element: unknown): Unarray<T> => {
@@ -61,3 +64,37 @@ export const ordinalSuffixOf = (i: number) => {
 
 export const base64 = btoa;
 export const base64decode = atob;
+
+const extractTeams = (teamInfo: BTGlobalTreeNodeListResponseBTTeamInfo): string[] => {
+    return teamInfo.items?.map(t => t.id).filter((t): t is string => !!t) || [];
+}
+
+const extractRequiredTeams = (p: ProjectModel): string[] => {
+    const teamsWithWrite = p?.data?.onshape?.access.write?.map((w) => (w.teamId)) || []
+    const teamsWithRead = p?.data?.onshape?.access.read?.map((w) => (w.teamId)) || []
+    return teamsWithWrite.concat(teamsWithRead)
+}
+
+/**
+ * Only include projects that the user has access to
+ * @param matchingProjects
+ * @param teamInfo
+ */
+export const filterProjects = (matchingProjects: ProjectModel[], teamInfo: BTGlobalTreeNodeListResponseBTTeamInfo) => {
+    return matchingProjects.filter(p => {
+
+        const teams = extractTeams(teamInfo)
+        if (!teams || teams.length === 0) {
+            return false;
+        }
+
+        const perm = extractRequiredTeams(p)
+
+        // find intersection of teams and perm
+        const res = teams.filter(t => {
+            return perm.includes(t)
+        })
+
+        return res.length > 0;
+    });
+}

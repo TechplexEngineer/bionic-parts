@@ -8,17 +8,16 @@
     import MultipleInput from "./MultipleInput.svelte";
     import {backlogListId_2024, boardId_2024} from "$lib/trello";
 
-    const debug = true;
     let values = {};
-    if (debug) {
+    if (import.meta.env.VITE_DEBUG) {
         values = {
             name: 'Part Release Testing',
             slug: 'prt',
             onshapeDocId: 'da2bc7f409791a8720b27217',
             onshapeTeamId: '5bccf2e222e4bf1493e21d19',
             mainAssembly: {did: "da2bc7f409791a8720b27217", eid: '664a9bb3abb6cc5366dcb48c'},
-            trelloBoard: boardId_2024,
-            trelloList: backlogListId_2024,
+            trelloBoard: "6468e2101517f18d3231250f", //boardId_2024,
+            trelloList: "6468e280779ad802bb3775d4", //backlogListId_2024,
         }
     }
 
