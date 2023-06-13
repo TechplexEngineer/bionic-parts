@@ -30,7 +30,7 @@ export interface PartRelease {
 }
 
 export const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
-    console.log("Action!");
+
     const data = (await request.json()) as PartRelease;
     // console.log("data", data);
     //@todo validate data

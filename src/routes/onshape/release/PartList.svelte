@@ -1,19 +1,21 @@
 <script lang="ts">
-    import {enhance} from '$app/forms';
     import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
     import {PartReleaseState} from "./PartReleaseState";
     import {fixType} from "$lib/util";
     import type {Part} from "./part";
     import {page} from "$app/stores";
     import {createEventDispatcher} from 'svelte';
+    import type {ProjectModel} from "$lib/schema";
 
     const dispatch = createEventDispatcher();
 
     export let parts: Part[];
     export let tabName: string;
 
+    export let project: ProjectModel;
+
     const handleReleaseClick = (part: BTPartMetadataInfo) => {
-        $page.url.searchParams
+        // $page.url.searchParams
         return () => {
             dispatch('release', {
                 part,
@@ -22,7 +24,7 @@
         }
     }
     const handleReReleaseClick = (part: BTPartMetadataInfo) => {
-        $page.url.searchParams
+        // $page.url.searchParams
         return () => {
             dispatch('rerelease', {
                 part,
@@ -30,12 +32,15 @@
             });
         }
     }
+    const buildTrelloLink = () => {
+        return `https://trello.com/b/${project?.data.trello.boardId}`
+    }
 </script>
 <div class="d-flex justify-content-between">
     <h1>Part List: <small>{tabName}</small></h1>
 
     <div>
-        <a class="btn btn-outline-primary" href="@todo" target="_blank">Open Trello</a>
+        <a class="btn btn-outline-primary" href={buildTrelloLink()} target="_blank">Open Trello</a>
     </div>
 </div>
 

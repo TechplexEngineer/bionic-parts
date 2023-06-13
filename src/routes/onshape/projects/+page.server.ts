@@ -1,5 +1,7 @@
 import type {Actions, PageServerLoad} from './$types';
 import {createNewProject} from "./createNewProject";
+import {formDataToObject} from "$lib/util";
+import {redirect} from "@sveltejs/kit";
 
 enum ProjectStatus {
     Active = "Active",
@@ -46,9 +48,7 @@ const projects = [
 ]
 
 export const load = (async ({locals: {db}}) => {
-    console.log("before");
     const projects = await db.getAllProjects();
-    console.log("here", projects);
 
     return {
         projects
@@ -56,6 +56,12 @@ export const load = (async ({locals: {db}}) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
+    default: async (event) => {
+        // console.log("Create New Project", event);
+        const inputData = await createNewProject(event)
 
-    create: createNewProject,
+        const redir = `/onshape/release/?${inputData?.queryState || inputData?.slug}`;
+        console.log("Redirecting to", redir);
+        throw redirect(303, redir); // request changed to GET and body thrown away as we have already processed it
+    },
 } satisfies Actions;

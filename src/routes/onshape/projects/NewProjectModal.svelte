@@ -1,9 +1,12 @@
 <script lang="ts">
     import Modal from "$lib/Modal.svelte";
-    import MultipleInput from "./MultipleInput.svelte";
 
     export let isOpen = false;
 
+    export let queryState = "";
+
+    import MultipleInput from "./MultipleInput.svelte";
+    import {backlogListId_2024, boardId_2024} from "$lib/trello";
 
     const debug = true;
     let values = {};
@@ -11,11 +14,15 @@
         values = {
             name: 'Part Release Testing',
             slug: 'prt',
-            onshapeDocId: 'https://cad.onshape.com/documents/da2bc7f409791a8720b27217',
+            onshapeDocId: 'da2bc7f409791a8720b27217',
+            onshapeTeamId: '5bccf2e222e4bf1493e21d19',
             mainAssembly: {did: "da2bc7f409791a8720b27217", eid: '664a9bb3abb6cc5366dcb48c'},
-            trello: "https://trello.com/b/OGUJmSaG/design-to-manufacturing"
+            trelloBoard: boardId_2024,
+            trelloList: backlogListId_2024,
         }
     }
+
+
 </script>
 
 <Modal header="Create new Project" bind:isOpen={isOpen}>
@@ -23,7 +30,7 @@
             method="POST"
             enctype="multipart/form-data"
             id="createProjectForm"
-            action="?/create"
+            action="/onshape/projects"
     >
 
         <div class="mb-3">
@@ -39,15 +46,21 @@
         </div>
 
         <div class="mb-3">
-            <label for="trelloInput" class="form-label">Trello Board *</label>
-            <input type="text" class="form-control" id="trelloInput" name="trelloBoardId" required
-                   placeholder="https://trello.com/b/OGUJmSaG/..." value={values?.trello || ""}>
+            <label for="trelloBoardInput" class="form-label">Trello Board *</label>
+            <input type="text" class="form-control" id="trelloBoardInput" name="trelloBoardId" required
+                   placeholder="" value={values?.trelloBoard || ""}>
+        </div>
+
+        <div class="mb-3">
+            <label for="trelloListInput" class="form-label">Trello List *</label>
+            <input type="text" class="form-control" id="trelloListInput" name="trelloListId" required
+                   placeholder="" value={values?.trelloList || ""}>
         </div>
 
         <MultipleInput label="Onshape Documents *"
                        fieldNamePrefix="onshapeDoc"
-                       placeholder="https://cad.onshape.com/documents/5d24311f47dcaa70f7ba005c/..."
-                       inputs={[{id:0, value:"https://cad.onshape.com/documents/da2bc7f409791a8720b27217/w/997b8fe669ef3a2ee893ee0e/e/dfc0766722250803423263f8"}]}
+                       placeholder="5d24311f47dcaa70f7ba005c"
+                       inputs={[{id:0, value:values.onshapeDocId}]}
         />
 
         <h4>Access</h4>
@@ -55,8 +68,12 @@
         <MultipleInput label="Onshape Teams *"
                        fieldNamePrefix="onshapeTeamsWrite"
                        placeholder="5bccf2e222e4bf1493e21d19"
-                       inputs={[{id:0, value:"5bccf2e222e4bf1493e21d19"}]}
+                       inputs={[{id:0, value:values?.onshapeTeamId}]}
         />
+
+        {#if queryState}
+            <input type="hidden" name="queryState" value={queryState}>
+        {/if}
 
 
     </form>

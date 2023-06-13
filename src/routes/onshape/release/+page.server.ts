@@ -1,16 +1,15 @@
-import type {Action, Actions, PageServerLoad} from './$types';
+import type {Actions, PageServerLoad} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 
 import {base64} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {type GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
+import {type BTPartMetadataInfo, type GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
 import {cookieName, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {partRelease} from "./PartRelease";
-import {projectSchema} from "$lib/schema";
-import {sql} from "drizzle-orm";
+import type {ProjectModel} from "$lib/schema";
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -46,7 +45,6 @@ export const load = (async (event) => {
     if (typeof searchParams.did === "undefined") {
         return {
             searchParams,
-            parts: [],
             error: "No Document ID provided"
         };
     }
@@ -54,7 +52,6 @@ export const load = (async (event) => {
     if (searchParams.wv !== "v") {
         return {
             searchParams,
-            parts: [],
             error: "Parts can only be released from a version"
         };
     }
@@ -81,7 +78,7 @@ export const load = (async (event) => {
 
     // find projects that have this document in them
     const matchingProjects = await db.getProjectsByOnshapeDocId(searchParams.did)
-    console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
+    // console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
 
     const filteredProjects = matchingProjects.filter(p => {
         // ensure the user is on a team that has access to the project
@@ -135,13 +132,12 @@ export const load = (async (event) => {
         eid: searchParams.eid
     });
 
-    const title3SubsystemName = tab.properties?.find(p => p.name == "Title 3")?.value;
-    const tabName = tab.properties?.find(p => p.name == "Name")?.value;
+    const title3SubsystemName = tab.properties?.find(p => p.name == "Title 3")?.value as unknown as string;
+    const tabName = tab.properties?.find(p => p.name == "Name")?.value as unknown as string;
     if (!title3SubsystemName) {
         return {
             searchParams,
-            parts: [],
-            title3SubsystemName,
+            subsystemName: title3SubsystemName,
             error: `Subsystem name MUST be set in Title 3 field of ${tabName}. (Close and reopen the tab to refresh the data.)`
         };
     }
@@ -153,7 +149,17 @@ export const load = (async (event) => {
         subsystemName: title3SubsystemName,
         projects: filteredProjects,
     }
-}) satisfies PageServerLoad;
+}) satisfies PageServerLoad<{
+    searchParams: OnshapeFrameQueryParams,
+    error: string,
+    subsystemName?: string,
+} | {
+    searchParams: OnshapeFrameQueryParams,
+    tabName: string,
+    parts: { part: BTPartMetadataInfo, state: PartReleaseState }[],
+    subsystemName: string,
+    projects: ProjectModel[],
+}>;
 
 
 export const actions = {

@@ -12,10 +12,11 @@
     import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
     import type {PartRelease} from "./PartRelease";
     import {page} from "$app/stores";
+    import NoProjects from "./NoProjects.svelte";
 
     export let data: PageData;
 
-    console.log("data", data);
+    // console.log("data", data);
 
     let errorMessage = null;
     $: errorMessage = ("error" in data) ? data.error : undefined
@@ -60,20 +61,28 @@
         <h1>Part Release: <small>{data.tabName}</small></h1>
         <span class="text-danger">ERROR: {errorMessage}</span>
     {:else}
-        {#if stage === Stages.partlist}
-            <PartList
-                    parts={data.parts}
-                    tabName={data.tabName}
-                    on:release={handleReleaseClick}
-                    on:rerelease={handleReReleaseClick}
-            ></PartList>
-        {:else if stage === Stages.options}
-            <Options
-                    selectedPart={selectedPart}
-                    subsystemName={data.subsystemName}
-                    on:cancel={()=>{stage = Stages.partlist; selectedPart = null;}}
-                    on:submit={handleSubmit}
-            ></Options>
+        {#if data?.projects?.length === 0}
+            <NoProjects/>
+        {:else if data?.projects?.length > 1}
+            <h1>More than one project</h1>
+        {:else}
+
+            {#if stage === Stages.partlist}
+                <PartList
+                        parts={data.parts}
+                        tabName={data.tabName}
+                        project={data.projects[0]}
+                        on:release={handleReleaseClick}
+                        on:rerelease={handleReReleaseClick}
+                ></PartList>
+            {:else if stage === Stages.options}
+                <Options
+                        selectedPart={selectedPart}
+                        subsystemName={data.subsystemName}
+                        on:cancel={()=>{stage = Stages.partlist; selectedPart = null;}}
+                        on:submit={handleSubmit}
+                ></Options>
+            {/if}
         {/if}
 
     {/if}

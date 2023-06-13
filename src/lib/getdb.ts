@@ -93,12 +93,12 @@ export class DataLayer {
         const columns = getTableColumns(projectSchema);
 
         const proj = projects.map(p => {
-            const newp: ProjectModel = {};
+            const newp: Record<string, any> = {};
             for (const column of Object.values(columns)) {
                 newp[column.name] = column.mapFromDriverValue(p[column.name])
             }
 
-            return newp
+            return newp as ProjectModel
         })
         // console.log("proj", proj)
 

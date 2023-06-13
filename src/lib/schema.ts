@@ -19,6 +19,7 @@ interface ProjectData {
     },
     trello: {
         boardId: string,
+        listId: string,
     }
 }
 
