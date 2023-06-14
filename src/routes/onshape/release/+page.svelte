@@ -11,12 +11,10 @@
     import Options from "./Options.svelte";
     import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
     import type {PartRelease} from "./PartRelease";
-    import {page} from "$app/stores";
     import NoProjects from "./NoProjects.svelte";
+    import type {ProjectModel} from "$lib/schema";
 
     export let data: PageData;
-
-    // console.log("data", data);
 
     let errorMessage = null;
     $: errorMessage = ("error" in data) ? data.error : undefined
@@ -45,11 +43,23 @@
             method: 'POST',
             body: JSON.stringify({
                 ...detail,
-                params: Object.fromEntries($page.url.searchParams) as unknown as OnshapeFrameQueryParams
+                params: data.searchParams
             } satisfies PartRelease),
         });
-
     }
+
+    let activeProjects: ProjectModel[] = [];
+
+    // filter to projects with data.searchParams.did as a member
+    $:activeProjects = data.projects.filter(p => {
+        const found = p.data.onshape.docIds.includes(data.searchParams.did);
+        console.log(`checking if ${JSON.stringify(data.searchParams.did)} is in ${JSON.stringify(p.data.onshape.docIds)} => ${found}`)
+        return found
+    })
+
+    $: console.log("activeProjects", activeProjects)
+    // find the project that has our document id in it
+    // $: activeProject = data.projects.find(p => p.documentId === $page.url.searchParams.get('documentId')) ?? null;
 
 
 </script>
@@ -62,16 +72,18 @@
         <span class="text-danger">ERROR: {errorMessage}</span>
     {:else}
         {#if data?.projects?.length === 0}
+            <!--User does not have access to any projects-->
             <NoProjects/>
-        {:else if data?.projects?.length > 1}
+        {:else if activeProjects > 1}
+            <!-- Document is in multiple projects -->
             <h1>More than one project</h1>
-        {:else}
+        {:else if activeProjects.length === 1}
 
             {#if stage === Stages.partlist}
                 <PartList
-                        parts={data.parts}
-                        tabName={data.tabName}
-                        project={data.projects[0]}
+                        parts={data?.parts}
+                        tabName={data?.tabName}
+                        project={data?.projects[0]}
                         on:release={handleReleaseClick}
                         on:rerelease={handleReReleaseClick}
                 ></PartList>
@@ -83,6 +95,8 @@
                         on:submit={handleSubmit}
                 ></Options>
             {/if}
+        {:else}
+        <!--User has access to projects, but none of them have this doc in them-->
         {/if}
 
     {/if}

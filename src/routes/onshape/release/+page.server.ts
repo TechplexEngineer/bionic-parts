@@ -45,14 +45,22 @@ export const load = (async (event) => {
     if (typeof searchParams.did === "undefined") {
         return {
             searchParams,
-            error: "No Document ID provided"
+            error: "No Document ID provided",
+            tabName: "",
+            parts: [],
+            subsystemName: "",
+            projects: [],
         };
     }
 
     if (searchParams.wv !== "v") {
         return {
             searchParams,
-            error: "Parts can only be released from a version"
+            error: "Parts can only be released from a version",
+            tabName: "",
+            parts: [],
+            subsystemName: "",
+            projects: [],
         };
     }
 
@@ -110,8 +118,11 @@ export const load = (async (event) => {
     if (!title3SubsystemName) {
         return {
             searchParams,
+            tabName,
+            parts: [],
             subsystemName: title3SubsystemName,
-            error: `Subsystem name MUST be set in Title 3 field of ${tabName}. (Close and reopen the tab to refresh the data.)`
+            error: `Subsystem name MUST be set in Title 3 field of ${tabName}. (Close and reopen the tab to refresh the data.)`,
+            projects: [],
         };
     }
 
@@ -124,10 +135,7 @@ export const load = (async (event) => {
     }
 }) satisfies PageServerLoad<{
     searchParams: OnshapeFrameQueryParams,
-    error: string,
-    subsystemName?: string,
-} | {
-    searchParams: OnshapeFrameQueryParams,
+    error?: string
     tabName: string,
     parts: { part: BTPartMetadataInfo, state: PartReleaseState }[],
     subsystemName: string,
