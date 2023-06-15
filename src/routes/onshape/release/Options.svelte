@@ -87,7 +87,7 @@ How should the part be made, what steps should be followed?
             // machinesUsed: machinesUsed?.map((m) => m.value),
             notes: notes,
             subsystemName: subsystemName,
-            projectId: selectedProject.id as number //@todo
+            projectId: parseInt(selectedProject.id as string) //@todo
         } satisfies Omit<PartRelease, 'params'>)
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -112,7 +112,7 @@ How should the part be made, what steps should be followed?
 <div class="row">
     <div class="col">
         <div class="mb-3">
-            <label for="qty" class="form-label">Quantity to make:</label>
+            <label for="qty" class="form-label">Quantity:</label>
             <input type="number" class="form-control" id="qty" placeholder="Please enter a number" bind:value={qty}
                    required>
         </div>
