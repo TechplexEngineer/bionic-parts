@@ -6,7 +6,6 @@ import {migrate} from "drizzle-orm/d1/migrator";
 import {eq, getTableColumns, sql} from "drizzle-orm";
 import type {ProjectModel} from "$lib/schema";
 import {projectSchema} from "$lib/schema";
-import {SQLiteSyncDialect} from "drizzle-orm/sqlite-core";
 
 
 let getDevDb = async (): Promise<any> => {
@@ -43,14 +42,14 @@ const getDbFromPlatform = async (platform: App.Platform | undefined): Promise<Dr
         db = await getDevDb();
     }
 
-    // This was a problem b/c we were trying to get the DB during the build process
-    // if (import.meta.env.DEV) { //we can only apply migrations in dev
-    const ddb = drizzle(db as any);
-    await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
-    return ddb;
-    // }
+    // Migrator requires node packages not available in workers env
+    if (import.meta.env.DEV) { //we can only apply migrations in dev
+        const ddb = drizzle(db as any);
+        await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
+        return ddb;
+    }
 
-    // return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
+    return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
 
 export class DataLayer {
@@ -95,6 +94,8 @@ export class DataLayer {
         const proj = projects.map(p => {
             const newp: Record<string, any> = {};
             for (const column of Object.values(columns)) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 newp[column.name] = column.mapFromDriverValue(p[column.name])
             }
 

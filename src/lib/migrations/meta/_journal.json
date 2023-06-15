@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1686825976960,
+      "tag": "0000_puzzling_cannonball",
+      "breakpoints": true
+    }
+  ]
+}
