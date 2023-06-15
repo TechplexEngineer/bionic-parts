@@ -30,7 +30,7 @@ export const actions = {
     createProject: async (event) => {
         // console.log("Create New Project", event);
         const inputData = await createNewProject(event)
-        console.log("Create New Project", inputData);
+        // console.log("Create New Project", inputData);
 
         if (inputData?.queryState) {
             // 303 = request changed to GET and body thrown away as we have already processed it
