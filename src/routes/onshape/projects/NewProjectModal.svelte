@@ -25,7 +25,8 @@
         trelloBoard = project.trelloBoardId;
         trelloList = project.trelloListId;
     }
-    if (import.meta.env.VITE_DEBUG) {
+    const debug = true; //import.meta.env.VITE_DEBUG
+    if (debug) {
         const convert = (input) => {
             return input.map((i, idx) => ({id: idx, value: i}))
             // [{id:0, value:values.onshapeDocId}]
@@ -89,13 +90,15 @@
             action="/onshape/projects?/createProject"
     >
 
-        <div class="mb-3">
-            <h5>Prefill with data</h5>
-            {#each projects as project}
-                <button class="btn btn-primary me-1" type="button"
-                        on:click={() => setValues(project)}>{project.name}</button>
-            {/each}
-        </div>
+        {#if debug}
+            <div class="mb-3">
+                <h5>Prefill with data</h5>
+                {#each projects as project}
+                    <button class="btn btn-primary me-1" type="button"
+                            on:click={() => setValues(project)}>{project.name}</button>
+                {/each}
+            </div>
+        {/if}
 
         <div class="mb-3">
             <label for="projectName" class="form-label">Name *</label>
