@@ -35,4 +35,9 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target
+> environment.
+
+## Notes
+
+- Great article on cloudflare D1 and Drizzle integration: https://sat0shi.dev/posts/drizzle-migration/
