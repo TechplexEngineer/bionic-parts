@@ -123,6 +123,10 @@ export class DataLayer {
 
         return project;
     }
+
+    async getProjectById(projectId: number) {
+        return this.db.select().from(projectSchema).where(eq(projectSchema.id, projectId)).get();
+    }
 }
 
 export default getDbFromPlatform;

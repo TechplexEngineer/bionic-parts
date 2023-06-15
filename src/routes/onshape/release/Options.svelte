@@ -5,11 +5,14 @@
     import type {PartRelease} from "./PartRelease";
     import SpinButton from "$lib/SpinButton.svelte";
     import {FormLabsPrinterMaterials, Machines, MfgMethods, Printers, PrusaPrinterMaterials} from "./options";
+    import type {ProjectModel} from "$lib/schema";
 
     const dispatch = createEventDispatcher();
 
     export let selectedPart: BTPartMetadataInfo;
     export let subsystemName: string;
+
+    export let selectedProject: ProjectModel;
 
     const enumToSelectOptions = (e: any) => {
         return Object.keys(e).map((key) => {
@@ -84,6 +87,7 @@ How should the part be made, what steps should be followed?
             // machinesUsed: machinesUsed?.map((m) => m.value),
             notes: notes,
             subsystemName: subsystemName,
+            projectId: selectedProject.id as number //@todo
         } satisfies Omit<PartRelease, 'params'>)
         return new Promise((resolve) => {
             setTimeout(() => {

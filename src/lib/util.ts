@@ -26,8 +26,12 @@ export const formDataToObject = (formData: FormData) => {
         if (key.includes("[")) {
             const [k, i] = key.split("[");
             acc[k] = acc[k] || [];
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             acc[k][i.slice(0, -1)] = value;
         } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             acc[key] = value;
         }
         return acc;
@@ -97,4 +101,8 @@ export const filterProjects = (matchingProjects: ProjectModel[], teamInfo: BTGlo
 
         return res.length > 0;
     });
+}
+
+export const accessIncludesTeam = (access: ProjectModel["data"]["onshape"]["access"], teamId: string) => {
+    return (access.read || []).concat(access.write || []).some((a) => a.teamId === teamId)
 }

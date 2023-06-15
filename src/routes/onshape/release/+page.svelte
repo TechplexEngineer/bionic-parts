@@ -59,6 +59,16 @@
         return found
     }) || [];
 
+    let selectedProject: ProjectModel | null = null;
+
+    $: selectedProject = ((activeProjects) => {
+        if (activeProjects?.length === 1) {
+            return activeProjects[0];
+        } else {
+            return null;
+        }
+    })(activeProjects)
+
 </script>
 
 <div class="container-fluid mt-4">
@@ -75,9 +85,9 @@
             <NoProjects/>
         {:else if activeProjects?.length > 1}
             <!-- Document is in multiple projects -->
-            <h1>More than one project</h1>
-        {:else if activeProjects?.length === 1}
-
+            <h1>Document is in more than one project</h1>
+            <p>Error: This is not currently supported. Sorry.</p>
+        {:else if selectedProject}
             {#if stage === Stages.partlist}
                 <PartList
                         parts={data?.parts}
@@ -90,6 +100,7 @@
                 <Options
                         selectedPart={selectedPart}
                         subsystemName={data.subsystemName}
+                        selectedProject={selectedProject}
                         on:cancel={()=>{stage = Stages.partlist; selectedPart = null;}}
                         on:submit={handleSubmit}
                 ></Options>

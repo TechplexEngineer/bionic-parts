@@ -3,8 +3,6 @@ import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 import {FormLabsPrinterMaterials, Machines, Printers, PrusaPrinterMaterials} from "./options";
 import {MfgMethods} from "./options";
 import trelloClient, {
-    backlogListId_2024,
-    boardId_2024,
     memberId_blake,
     memberId_chrisj,
     memberId_scott,
@@ -13,7 +11,10 @@ import trelloClient, {
 import {onshapeCookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies} from "$lib/onshape";
 import type {WebhookUserData} from "../../api/onshape/webhook/webhookUserData";
 import type {Action} from "@sveltejs/kit";
-import {getNiceDate, ordinalSuffixOf} from "$lib/util";
+import {accessIncludesTeam, getNiceDate, ordinalSuffixOf} from "$lib/util";
+
+
+const onshapeTeamId_frc4909 = "5bccf2e222e4bf1493e21d19"
 
 export interface PartRelease {
     part: BTPartMetadataInfo,
@@ -26,14 +27,20 @@ export interface PartRelease {
     machinesUsed: Machines[]
     printerUsed: Printers
     printerMaterialUsed: PrusaPrinterMaterials | FormLabsPrinterMaterials
-    cotsLink: string
+    cotsLink: string,
+
+    // what project is this part for?
+    projectId: number
 }
 
-export const partRelease: Action = async ({request, url: {searchParams}, cookies}) => {
+export const partRelease: Action = async ({request, url: {searchParams}, cookies, locals: {db}}) => {
 
     const data = (await request.json()) as PartRelease;
     // console.log("data", data);
     //@todo validate data
+
+    const project = await db.getProjectById(data.projectId);
+
 
     const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
 
@@ -89,7 +96,7 @@ Release Date: ${getNiceDate()}
 Released By: ${currentUser.name}
 Version: ${version.name}
 ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
-        idList: backlogListId_2024,
+        idList: project.data.trello.listId,
         pos: "top",
     });
 
@@ -106,10 +113,12 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             name: `Purchase ${data.qty}: '${data.cotsLink}'`
         });
 
-        await trelloClient.cards.addCardMember({
-            id: card.id,
-            value: memberId_blake
-        })
+        if (accessIncludesTeam(project.data.onshape.access, onshapeTeamId_frc4909)) {
+            await trelloClient.cards.addCardMember({
+                id: card.id,
+                value: memberId_blake
+            })
+        }
     }
 
     if (thumbnailBlob) {
@@ -138,7 +147,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
     }
     if (data.subsystemName) {
         const labels = await trelloClient.boards.getBoardLabels({
-            id: boardId_2024,
+            id: project.data.trello.boardId,
         });
 
         // pick a random color from the list of valid label colors
@@ -148,7 +157,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         if (!label) {
             // create label
             label = await trelloClient.boards.createBoardLabel({
-                id: boardId_2024,
+                id: project.data.trello.boardId,
                 name: data.subsystemName,
                 color: labelColor
             })
@@ -246,25 +255,25 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         })
 
         if (data.printerUsed == Printers.FormLabs) {
-            // tag chris
-            await trelloClient.cards.addCardMember({
-                id: card.id,
-                value: memberId_chrisj
-            })
+            if (accessIncludesTeam(project.data.onshape.access, onshapeTeamId_frc4909)) {
+                // tag chris
+                await trelloClient.cards.addCardMember({
+                    id: card.id,
+                    value: memberId_chrisj
+                })
+            }
         }
         if (data.printerUsed == Printers.Prusa && data.printerMaterialUsed == PrusaPrinterMaterials.NylonX) {
-            // tag scott
-            await trelloClient.cards.addCardMember({
-                id: card.id,
-                value: memberId_scott
-            })
+            if (accessIncludesTeam(project.data.onshape.access, onshapeTeamId_frc4909)) {
+                // tag scott
+                await trelloClient.cards.addCardMember({
+                    id: card.id,
+                    value: memberId_scott
+                })
+            }
         }
 
     }
 
-    // await Onshape.TranslationApi.createTranslation()
-
-
-    return {}
-
+    return {}; //success
 };
