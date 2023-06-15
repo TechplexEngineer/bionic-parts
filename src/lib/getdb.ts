@@ -109,6 +109,19 @@ export class DataLayer {
     async getAllProjects() {
         return this.db.select().from(projectSchema).all();
     }
+
+    async addDoc2Project(onshapeDocId: string, projectId: number) {
+        const project = await this.db.select().from(projectSchema).where(eq(projectSchema.id, projectId)).get();
+        console.log("project", project);
+        if (!project.data) {
+            throw new Error("Project data is undefined")
+        }
+        project.data.onshape.docIds.push(onshapeDocId);
+
+        await this.db.update(projectSchema).set({[projectSchema.data.name]: project.data}).where(eq(projectSchema.id, projectId)).run();
+
+        return project;
+    }
 }
 
 export default getDbFromPlatform;

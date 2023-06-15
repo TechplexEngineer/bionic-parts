@@ -6,6 +6,7 @@
     import {page} from "$app/stores";
     import {createEventDispatcher} from 'svelte';
     import type {ProjectModel} from "$lib/schema";
+    import TrelloLink from "./TrelloLink.svelte";
 
     const dispatch = createEventDispatcher();
 
@@ -32,15 +33,13 @@
             });
         }
     }
-    const buildTrelloLink = () => {
-        return `https://trello.com/b/${project?.data.trello.boardId}`
-    }
+
 </script>
 <div class="d-flex justify-content-between">
     <h1>Part List: <small>{tabName}</small></h1>
 
     <div>
-        <a class="btn btn-outline-primary" href={buildTrelloLink()} target="_blank">Open Trello</a>
+        <TrelloLink boardId={project?.data.trello.boardId}/>
     </div>
 </div>
 
@@ -75,9 +74,3 @@ Here is a list of parts that can be released to manufacturing:
     </tbody>
 </table>
 
-<style>
-    a[target="_blank"]::after {
-        margin: 0 3px 0 5px;
-        content: "↗";
-    }
-</style>

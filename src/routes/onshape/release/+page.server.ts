@@ -3,7 +3,7 @@ import {PartReleaseState} from "./PartReleaseState";
 
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 
-import {base64, filterProjects} from "$lib/util";
+import {base64, filterProjects, formDataToObject} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
 import {type BTPartMetadataInfo, type GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
@@ -83,14 +83,14 @@ export const load = (async (event) => {
     // ensure the user is on a team that has access to the project
     const teamInfo = await Onshape.TeamApi.find({});
 
-    // console.log("team", team?.items?.map(t => t.id));
+    // console.log("teamInfo", teamInfo?.items?.map(t => ({id: t.id, name: t.name})));
 
     // find projects that have this document in them
-    const matchingProjects = await db.getProjectsByOnshapeDocId(searchParams.did)
+    const matchingProjects = await db.getAllProjects()
     // console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
 
     const filteredProjects = filterProjects(matchingProjects, teamInfo);
-
+    // console.log("filteredProjects", JSON.stringify(filteredProjects, null, 2));
     const getPartsParams: GetPartsWMVERequest = {
         did: searchParams.did,
         wvm: searchParams.wv,
@@ -146,5 +146,6 @@ export const load = (async (event) => {
 export const actions = {
 
     release: partRelease,
-    re_release: partRelease
+    re_release: partRelease,
+
 } satisfies Actions;

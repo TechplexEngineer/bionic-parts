@@ -13,6 +13,7 @@
     import type {PartRelease} from "./PartRelease";
     import NoProjects from "./NoProjects.svelte";
     import type {ProjectModel} from "$lib/schema";
+    import AddToExistingProject from "./AddToExistingProject.svelte";
 
     export let data: PageData;
 
@@ -46,6 +47,7 @@
                 params: data.searchParams
             } satisfies PartRelease),
         });
+        //@todo handle errors
     }
 
     let activeProjects: ProjectModel[] = [];
@@ -53,14 +55,9 @@
     // filter to projects with data.searchParams.did as a member
     $:activeProjects = data.projects.filter(p => {
         const found = p.data.onshape.docIds.includes(data.searchParams.did);
-        console.log(`checking if ${JSON.stringify(data.searchParams.did)} is in ${JSON.stringify(p.data.onshape.docIds)} => ${found}`)
+        // console.log(`checking if ${JSON.stringify(data.searchParams.did)} is in ${JSON.stringify(p.data.onshape.docIds)} => ${found}`)
         return found
-    })
-
-    $: console.log("activeProjects", activeProjects)
-    // find the project that has our document id in it
-    // $: activeProject = data.projects.find(p => p.documentId === $page.url.searchParams.get('documentId')) ?? null;
-
+    }) || [];
 
 </script>
 
@@ -71,13 +68,15 @@
         <h1>Part Release: <small>{data.tabName}</small></h1>
         <span class="text-danger">ERROR: {errorMessage}</span>
     {:else}
+        <!--doing in page routing so we don't have to be careful to maintain the query string params and-->
+        <!--so we can add an onshape selector which requires postmessage-->
         {#if data?.projects?.length === 0}
             <!--User does not have access to any projects-->
             <NoProjects/>
-        {:else if activeProjects > 1}
+        {:else if activeProjects?.length > 1}
             <!-- Document is in multiple projects -->
             <h1>More than one project</h1>
-        {:else if activeProjects.length === 1}
+        {:else if activeProjects?.length === 1}
 
             {#if stage === Stages.partlist}
                 <PartList
@@ -96,7 +95,11 @@
                 ></Options>
             {/if}
         {:else}
-        <!--User has access to projects, but none of them have this doc in them-->
+            <!--User has access to projects, but none of them have this doc in them-->
+            <AddToExistingProject
+                    onshapeDocId={data.searchParams.did}
+                    projects={data.projects}
+            />
         {/if}
 
     {/if}
