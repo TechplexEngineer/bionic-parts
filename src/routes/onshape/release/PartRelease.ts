@@ -182,7 +182,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         // this is safe because we should error out above if the cookie is missing
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const tokenInfo = getOauthTokenFromCookie(cookies, onshapeCookieName)!;
-        console.log("tokenInfo", tokenInfo);
+        // console.log("tokenInfo", tokenInfo);
 
         const webhookData = {
             cardId: card.id,

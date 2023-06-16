@@ -30,8 +30,12 @@ declare global {
         VITE_ONSHAPE_OAUTH_CLIENT_SECRET?: string;
         VITE_ONSHAPE_OAUTH_REDIRECT_URI?: string;
 
+        // VITE_TRELLO_KEY?: never;
+        VITE_TRELLO_TOKEN?: never;
+
         VITE_TRELLO_KEY?: string;
-        VITE_TRELLO_TOKEN?: string;
+        VITE_TRELLO_SECRET?: string;
+        VITE_TRELLO_OAUTH_REDIRECT_URI?: string;
     }
 }
 

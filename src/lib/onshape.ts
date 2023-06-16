@@ -15,7 +15,7 @@ if (!redirectUrl) {
 
 export interface OauthStateData {
     searchParams: { [key: string]: any }
-    action: "release" | "webhook/register"
+    action: "release" | "webhook/register" | "projects"
 }
 
 
@@ -26,7 +26,7 @@ import APIKeyAuthMiddleware from "$lib/OnshapeAPI/authMiddleware";
 // 	middleware: [APIKeyAuthMiddleware(secretKey, accessKey)]
 // }))
 
-export const onshapeCookieName = "sessionid";
+export const onshapeCookieName = "onshape_sessionid";
 
 const doTokenRefresh = async (refresh_token: string) => {
     const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
@@ -110,11 +110,16 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
     const Onshape = new OnshapeClient(new Configuration({
         middleware: [{
             pre: async (context) => {
+                // console.log("tokenInfo", tokenInfo);
+                if (!tokenInfo) {
+                    // if we get here, the user really needs to re-authenticate @todo
+                    throw new Error("No tokenInfo. Re-auth needed");
+                }
                 if (tokenInfo?.expiryTimestamp && tokenInfo.expiryTimestamp <= Date.now()) {
                     // console.log("token expired, refreshing"); //@todo store the state so we don't continually refresh
                     const res = await doTokenRefresh(tokenInfo.refresh_token);
                     const tokenResponse = await res.json() as unknown as Oauth2Token;
-
+                    console.log("tokenResponse", tokenResponse);
                     refreshCb && refreshCb(tokenResponse)
 
                     // console.log("tokenResponse", tokenResponse);

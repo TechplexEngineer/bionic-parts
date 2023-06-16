@@ -1,16 +1,34 @@
 import type {Actions, PageServerLoad} from './$types';
 import {createNewProject} from "./createNewProject";
-import {filterProjects, formDataToObject} from "$lib/util";
+import {base64, filterProjects} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {getOnshapeClientFromCookies, onshapeCookieName} from "$lib/onshape";
+import {getOnshapeClientFromCookies, hasInitialToken, type OauthStateData, onshapeCookieName} from "$lib/onshape";
+import {Oauth} from "$lib/OnshapeAPI";
 
-enum ProjectStatus {
-    Active = "Active",
-    Archived = "Archived"
-}
 
-export const load = (async ({locals: {db}, cookies}) => {
+export const load = (async ({locals: {db}, cookies, url: {searchParams}}) => {
     const projects = await db.getAllProjects();
+
+    const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
+    if (!redirectUrl) {
+        throw new Error("No VITE_ONSHAPE_OAUTH_REDIRECT_URI set");
+    }
+    const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
+    if (!clientId) {
+        throw new Error("No VITE_ONSHAPE_OAUTH_CLIENT_ID set");
+    }
+
+    // check if the user is logged in
+    // if not, send them to onshape to authenticate
+    if (!await hasInitialToken(cookies, onshapeCookieName)) {
+        const authUrl = Oauth.buildAuthorizeUrl({
+            clientId: clientId,
+            redirectUrl: redirectUrl,
+            state: base64(JSON.stringify({searchParams, action: "projects"} satisfies OauthStateData)),
+            // companyId: searchParams.companyId
+        })
+        throw redirect(307, authUrl.toString());
+    }
 
     const Onshape = await getOnshapeClientFromCookies(cookies);
     const teamInfo = await Onshape.TeamApi.find({});

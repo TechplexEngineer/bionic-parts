@@ -1,6 +1,8 @@
 import {TrelloClient} from "$lib/trelloAPI";
 import type {Card} from "$lib/trelloAPI/api/models";
+import type {Cookies} from "@sveltejs/kit";
 
+export const trelloCookieName = "trello_sessionid";
 
 const key = import.meta.env.VITE_TRELLO_KEY;
 if (!key) {
@@ -59,37 +61,33 @@ export const validLabelColors = [
 ];
 
 
-export interface CreateCardWithPhotoAndLinkParams {
-    cardTitle: string;
-    cardDesc: string;
-    trelloListId: string;
-
-    onshapeUrl: string;
-
-    docName: string;
-    thumb: Blob;
-
+export const trelloRequestedExpiration = '30days'; // 1hour, 1day, 30days, never
+export const getTrelloRequestedExpirationStamp = () => {
+    return Date.now() + 1000 * 60 * 60 * 24 * 29 // 29 days so we renew before the token expires
+}
+type OAuth1Cookie = {
+    oauthToken: string
+    oauthTokenSecret: string
+} | {
+    oauthAccessToken: string
+    oauthAccessTokenSecret: string
+    expiryTimestamp: number
 }
 
-export const createCardWithPhotoAndLink = async (params: CreateCardWithPhotoAndLinkParams): Promise<Card> => {
-    const card = await trelloClient.cards.createCard({
-        name: params.cardTitle,
-        desc: params.cardDesc,
-        idList: params.trelloListId,
-        pos: "top",
-    });
-
-    await trelloClient.cards.createCardAttachment({
-        id: card.id,
-        url: params.onshapeUrl,
-        name: `Part released from: '${params.docName}'`
-    });
-
-    await trelloClient.cards.createCardAttachment({
-        id: card.id,
-        file: params.thumb,
-        name: "thumbnail.png",
-        mimeType: "image/png",
-    });
-    return card;
+export const setOauth1TokenInCookie = (cookies: Cookies, cookieName: string, tokenInfo: OAuth1Cookie) => {
+    const cookieValue = JSON.stringify(tokenInfo);
+    cookies.set(cookieName, cookieValue, {
+        path: "/",
+        secure: true, // needed for dev (and prod?)
+        sameSite: "none", // needed for dev (and prod?)
+    })
+}
+export const getOauth1TokenFromCookie = (cookies: Cookies, cookieName: string) => {
+    const rawTokenInfo = cookies.get(cookieName);
+    const isLoggedIn = !!rawTokenInfo;
+    if (!isLoggedIn) {
+        return null;
+    }
+    const tokenInfo: OAuth1Cookie = JSON.parse(rawTokenInfo);
+    return tokenInfo;
 }

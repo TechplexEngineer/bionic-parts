@@ -6,7 +6,6 @@
     export let queryState = "";
 
     import MultipleInput from "./MultipleInput.svelte";
-    import {backlogListId_2024, boardId_2024} from "$lib/trello";
 
     let projects = [];
 
