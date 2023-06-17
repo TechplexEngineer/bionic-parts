@@ -4,32 +4,56 @@
 </svelte:head>
 
 <script lang="ts">
+    import TrelloLink from "../../release/TrelloLink.svelte";
+
     const debug = true;
     import type {PageData} from './$types';
 
     export let data: PageData;
+    $: console.log(data.project.data.trello.boardId);
 
 </script>
 
 <div class="container">
 
-    <div class="row">
-        <div class="col">
-            <h1>Project: <small>{data.project.name}</small></h1>
+    <div class="d-flex mb-2 mt-4">
+        <h1 class="flex-fill" title="ID: {data.project.id} -- Slug: {data.project.slug}">Project:
+            <small>{data.project.name}</small>
+        </h1>
+        <div>
+            <TrelloLink boardId={data.project.data.trello.boardId} class="btn btn-outline-primary"
+                        title="Parts released from this project are sent to this trello board.">Trello
+            </TrelloLink>
+            <a href="/onshape/projects" class="btn btn-outline-primary">All Projects</a>
         </div>
-        <div class="col-2">
-            <!--            <div class="btn btn-success" on:click={newProjectModalToggle} on:keypress={newProjectModalToggle}>New Project</div>-->
-        </div>
+
     </div>
 
-    {#if debug}
-        <a href="http://localhost:5173/onshape/release?&did=da2bc7f409791a8720b27217&wv=v&wvid=e6dfc5a88fdafa4560bfa609&eid=dfc0766722250803423263f8&cfg=List_QUDRhyBNPXwmGx%3DDefault&companyId=cad&server=https%3A%2F%2Fcad.onshape.com&userId=56c1e0aae4b0692ed2011ddb&clientId=NWC5Z62NUDURZNITX2RAOSNQUB2LSDOZ46RISQA%3D&locale=en-US"
-           class="btn btn-outline-primary">Open Part Release</a>
-    {/if}
+    <div class="row mt-4">
 
-    <code class="card p-2">
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-    </code>
+        {#each data.docs as doc}
+            <div class="col mb-3">
+                <div class="card h-100 overflow-hidden text-white bg-dark rounded-4 shadow-lg">
+                    <div class="card-header" title="Onshape Document"><h2 class="mx-2 mt-2 mb-4">{doc.name}</h2></div>
+                    <div class="d-flex flex-column h-100 p-5 py-2 text-shadow-1">
+
+                        <img src="/onshape/thumbnails?url={doc?.thumbnail.sizes.find(t => t.size === '300x300').href}"
+                             alt="" style="max-width: 300px" class="bg-light p-1 rounded-2 mx-auto">
+
+                    </div>
+                    <div class="card-footer text-end mb-2">
+                        <a href="https://cad.onshape.com/documents/{doc.id}"
+                           target="_blank" class="btn btn-success">Open in Onshape</a>
+                    </div>
+                </div>
+            </div>
+        {/each}
+    </div>
+
+
+    <!--    <code class="card p-2">-->
+    <!--        <pre>{JSON.stringify(data, null, 2)}</pre>-->
+    <!--    </code>-->
 
     <!--    Parts that have been released-->
     <!--    <table class="table table-striped">-->
@@ -60,5 +84,18 @@
 </div>
 
 <style>
+    a[target="_blank"]::after {
+        margin: 0 3px 0 5px;
+        content: "↗";
+    }
 
+    .text-shadow-1 {
+        text-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.25);
+    }
+
+    .card-cover {
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
 </style>

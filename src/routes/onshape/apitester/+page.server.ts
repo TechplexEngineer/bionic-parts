@@ -1,6 +1,5 @@
-import {fail} from '@sveltejs/kit';
-import type {PageServerLoad, Actions} from './$types';
-import {onshapeCookieName, getOauthTokenFromCookie, getOnshapeClientFromCookies} from "$lib/onshape";
+import type {Actions, PageServerLoad} from './$types';
+import {getOauthTokenFromCookie, onshapeCookieName} from "$lib/onshape";
 
 export const load = (() => {
     return {};
@@ -21,18 +20,20 @@ export const actions = {
     /**
      * Run a raw Onshape API request
      */
-    runQuery: async ({request, cookies}) => {
+    runQuery: async ({request, cookies, locals: {onshape: Onshape}}) => {
         const formData = await request.formData();
         const data = Object.fromEntries(formData) as unknown as runQueryData;
 
-        const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName)
+        if (!Onshape.client) {
+            throw Onshape.loginRedirect();
+        }
 
         if (data.httpMethod == "get") {
 
             let path = `/${data.resource}/d/${data.did}/${data.wvm}/${data.wvmid}/e/${data.eid}`;
             if (data.subresource) path += `/${data.subresource}`
 
-            const res = await Onshape.request.raw({
+            const res = await Onshape.client.request.raw({
                 method: "GET",
                 path: path,
             })
@@ -45,11 +46,10 @@ export const actions = {
         }
         // NOTE: Only GET is supported as this is published online
     },
-    test: async ({cookies}) => {
-        console.log("test");
-
-        const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
-
+    test: async ({cookies, locals: {onshape: Onshape}}) => {
+        if (!Onshape.client) {
+            throw Onshape.loginRedirect();
+        }
         // const res = await Onshape.request.raw({
         //     method: "GET",
         //     path: "/partstudios/d/da2bc7f409791a8720b27217/v/e6dfc5a88fdafa4560bfa609/e/dfc0766722250803423263f8/stl",
@@ -58,7 +58,7 @@ export const actions = {
         // });
         // console.log("res", res);
 
-        const res = await Onshape.request.exportPartStudioStl({
+        const res = await Onshape.client.request.exportPartStudioStl({
             did: "da2bc7f409791a8720b27217",
             wvm: "v",
             wvmid: "e6dfc5a88fdafa4560bfa609",

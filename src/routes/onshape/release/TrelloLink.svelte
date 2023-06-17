@@ -4,9 +4,11 @@
 
     export let classes = "btn-outline-primary";
 
+    export let title: string | undefined;
+
 </script>
 
-<a class="btn {classes}" href={`https://trello.com/b/${boardId}`} target="_blank">
+<a class="btn {classes}" href={`https://trello.com/b/${boardId}`} target="_blank" title={title}>
     <slot>Open Trello</slot>
 </a>
 

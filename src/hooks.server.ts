@@ -2,7 +2,7 @@ import type {Handle, Redirect} from '@sveltejs/kit';
 import {redirect} from "@sveltejs/kit";
 import getdb, {DataLayer} from "$lib/getdb";
 import {sequence} from "@sveltejs/kit/hooks";
-import {getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
+import {getOnshapeClientFromCookies} from "$lib/onshape";
 import {getTrelloClientFromCookies} from "$lib/trello";
 import {type BuildAuthorizeUrlParams, Oauth} from "$lib/OnshapeAPI";
 import {base64} from "$lib/util";
@@ -63,16 +63,5 @@ const injectOnshapeClient = (async ({event, resolve}) => {
     return resolve(event);
 }) satisfies Handle;
 
-const injectTrelloClient = (async ({event, resolve}) => {
-    if (event.request.url === "http://sveltekit-prerender/[fallback]") {
-        // Don't inject for fallback pre-rendering
-        return resolve(event);
-    }
 
-    // Inject the onshape client into all requests
-    event.locals.trello = await getTrelloClientFromCookies(event.cookies);
-
-    return resolve(event);
-}) satisfies Handle;
-
-export const handle = sequence(injectDb, injectOnshapeClient, injectTrelloClient);
+export const handle = sequence(injectDb, injectOnshapeClient);
