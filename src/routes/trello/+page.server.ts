@@ -1,6 +1,6 @@
 import * as oauth from "$lib/oauth1/mod"
 import type {PageServerLoad} from "./$types";
-import {buildRequestGetOAuthAccessToken, buildRequestGetOAuthRequestToken} from "$lib/oauth1/trelloClient";
+import {buildRequestGetOAuthAccessToken, buildRequestGetOAuthRequestToken} from "$lib/trelloClient";
 import {type Cookies, redirect} from "@sveltejs/kit";
 import {setOauthTokenInCookie} from "$lib/onshape";
 import {setOauth1TokenInCookie, trelloCookieName, trelloRequestedExpiration} from "$lib/trello";

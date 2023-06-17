@@ -1,5 +1,6 @@
 import {customType, integer, sqliteTable, text, uniqueIndex} from 'drizzle-orm/sqlite-core';
 import type {InferModel} from "drizzle-orm";
+import type {Oauth1AccessToken} from "$lib/trello";
 
 
 interface ProjectData {
@@ -20,6 +21,7 @@ interface ProjectData {
     trello: {
         boardId: string,
         listId: string,
+        token: Oauth1AccessToken,
     }
 }
 

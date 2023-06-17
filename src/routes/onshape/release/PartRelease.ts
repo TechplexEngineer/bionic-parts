@@ -33,7 +33,7 @@ export interface PartRelease {
     projectId: number
 }
 
-export const partRelease: Action = async ({request, url: {searchParams}, cookies, locals: {db}}) => {
+export const partRelease: Action = async ({request, url: {searchParams}, cookies, locals: {db, onshape: Onshape}}) => {
 
     const data = (await request.json()) as PartRelease;
     // console.log("data", data);
@@ -42,9 +42,12 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
     const project = await db.getProjectById(data.projectId);
 
 
-    const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
+    // const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
+    if (!Onshape.client) {
+        throw Onshape.loginRedirect()
+    }
 
-    const currentUser = await Onshape.UserApi.sessionInfo();
+    const currentUser = await Onshape.client.UserApi.sessionInfo();
 
     let thumbnailBlob = null;
     const thumbnailInfo = data.part.thumbnailInfo
@@ -56,7 +59,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
             const thumbnailLinkPath = "/thumbnails" + thumbnailLink.split("/thumbnails")[1];
 
             // get the thumbnail
-            const res = await Onshape.request.raw({
+            const res = await Onshape.client.request.raw({
                 method: "GET",
                 path: thumbnailLinkPath,
                 initOverrides: {
@@ -70,9 +73,9 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
     }
 
 
-    const version = await Onshape.DocumentApi.getVersion({did: data.params.did, vid: data.params.wvid})
-    const doc = await Onshape.DocumentApi.getDocument({did: data.params.did});
-    const tab = await Onshape.MetadataApi.getWMVEMetadata({
+    const version = await Onshape.client.DocumentApi.getVersion({did: data.params.did, vid: data.params.wvid})
+    const doc = await Onshape.client.DocumentApi.getDocument({did: data.params.did});
+    const tab = await Onshape.client.MetadataApi.getWMVEMetadata({
         did: data.params.did,
         wvm: data.params.wv as any,
         wvmid: data.params.wvid,
@@ -188,7 +191,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             cardId: card.id,
             tokenInfo: tokenInfo,
         } satisfies WebhookUserData
-        const wh = await Onshape.WebhookApi.createWebhook({
+        const wh = await Onshape.client.WebhookApi.createWebhook({
             bTWebhookParams: {
                 // "clientId": "string",
                 // "companyId": "string",
@@ -216,11 +219,11 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
                 // "folderId": "string",
             }
         });
-        console.log("webhook created", wh);
+        // console.log("webhook created", wh);
 
 
-        console.log("-------------request translation\n\n");
-        const trans = await Onshape.PartStudioApi.createPartStudioTranslation({
+        // console.log("-------------request translation\n\n");
+        const trans = await Onshape.client.PartStudioApi.createPartStudioTranslation({
             did: data.params.did,
             wv: data.params.wv,
             wvid: data.params.wvid,
@@ -234,12 +237,12 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             }
         })
 
-        console.log("translation response", trans)
+        // console.log("translation response", trans)
     } else if (data.mfgMethod == MfgMethods.Printed) {
         // attach stl file
-        console.log("attach stl file");
+        // console.log("attach stl file");
 
-        const res = await Onshape.request.exportPartStudioStl({
+        const res = await Onshape.client.request.exportPartStudioStl({
             did: data.params.did,
             wvm: "v",
             wvmid: data.params.wvid,

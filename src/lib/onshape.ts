@@ -52,7 +52,7 @@ const doTokenRefresh = async (refresh_token: string) => {
     return res;
 }
 
-export const hasInitialToken = async (cookies: Cookies, cookieName: string) => {
+export const hasInitialToken = async (cookies: Cookies, cookieName = onshapeCookieName) => {
     const token = getOauthTokenFromCookie(cookies, cookieName);
     if (!token) {
         console.log("No token found in cookie");
@@ -79,6 +79,11 @@ export interface Oauth2Token {
     expiryTimestamp?: number; // 1685069016155
 }
 
+/**
+ * Get the oauth token from the cookie, or null if not logged in
+ * @param cookies
+ * @param cookieName
+ */
 export const getOauthTokenFromCookie = (cookies: Cookies, cookieName: string) => {
     const rawTokenInfo = cookies.get(cookieName);
     const isLoggedIn = !!rawTokenInfo;
@@ -149,8 +154,17 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
     return Onshape;
 }
 
+/**
+ * Get the Onshape client from the cookies, or null if not logged in
+ * @param cookies
+ * @param cookieName
+ */
 export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName = onshapeCookieName) => {
     const tokenInfo = getOauthTokenFromCookie(cookies, cookieName);
+
+    if (!tokenInfo) {
+        return null;
+    }
 
     return await getOnshapeClient(tokenInfo, (tokenResponse) => {
         setOauthTokenInCookie(cookies, cookieName, tokenResponse);

@@ -1,6 +1,6 @@
 import {TrelloClient} from "$lib/trelloAPI";
-import type {Card} from "$lib/trelloAPI/api/models";
 import type {Cookies} from "@sveltejs/kit";
+import {OauthTrelloClient} from "$lib/trelloClient";
 
 export const trelloCookieName = "trello_sessionid";
 
@@ -65,14 +65,19 @@ export const trelloRequestedExpiration = '30days'; // 1hour, 1day, 30days, never
 export const getTrelloRequestedExpirationStamp = () => {
     return Date.now() + 1000 * 60 * 60 * 24 * 29 // 29 days so we renew before the token expires
 }
-type OAuth1Cookie = {
-    oauthToken: string
-    oauthTokenSecret: string
-} | {
+
+export type Oauth1AccessToken = {
     oauthAccessToken: string
     oauthAccessTokenSecret: string
     expiryTimestamp: number
 }
+
+type Oauth1RequestToken = {
+    oauthToken: string
+    oauthTokenSecret: string
+}
+
+type OAuth1Cookie = Oauth1RequestToken | Oauth1AccessToken
 
 export const setOauth1TokenInCookie = (cookies: Cookies, cookieName: string, tokenInfo: OAuth1Cookie) => {
     const cookieValue = JSON.stringify(tokenInfo);
@@ -91,3 +96,24 @@ export const getOauth1TokenFromCookie = (cookies: Cookies, cookieName: string) =
     const tokenInfo: OAuth1Cookie = JSON.parse(rawTokenInfo);
     return tokenInfo;
 }
+
+/**
+ * Get the oauth token from the cookie, or null if not logged in
+ * @param cookies
+ * @param cookieName
+ */
+export const getTrelloClientFromCookies = async (cookies: Cookies, cookieName = trelloCookieName) => {
+    const tokenInfo = getOauth1TokenFromCookie(cookies, cookieName);
+
+    if (!tokenInfo || !('oauthAccessToken' in tokenInfo) || !('oauthAccessTokenSecret' in tokenInfo)) {
+        return null;
+    }
+
+    return new OauthTrelloClient({
+        oauthAccessToken: tokenInfo.oauthAccessToken,
+        oauthAccessTokenSecret: tokenInfo.oauthAccessTokenSecret,
+    });
+}
+
+
+

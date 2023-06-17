@@ -1,5 +1,8 @@
 import type {DrizzleD1Database} from "drizzle-orm/d1";
 import type {DataLayer} from "$lib/getdb";
+import {OnshapeClient} from "$lib/OnshapeAPI";
+import type {OauthTrelloClient} from "$lib/trelloClient";
+import {redirect} from "@sveltejs/kit";
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -11,6 +14,11 @@ declare global {
         interface Locals {
             rawDb: DrizzleD1Database;
             db: DataLayer;
+
+            onshape: {
+                client: OnshapeClient | null,
+                loginRedirect: (state?: string, companyId?: string) => typeof redirect
+            }
         }
 
         // interface PageData {}

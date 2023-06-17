@@ -1,13 +1,9 @@
 import type {Actions, PageServerLoad} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
-
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
-
-import {base64, filterProjects, formDataToObject} from "$lib/util";
-import {redirect} from "@sveltejs/kit";
-import {type BTPartMetadataInfo, type GetPartsWMVERequest, Oauth} from "$lib/OnshapeAPI";
+import {base64, filterProjects} from "$lib/util";
+import type {BTPartMetadataInfo, GetPartsWMVERequest} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
-import {onshapeCookieName, getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {partRelease} from "./PartRelease";
 import type {ProjectModel} from "$lib/schema";
 
@@ -30,17 +26,10 @@ const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams
 }
 
 
-export const load = (async (event) => {
-    const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
-    if (!redirectUrl) {
-        throw new Error("No VITE_ONSHAPE_OAUTH_REDIRECT_URI set");
-    }
-    const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
-    if (!clientId) {
-        throw new Error("No VITE_ONSHAPE_OAUTH_CLIENT_ID set");
-    }
+export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
 
-    const searchParams = normalizeSearchParams(event.url.searchParams);
+
+    const searchParams = normalizeSearchParams(url.searchParams);
 
     if (typeof searchParams.did === "undefined") {
         return {
@@ -64,24 +53,16 @@ export const load = (async (event) => {
         };
     }
 
-    // check if the user is logged in
-    // if not, send them to onshape to authenticate
-    if (!await hasInitialToken(event.cookies, onshapeCookieName)) {
-        const authUrl = Oauth.buildAuthorizeUrl({
-            clientId: clientId,
-            redirectUrl: redirectUrl,
-            state: base64(JSON.stringify({searchParams, action: "release"} satisfies OauthStateData)),
-            companyId: searchParams.companyId
-        })
-        throw redirect(307, authUrl.toString());
+
+    if (!Onshape.client) {
+        const state = base64(JSON.stringify({searchParams, action: "release"} satisfies OauthStateData))
+        throw Onshape.loginRedirect(state);
+        // login should always throw a redirect, but need this for typescript to understand
     }
 
-    const Onshape = await getOnshapeClientFromCookies(event.cookies, onshapeCookieName);
-
-    const db = event.locals.db;
 
     // ensure the user is on a team that has access to the project
-    const teamInfo = await Onshape.TeamApi.find({});
+    const teamInfo = await Onshape.client.TeamApi.find({});
 
     // console.log("teamInfo", teamInfo?.items?.map(t => ({id: t.id, name: t.name})));
 
@@ -101,12 +82,12 @@ export const load = (async (event) => {
     if (searchParams.cfg && searchParams.cfg !== "{$configuration}") {
         getPartsParams._configuration = searchParams.cfg;
     }
-    const partInDoc = await Onshape.PartApi.getPartsWMVE(getPartsParams);
+    const partInDoc = await Onshape.client.PartApi.getPartsWMVE(getPartsParams);
     const pageParts = partInDoc.map((p) => ({
         part: p, state: PartReleaseState.NeverReleased //await getPartState(p)
     }));
 
-    const tab = await Onshape.MetadataApi.getWMVEMetadata({
+    const tab = await Onshape.client.MetadataApi.getWMVEMetadata({
         did: searchParams.did,
         wvm: searchParams.wv as any,
         wvmid: searchParams.wvid,

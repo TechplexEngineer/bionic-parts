@@ -11,7 +11,8 @@ import {
     CompanyApi,
     DocumentApi,
     DrawingApi,
-    ElementApi, ExportPartStudioStlRequest,
+    ElementApi,
+    type ExportPartStudioStlRequest,
     ExportRuleApi,
     FeatureStudioApi,
     FolderApi,
@@ -39,7 +40,7 @@ import {
 import type {HTTPMethod} from "$lib/OnshapeAPI";
 import {BaseClient} from "$lib/OnshapeAPI/baseClient";
 import * as runtime from "$lib/OnshapeAPI/onshape_api/runtime";
-import {onshapeCookieName, getOauthTokenFromCookie, Oauth2Token} from "$lib/onshape";
+import type {Oauth2Token} from "$lib/onshape";
 
 // Note this is a convenient accessor, but does not allow for tree shaking
 export class OnshapeClient extends BaseClient {
@@ -156,6 +157,14 @@ export interface OauthTokenParams {
     redirectUrl: string,
 }
 
+export interface BuildAuthorizeUrlParams {
+    clientId: string,
+    redirectUrl: string,
+    state: string,
+    companyId?: string,
+    scope?: string
+}
+
 export const Oauth = {
     async token(args: OauthTokenParams) {
         const rawParams: Record<string, string> = {
@@ -183,13 +192,7 @@ export const Oauth = {
         });
     },
 
-    buildAuthorizeUrl(args: {
-        clientId: string,
-        redirectUrl: string,
-        state: string,
-        companyId?: string,
-        scope?: string
-    }) {
+    buildAuthorizeUrl(args: BuildAuthorizeUrlParams) {
         // Your application must first must direct the user to
         // https://oauth.onshape.com/oauth/authorize?response_type=code&client_id=<your client id>.
         // You may optionally add the redirect_uri, scope, state and company_id query parameters.

@@ -1,5 +1,5 @@
 import {test, expect} from "vitest";
-import {buildRequestGetOAuthAccessToken, buildRequestGetOAuthRequestToken} from "$lib/oauth1/trelloClient";
+import {buildRequestGetOAuthAccessToken, buildRequestGetOAuthRequestToken} from "$lib/trelloClient";
 
 // need some additional handling b/c of oauth_nonce and oauth_timestamp
 test.skip("getOAuthRequestToken", async () => {

@@ -13,7 +13,7 @@ function encode(value: string) {
         .replace(/%5D/gi, ']');
 }
 
-function paramSerializer(parameters: Record<string, any>): string {
+export const paramSerializer = (parameters: Record<string, any>): string => {
     const parts: string[] = [];
 
     Object.entries(parameters).forEach(([key, value]) => {
