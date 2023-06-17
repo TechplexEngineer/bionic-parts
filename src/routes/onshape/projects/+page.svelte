@@ -42,7 +42,7 @@
 
     <div class="row">
         {#each projects as project}
-            <div class="col mb-2" style="max-width: 350px">
+            <div class="col mb-2">
                 <Project {project}/>
             </div>
         {/each}

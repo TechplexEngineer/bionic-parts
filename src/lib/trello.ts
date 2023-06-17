@@ -6,11 +6,11 @@ export const trelloCookieName = "trello_sessionid";
 
 const key = import.meta.env.VITE_TRELLO_KEY;
 if (!key) {
-    throw new Error('Missing trello key');
+    throw new Error('Missing VITE_TRELLO_KEY');
 }
 const token = import.meta.env.VITE_TRELLO_TOKEN;
 if (!token) {
-    throw new Error('Missing trello token');
+    throw new Error('Missing VITE_TRELLO_TOKEN');
 }
 
 const trelloClient = new TrelloClient({

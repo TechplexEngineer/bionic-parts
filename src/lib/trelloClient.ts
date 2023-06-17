@@ -28,11 +28,11 @@ import {paramSerializer} from "$lib/trelloAPI";
 
 const key = import.meta.env.VITE_TRELLO_KEY;
 if (!key) {
-    throw new Error('Missing trello key');
+    throw new Error('Missing VITE_TRELLO_KEY');
 }
 const secret = import.meta.env.VITE_TRELLO_SECRET;
 if (!secret) {
-    throw new Error('Missing trello token');
+    throw new Error('Missing VITE_TRELLO_SECRET');
 }
 
 const client = new oauth.OAuthClient({
