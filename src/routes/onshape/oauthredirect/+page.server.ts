@@ -42,8 +42,15 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     if (!stateStr) {
         console.log("ERROR! State was not returned with the token response");
     }
+    console.log("stateStr", stateStr);
+    const decoded = JSON.parse(base64decode(stateStr || ""));
 
-    const state: OauthStateData = JSON.parse(base64decode(stateStr || ""));
+    if (decoded?.type == "url") {
+        throw redirect(302, decoded.url)
+    }
+    // below is the legacy way of doing redirects
+
+    const state: OauthStateData = decoded;
 
     // Build the redirect url and include the state args
 

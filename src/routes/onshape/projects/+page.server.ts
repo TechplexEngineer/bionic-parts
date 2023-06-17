@@ -6,38 +6,17 @@ import {getOnshapeClientFromCookies, hasInitialToken, type OauthStateData, onsha
 import {Oauth} from "$lib/OnshapeAPI";
 
 
-export const load = (async ({locals: {db}, cookies, url: {searchParams}}) => {
+export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {searchParams}}) => {
     const projects = await db.getAllProjects();
 
-    const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
-    if (!redirectUrl) {
-        throw new Error("No VITE_ONSHAPE_OAUTH_REDIRECT_URI set");
-    }
-    const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
-    if (!clientId) {
-        throw new Error("No VITE_ONSHAPE_OAUTH_CLIENT_ID set");
+    if (!Onshape.client) {
+        throw Onshape.loginRedirect();
     }
 
-    // check if the user is logged in
-    // if not, send them to onshape to authenticate
-    if (!await hasInitialToken(cookies, onshapeCookieName)) {
-        const authUrl = Oauth.buildAuthorizeUrl({
-            clientId: clientId,
-            redirectUrl: redirectUrl,
-            state: base64(JSON.stringify({searchParams, action: "projects"} satisfies OauthStateData)),
-            // companyId: searchParams.companyId
-        })
-        throw redirect(307, authUrl.toString());
-    }
-
-    const Onshape = await getOnshapeClientFromCookies(cookies);
-    const teamInfo = await Onshape.TeamApi.find({});
+    const teamInfo = await Onshape.client.TeamApi.find({});
 
     const filteredProjects = filterProjects(projects, teamInfo);
 
-    // console.log("Team Info", teamInfo);
-    // console.log("Projects", projects);
-    // console.log("Filtered Projects", filteredProjects);
 
     return {
         projects: filteredProjects

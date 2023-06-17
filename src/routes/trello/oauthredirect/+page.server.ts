@@ -7,14 +7,11 @@ import {
     trelloCookieName
 } from "$lib/trello";
 import {redirect} from "@sveltejs/kit";
-import {request} from "@playwright/test";
-import {TrelloClient} from "$lib/trelloAPI";
 
 
 export const load = (async ({url: {searchParams}, cookies, request}) => {
 
     const queryParams = Object.fromEntries(searchParams);
-    console.log("oauth redirect", queryParams, await request.text());
 
     const token = getOauth1TokenFromCookie(cookies, trelloCookieName);
     if (!token) {

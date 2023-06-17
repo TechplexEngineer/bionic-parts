@@ -1,10 +1,11 @@
-import type {Handle} from '@sveltejs/kit';
+import type {Handle, Redirect} from '@sveltejs/kit';
 import {redirect} from "@sveltejs/kit";
 import getdb, {DataLayer} from "$lib/getdb";
 import {sequence} from "@sveltejs/kit/hooks";
 import {getOnshapeClientFromCookies, hasInitialToken} from "$lib/onshape";
 import {getTrelloClientFromCookies} from "$lib/trello";
 import {type BuildAuthorizeUrlParams, Oauth} from "$lib/OnshapeAPI";
+import {base64} from "$lib/util";
 
 const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
 if (!redirectUrl) {
@@ -37,11 +38,18 @@ const injectOnshapeClient = (async ({event, resolve}) => {
     // Inject the onshape client into all requests
     event.locals.onshape = {
         client: await getOnshapeClientFromCookies(event.cookies),
-        loginRedirect: async (state = "", companyId?: string) => {
+        loginRedirect: (state?: { [key: string]: string }, companyId?: string): Redirect => {
+            let stateStr = "";
+            if (state) {
+                stateStr = base64(JSON.stringify(state));
+            } else {
+                stateStr = base64(JSON.stringify({type: "url", url: event.url.toString()}))
+            }
+
             const args: BuildAuthorizeUrlParams = {
                 clientId: clientId,
                 redirectUrl: redirectUrl,
-                state: state//base64(JSON.stringify({searchParams, action: "release"} satisfies OauthStateData))
+                state: stateStr
             };
             if (companyId) {
                 args.companyId = companyId;

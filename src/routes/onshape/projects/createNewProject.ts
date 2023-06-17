@@ -31,7 +31,7 @@ export const createNewProject: Action = async ({request, locals: {db}}) => {
     };
     try {
         await db.addNewProject(data);
-    } catch (e) {
+    } catch (e: any) {
         console.log("fail"); //@todo handle this better
         return fail(500, {message: e?.message});
     }

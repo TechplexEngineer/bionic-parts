@@ -124,7 +124,7 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
                     // console.log("token expired, refreshing"); //@todo store the state so we don't continually refresh
                     const res = await doTokenRefresh(tokenInfo.refresh_token);
                     const tokenResponse = await res.json() as unknown as Oauth2Token;
-                    console.log("tokenResponse", tokenResponse);
+                    // console.log("tokenResponse", tokenResponse);
                     refreshCb && refreshCb(tokenResponse)
 
                     // console.log("tokenResponse", tokenResponse);
