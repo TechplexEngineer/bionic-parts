@@ -114,6 +114,16 @@
                    bind:value={slug}>
         </div>
 
+        <h4>Parts from these documents:</h4>
+
+        <MultipleInput label="Onshape Documents *"
+                       fieldNamePrefix="onshapeDoc"
+                       placeholder="5d24311f47dcaa70f7ba005c"
+                       bind:inputs={onshapeDocIds}
+        />
+
+        <h4>Are released to this Trello board list:</h4>
+
         <div class="mb-3">
             <label for="trelloBoardInput" class="form-label">Trello Board *</label>
             <input type="text" class="form-control" id="trelloBoardInput" name="trelloBoardId" required
@@ -126,15 +136,9 @@
                    placeholder="" bind:value={trelloList}>
         </div>
 
-        <MultipleInput label="Onshape Documents *"
-                       fieldNamePrefix="onshapeDoc"
-                       placeholder="5d24311f47dcaa70f7ba005c"
-                       bind:inputs={onshapeDocIds}
-        />
+        <h4>Onshape users on these teams can release parts in this project:</h4>
 
-        <h4>Access</h4>
-
-        <MultipleInput label="Onshape Teams *"
+        <MultipleInput label="Onshape Teams"
                        fieldNamePrefix="onshapeTeamsWrite"
                        placeholder="5bccf2e222e4bf1493e21d19"
                        bind:inputs={onshapeTeamIds}

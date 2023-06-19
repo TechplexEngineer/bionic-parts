@@ -3,13 +3,18 @@ import type {PageServerLoad} from "./$types";
 import {buildRequestGetOAuthAccessToken, buildRequestGetOAuthRequestToken} from "$lib/trelloClient";
 import {type Cookies, redirect} from "@sveltejs/kit";
 import {setOauthTokenInCookie} from "$lib/onshape";
-import {setOauth1TokenInCookie, trelloCookieName, trelloRequestedExpiration} from "$lib/trello";
+import {
+    getTrelloClientFromCookies,
+    setOauth1TokenInCookie,
+    trelloCookieName,
+    trelloRequestedExpiration
+} from "$lib/trello";
 
 const authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
 const appName = "Bionic Parts";
 const scope = 'read,write'; // Comma-separated list of one or more of read, write, account. See https://developer.atlassian.com/cloud/trello/guides/rest-api/authorization/
 
-export const load = (async ({cookies}) => {
+const doTrelloAuthFlow = async (cookies: Cookies) => {
     console.log("load trello");
     const oauthRedirectUrl = import.meta.env.VITE_TRELLO_OAUTH_REDIRECT_URI;
     if (!oauthRedirectUrl) {
@@ -38,7 +43,29 @@ export const load = (async ({cookies}) => {
     })
 
     // 303 = request changed to GET and body thrown away as we have already processed it
-    throw redirect(303, `${authorizeURL}?oauth_token=${oauthToken}&name=${appName}&scope=${scope}&expiration=${trelloRequestedExpiration}`);
+    return redirect(303, `${authorizeURL}?oauth_token=${oauthToken}&name=${appName}&scope=${scope}&expiration=${trelloRequestedExpiration}`);
+}
+export const load = (async ({cookies}) => {
+
+    const trello = await getTrelloClientFromCookies(cookies)
+    if (!trello) {
+        throw await doTrelloAuthFlow(cookies);
+    }
+
+    const me = await trello.members.getMember({id: "me"});
+
+    // console.log("length", me.idBoards?.length)
+    const urls = (me.idBoards || []).map(id => `/boards/${id}?lists=open`).join(",")
+
+    const batchRes = await trello.batch.getBatch({urls});
+    // console.log("batchRes", batchRes.length)
+    console.log("batchRes", JSON.stringify(batchRes[0], null, 2))
+
+    return {
+        me,
+        boards: batchRes
+    }
+
 
 }) satisfies PageServerLoad;
 

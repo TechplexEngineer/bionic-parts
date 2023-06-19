@@ -24,32 +24,79 @@ describe("filterProjects", () => {
                 slug: "test",
                 name: "test",
                 data: {
-                    onshape: {docIds: ["123"], access: {write: [{teamId: teamId}]}},
-                    trello: {boardId: "123", listId: "123"}
+                    onshape: {docIds: ["123"], access: {write: [{teamId: teamId}]}, projectOwnerId: "blake"},
+                    trello: {
+                        boardId: "123",
+                        listId: "123",
+                        token: {
+                            oauthAccessToken: "irrelevant",
+                            oauthAccessTokenSecret: "irrelevant",
+                            expiryTimestamp: -1
+                        }
+                    }
                 }
             },
         ]
         const teaminfo: BTGlobalTreeNodeListResponseBTTeamInfo = {items: [{id: teamId}]}
-        const filtered = filterProjects(projects, teaminfo);
+        const filtered = filterProjects(projects, teaminfo, "random");
         expect(filtered.length).toBe(1);
     });
 
     it('should remove projects user does not have perms to', function () {
-
-
         const projects: ProjectModel[] = [
             {
                 id: 1,
                 slug: "test",
                 name: "test",
                 data: {
-                    onshape: {docIds: ["123"], access: {write: [{teamId: "someOtherProject"}]}},
-                    trello: {boardId: "123", listId: "123"}
+                    onshape: {
+                        docIds: ["123"],
+                        access: {write: [{teamId: "someOtherProject"}]},
+                        projectOwnerId: "blake"
+                    },
+                    trello: {
+                        boardId: "123",
+                        listId: "123",
+                        token: {
+                            oauthAccessToken: "irrelevant",
+                            oauthAccessTokenSecret: "irrelevant",
+                            expiryTimestamp: -1
+                        }
+                    }
                 }
             },
         ]
         const teaminfo: BTGlobalTreeNodeListResponseBTTeamInfo = {items: [{id: "abcdef"}]}
-        const filtered = filterProjects(projects, teaminfo);
+        const filtered = filterProjects(projects, teaminfo, "random");
         expect(filtered.length).toBe(0);
+    });
+
+    it('should return projects that the user is the owner of', function () {
+        const projects: ProjectModel[] = [
+            {
+                id: 1,
+                slug: "test",
+                name: "test",
+                data: {
+                    onshape: {
+                        docIds: ["123"],
+                        access: {write: [{teamId: "someOtherProject"}]},
+                        projectOwnerId: "blake"
+                    },
+                    trello: {
+                        boardId: "123",
+                        listId: "123",
+                        token: {
+                            oauthAccessToken: "irrelevant",
+                            oauthAccessTokenSecret: "irrelevant",
+                            expiryTimestamp: -1
+                        }
+                    }
+                }
+            },
+        ]
+        const teaminfo: BTGlobalTreeNodeListResponseBTTeamInfo = {items: [{id: "abcdef"}]}
+        const filtered = filterProjects(projects, teaminfo, "blake");
+        expect(filtered.length).toBe(1);
     });
 })

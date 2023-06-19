@@ -55,7 +55,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
 
 
     if (!Onshape.client) {
-        const state = base64(JSON.stringify({searchParams, action: "release"} satisfies OauthStateData))
+        const state = {searchParams, action: "release"} as OauthStateData;
         throw Onshape.loginRedirect(state);
         // login should always throw a redirect, but need this for typescript to understand
     }
@@ -63,6 +63,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
 
     // ensure the user is on a team that has access to the project
     const teamInfo = await Onshape.client.TeamApi.find({});
+    const userInfo = await Onshape.client.UserApi.sessionInfo();
 
     // console.log("teamInfo", teamInfo?.items?.map(t => ({id: t.id, name: t.name})));
 
@@ -70,7 +71,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
     const matchingProjects = await db.getAllProjects()
     // console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
 
-    const filteredProjects = filterProjects(matchingProjects, teamInfo);
+    const filteredProjects = filterProjects(matchingProjects, teamInfo, userInfo.id);
     // console.log("filteredProjects", JSON.stringify(filteredProjects, null, 2));
     const getPartsParams: GetPartsWMVERequest = {
         did: searchParams.did,

@@ -4,6 +4,7 @@ import {base64, filterProjects} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
 import {getOnshapeClientFromCookies, hasInitialToken, type OauthStateData, onshapeCookieName} from "$lib/onshape";
 import {Oauth} from "$lib/OnshapeAPI";
+import {getTrelloClientFromCookies} from "$lib/trello";
 
 
 export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {searchParams}}) => {
@@ -14,8 +15,20 @@ export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {sear
     }
 
     const teamInfo = await Onshape.client.TeamApi.find({});
+    const userInfo = await Onshape.client.UserApi.sessionInfo();
 
-    const filteredProjects = filterProjects(projects, teamInfo);
+    const filteredProjects = filterProjects(projects, teamInfo, userInfo.id);
+
+    const trello = await getTrelloClientFromCookies(cookies)
+    if (!trello) {
+        console.log("No Trello Client")
+        return {
+            projects: filteredProjects
+        };
+    }
+
+    const me = await trello.members.getMember({id: "me"});
+    console.log("member", me)
 
 
     return {

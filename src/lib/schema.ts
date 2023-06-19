@@ -17,6 +17,7 @@ interface ProjectData {
         }
         docIds: string[],
         // mainAssembly: { did: string, eid: string },
+        projectOwnerId: string // onshape user that has access to project
     },
     trello: {
         boardId: string,

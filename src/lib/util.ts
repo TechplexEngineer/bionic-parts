@@ -80,12 +80,16 @@ const extractRequiredTeams = (p: ProjectModel): string[] => {
 }
 
 /**
- * Only include projects that the user has access to
+ * Only include projects that the user has access to or is the owner of
  * @param matchingProjects
  * @param teamInfo
  */
-export const filterProjects = (matchingProjects: ProjectModel[], teamInfo: BTGlobalTreeNodeListResponseBTTeamInfo) => {
+export const filterProjects = (matchingProjects: ProjectModel[], teamInfo: BTGlobalTreeNodeListResponseBTTeamInfo, ownerId?: string) => {
     return matchingProjects.filter(p => {
+
+        if (ownerId && p.data.onshape.projectOwnerId === ownerId) {
+            return true;
+        }
 
         const teams = extractTeams(teamInfo)
         if (!teams || teams.length === 0) {
