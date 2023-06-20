@@ -13,9 +13,14 @@ export const load = (async ({url: {searchParams}, cookies, request}) => {
 
     const queryParams = Object.fromEntries(searchParams);
 
+    const redirectUrl = searchParams.get("state");
+    if (!redirectUrl) {
+        throw new Error("redirectUrl not set");
+    }
+
     const token = getOauth1TokenFromCookie(cookies, trelloCookieName);
     if (!token) {
-        throw redirect(303, "/onshape/release"); //@todo this will result in an error without the docid
+        throw redirect(303, redirectUrl);
     }
 
     if (!queryParams.oauth_token || !queryParams.oauth_verifier) {
@@ -63,15 +68,9 @@ export const load = (async ({url: {searchParams}, cookies, request}) => {
         expiryTimestamp: expiryTimestamp
     })
 
-    // throw redirect(303, "/onshape/release"); //@todo this will result in an error without the docid
+    // 303 = request changed to GET and body thrown away as we have already processed it
+    throw redirect(303, queryParams.state);
 
-    const trello = new OauthTrelloClient({
-        oauthAccessTokenSecret: oauthAccessTokenSecret,
-        oauthAccessToken: oauthAccessToken,
-    })
-
-    const me = await trello.members.getMember({id: "me"});
-    console.log("me", me);
 
 }) satisfies PageServerLoad;
 

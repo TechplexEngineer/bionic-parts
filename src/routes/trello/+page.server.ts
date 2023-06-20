@@ -14,14 +14,19 @@ const authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
 const appName = "Bionic Parts";
 const scope = 'read,write'; // Comma-separated list of one or more of read, write, account. See https://developer.atlassian.com/cloud/trello/guides/rest-api/authorization/
 
-const doTrelloAuthFlow = async (cookies: Cookies) => {
+const doTrelloAuthFlow = async (cookies: Cookies, returnUrl?: string) => {
     console.log("load trello");
     const oauthRedirectUrl = import.meta.env.VITE_TRELLO_OAUTH_REDIRECT_URI;
     if (!oauthRedirectUrl) {
         throw new Error('Missing VITE_TRELLO_OAUTH_REDIRECT_URI');
     }
 
-    const req = await buildRequestGetOAuthRequestToken(oauthRedirectUrl)
+    const callbackUrl = new URL(oauthRedirectUrl)
+    if (returnUrl) {
+        callbackUrl.searchParams.set("state", returnUrl)
+    }
+
+    const req = await buildRequestGetOAuthRequestToken(callbackUrl.toString());
     // console.log(req.headers.get("Authorization"));
     const res = await fetch(req);
 
@@ -49,7 +54,7 @@ export const load = (async ({cookies}) => {
 
     const trello = await getTrelloClientFromCookies(cookies)
     if (!trello) {
-        throw await doTrelloAuthFlow(cookies);
+        throw await doTrelloAuthFlow(cookies, "/trello")
     }
 
     const me = await trello.members.getMember({id: "me"});
