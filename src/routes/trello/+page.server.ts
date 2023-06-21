@@ -64,7 +64,7 @@ export const load = (async ({cookies}) => {
 
     const batchRes = await trello.batch.getBatch({urls});
     // console.log("batchRes", batchRes.length)
-    console.log("batchRes", JSON.stringify(batchRes[0], null, 2))
+    // console.log("batchRes", JSON.stringify(batchRes[0], null, 2))
 
     return {
         me,

@@ -50,7 +50,7 @@ export const load = (async ({url: {searchParams}, cookies, request}) => {
 
     const expiryTimestamp = getTrelloRequestedExpirationStamp()
     const data = new URLSearchParams(await res.text());
-    console.log("data", data);
+    // console.log("data", data);
 
     const oauthAccessToken = data.get("oauth_token");
     if (!oauthAccessToken) {
