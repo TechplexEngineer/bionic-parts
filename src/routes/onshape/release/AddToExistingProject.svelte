@@ -1,6 +1,6 @@
 <script lang="ts">
     import type {ProjectModel} from "$lib/schema";
-    import NewProjectModal from "../projects/NewProjectModal.svelte";
+    import NewProjectModal from "../../projects/NewProjectModal.svelte";
     import TrelloLink from "./TrelloLink.svelte";
     import {page} from "$app/stores";
 
@@ -43,7 +43,7 @@
                                             classes="btn-outline-primary btn-sm"/>
                             </td>
                             <td>
-                                <form action="/onshape/projects?/addDoc2Project" method="POST">
+                                <form action="/projects?/addDoc2Project" method="POST">
                                     <input type="hidden" name="projectId" value={project.id}>
                                     <input type="hidden" name="onshapeDocId" value={onshapeDocId}>
                                     {#if queryState}

@@ -11,7 +11,7 @@
         }, {
             title: 'Bionic Parts Projects',
             description: 'Projects group multiple Onshape documents and describe where parts from those documents go when released.',
-            link: '/onshape/projects'
+            link: '/projects'
         }
     ];
 

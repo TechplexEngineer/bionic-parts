@@ -1,8 +1,8 @@
 import {formDataToObject} from "$lib/util";
-import {validateNewProject} from "./validate";
-import {type Action, fail, redirect} from "@sveltejs/kit";
+import {validateNewProject} from "../validate";
+import {type Action, fail} from "@sveltejs/kit";
 import type {ProjectModel} from "$lib/schema";
-import {getOauth1TokenFromCookie, getTrelloClientFromCookies, trelloCookieName} from "$lib/trello";
+import {getOauth1TokenFromCookie, trelloCookieName} from "$lib/trello";
 
 export const createNewProject: Action = async ({request, locals: {db, onshape}, cookies}) => {
 

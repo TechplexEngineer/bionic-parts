@@ -1,5 +1,5 @@
 <script>
-    import NewProjectModal from "../projects/NewProjectModal.svelte";
+    import NewProjectModal from "../../projects/NewProjectModal.svelte";
     import {page} from "$app/stores";
 
     let newProjectModalOpen = true;

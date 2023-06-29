@@ -5,17 +5,14 @@
 
 <script lang="ts">
     import Project from './Project.svelte';
-    import Modal from '$lib/Modal.svelte';
     import type {PageData} from './$types';
-    import NewProjectModal from "./NewProjectModal.svelte";
+
 
     // populated with data from the get endpoint
     export let data: PageData;
 
     let projects = [];
     $: projects = data.projects;
-
-    let newProjectModalOpen = false;
 
 
 </script>
@@ -29,10 +26,9 @@
         </div>
         <div class="col-2 d-flex flex-column">
             <div class="mt-auto ms-auto">
-                <div class="btn btn-success" on:click={()=>newProjectModalOpen=true}
-                     on:keypress={()=>newProjectModalOpen=true}>
+                <a class="btn btn-success" href="/projects/create">
                     New Project
-                </div>
+                </a>
             </div>
         </div>
     </div>
@@ -47,8 +43,6 @@
             </div>
         {/each}
     </div>
-
-    <NewProjectModal bind:isOpen={newProjectModalOpen}></NewProjectModal>
 </div>
 
 <style>

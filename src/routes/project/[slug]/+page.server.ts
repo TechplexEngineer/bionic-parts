@@ -1,4 +1,4 @@
-import type {PageServerLoad, Actions} from './$types';
+import type {PageServerLoad, Actions} from '../../../../.svelte-kit/types/src/routes';
 import {projectSchema} from "$lib/schema";
 import {eq} from "drizzle-orm";
 import {redirect} from "@sveltejs/kit";
@@ -11,7 +11,7 @@ export const load = (async ({params, locals: {db, onshape: Onshape}}) => {
     const project = await db.getProjectBySlug(params.slug)
     if (!project) {
         console.log(`project with slug: ${params.slug} not found`);
-        throw redirect(307, '/onshape/projects');
+        throw redirect(307, '/projects');
     }
     console.timeEnd("db.getProjectBySlug")
 

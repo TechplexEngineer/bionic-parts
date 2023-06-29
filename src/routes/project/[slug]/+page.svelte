@@ -4,10 +4,10 @@
 </svelte:head>
 
 <script lang="ts">
-    import TrelloLink from "../../release/TrelloLink.svelte";
+    import TrelloLink from "../../onshape/release/TrelloLink.svelte";
 
     const debug = true;
-    import type {PageData} from './$types';
+    import type {PageData} from '../../../../.svelte-kit/types/src/routes';
 
     export let data: PageData;
     $: console.log(data.project.data.trello.boardId);
@@ -24,7 +24,7 @@
             <TrelloLink boardId={data.project.data.trello.boardId} class="btn btn-outline-primary"
                         title="Parts released from this project are sent to this trello board.">Trello
             </TrelloLink>
-            <a href="/onshape/projects" class="btn btn-outline-primary">All Projects</a>
+            <a href="/projects" class="btn btn-outline-primary">All Projects</a>
         </div>
 
     </div>
