@@ -1,5 +1,7 @@
+/**
+ * This is a proxy for onshape thumbnails api
+ */
 import type {RequestHandler} from "@sveltejs/kit";
-import {fail} from "@sveltejs/kit";
 
 
 export const GET = (async ({url, locals: {onshape}}) => {
@@ -23,8 +25,5 @@ export const GET = (async ({url, locals: {onshape}}) => {
         method: "GET",
         path: apiPath
     })
-
-    // return new Response();
-
 
 }) satisfies RequestHandler;

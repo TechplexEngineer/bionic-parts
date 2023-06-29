@@ -1,6 +1,7 @@
 import type {Limits} from './limits';
 import type {Preferences} from './preferences';
 import type {TrelloID} from './trelloID';
+import type {List} from './list';
 
 export interface Board {
     id: TrelloID;
@@ -27,6 +28,7 @@ export interface Board {
         pink?: string;
         black?: string;
     };
+    lists?: List[];
     limits?: Limits;
     starred?: boolean;
     memberships?: string;

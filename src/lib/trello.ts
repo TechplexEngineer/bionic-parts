@@ -1,6 +1,7 @@
 import {TrelloClient} from "$lib/trelloAPI";
 import type {Cookies} from "@sveltejs/kit";
-import {OauthTrelloClient} from "$lib/trelloClient";
+import {buildRequestGetOAuthRequestToken, OauthTrelloClient} from "$lib/trelloClient";
+import {redirect} from "@sveltejs/kit";
 
 export const trelloCookieName = "trello_sessionid";
 
@@ -115,5 +116,46 @@ export const getTrelloClientFromCookies = async (cookies: Cookies, cookieName = 
     });
 }
 
+
+const authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
+const appName = "Bionic Parts";
+const scope = 'read,write'; // Comma-separated list of one or more of read, write, account. See https://developer.atlassian.com/cloud/trello/guides/rest-api/authorization/
+
+export const doTrelloAuthFlow = async (cookies: Cookies, returnUrl?: string) => {
+    console.log("load trello");
+    const oauthRedirectUrl = import.meta.env.VITE_TRELLO_OAUTH_REDIRECT_URI;
+    if (!oauthRedirectUrl) {
+        throw new Error('Missing VITE_TRELLO_OAUTH_REDIRECT_URI');
+    }
+
+    const callbackUrl = new URL(oauthRedirectUrl)
+    if (returnUrl) {
+        callbackUrl.searchParams.set("state", returnUrl)
+    }
+
+    const req = await buildRequestGetOAuthRequestToken(callbackUrl.toString());
+    // console.log(req.headers.get("Authorization"));
+    const res = await fetch(req);
+
+    const data = new URLSearchParams(await res.text());
+    // console.log("data", data);
+
+    const oauthToken = data.get("oauth_token");
+    if (!oauthToken) {
+        throw new Error("Missing oauth_token");
+    }
+    const oauthTokenSecret = data.get("oauth_token_secret");
+    if (!oauthTokenSecret) {
+        throw new Error("Missing oauth_token_secret");
+    }
+
+    setOauth1TokenInCookie(cookies, trelloCookieName, {
+        oauthToken: oauthToken,
+        oauthTokenSecret: oauthTokenSecret
+    })
+
+    // 303 = request changed to GET and body thrown away as we have already processed it
+    return redirect(303, `${authorizeURL}?oauth_token=${oauthToken}&name=${appName}&scope=${scope}&expiration=${trelloRequestedExpiration}`);
+}
 
 

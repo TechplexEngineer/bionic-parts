@@ -2,28 +2,42 @@ import type {Actions, PageServerLoad} from './$types';
 import {createNewProject} from "./createNewProject";
 import {filterProjects} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {getTrelloClientFromCookies} from "$lib/trello";
+import {doTrelloAuthFlow, getTrelloClientFromCookies} from "$lib/trello";
+import type {Board} from "$lib/trelloAPI/api/models";
+import type {OauthTrelloClient} from "$lib/trelloClient";
 
+const getUserBoards = async (trello: OauthTrelloClient) => {
+    const me = await trello.members.getMember({id: "me"});
+
+    // Build list of urls to batch request
+    const urls = (me.idBoards || []).map(id => `/boards/${id}?lists=open`).join(",")
+
+    const batchRes = await trello.batch.getBatch<{ [key: string]: Board }[]>({urls});
+
+    const boards = batchRes.map(b => b['200']);
+
+    return boards
+}
 
 export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {searchParams}}) => {
-    const projects = await db.getAllProjects();
 
     if (!Onshape.client) {
-        throw Onshape.loginRedirect();
+        throw Onshape.loginRedirect()
     }
 
     const trello = await getTrelloClientFromCookies(cookies)
     if (!trello) {
-        console.log("No Trello Client")
-
+        throw await doTrelloAuthFlow(cookies, "/trello");
     }
 
-    // const me = await trello.members.getMember({id: "me"});
-    // console.log("member", me)
+
+    const currentUserTeams = await Onshape.client.TeamApi.find({});
+    //@todo handle users with more than one page of teams
 
 
     return {
-        projects: []
+        trelloBoards: await getUserBoards(trello),
+        onshapeTeams: currentUserTeams.items
     };
 }) satisfies PageServerLoad;
 

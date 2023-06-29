@@ -7,9 +7,29 @@
 
     import type {PageData} from './$types';
     import MultipleInput from "../MultipleInput.svelte";
+    import Select from "svelte-select";
 
     // populated with data from the get endpoint
     export let data: PageData;
+
+    let trelloListChoices = data.trelloBoards.map(b => {
+        return (b.lists || []).map(l => {
+            return {
+                value: {board: b.id, list: l.id},
+                label: l.name,
+                group: b.name
+            }
+        })
+    }).flat();
+
+    let onshapeTeamChoices = data.onshapeTeams!.map(t => {
+        return {
+            value: t.id,
+            label: t.name
+        }
+    })
+
+    $: console.log("trelloBoardAndList", trelloBoardAndList);
 
 
     let queryState = "";
@@ -20,19 +40,19 @@
     let slug = "";
     let onshapeDocIds = "";
     let onshapeTeamIds = "";
-    let trelloBoard = "";
-    let trelloList = "";
+    let trelloBoardAndList = undefined;
     const setValues = (project) => {
+        trelloBoardAndList = {board: "", list: ""};
         name = project.name;
         slug = project.slug;
         onshapeDocIds = project.onshapeDocIds;
         onshapeTeamIds = project.onshapeTeamIds;
-        trelloBoard = project.trelloBoardId;
-        trelloList = project.trelloListId;
+        trelloBoardAndList.board = project.trelloBoardId;
+        trelloBoardAndList.list = project.trelloListId;
     }
 
     let projects = [];
-    const debug = true; //import.meta.env.VITE_DEBUG
+    const debug = false; //import.meta.env.VITE_DEBUG
     if (debug) {
         const convert = (input) => {
             return input.map((i, idx) => ({id: idx, value: i}))
@@ -101,7 +121,7 @@
         </div>
         <div class="col-2 d-flex flex-column">
             <div class="mt-auto ms-auto">
-                <a class="btn btn-success" href="/projects">
+                <a class="btn btn-outline-success" href="/projects">
                     All Projects
                 </a>
             </div>
@@ -125,45 +145,51 @@
             </div>
         {/if}
 
-        <div class="mb-3">
-            <label for="projectName" class="form-label">Name *</label>
-            <input type="text" class="form-control" id="projectName" name="name" required
-                   placeholder="Charged Up 2023" bind:value={name}>
-        </div>
+        <div class="row">
+            <div class="mb-3 col-lg-6">
+                <label for="projectName" class="form-label">Project Name *</label>
+                <input type="text" class="form-control" id="projectName" name="name" required
+                       placeholder="Charged Up 2023" bind:value={name}>
+            </div>
 
-        <div class="mb-3">
-            <label for="slugInput" class="form-label">Slug * (Short Project Name)</label>
-            <input type="text" class="form-control" id="slugInput" name="slug" required placeholder="23chargedup"
-                   bind:value={slug}>
+            <div class="mb-3 col-lg-6">
+                <label for="slugInput" class="form-label">Slug * (Short Project Name)</label>
+                <input type="text" class="form-control" id="slugInput" name="slug" required placeholder="23chargedup"
+                       bind:value={slug}>
+            </div>
         </div>
 
         <h4>Parts from these documents:</h4>
+        <p></p>
 
-        <MultipleInput label="Onshape Documents *"
+        <MultipleInput label="Onshape Documents"
                        fieldNamePrefix="onshapeDoc"
-                       placeholder="5d24311f47dcaa70f7ba005c"
                        bind:inputs={onshapeDocIds}
         />
 
         <h4>Are released to this Trello board list:</h4>
 
-        <div class="mb-3">
-            <label for="trelloBoardInput" class="form-label">Trello Board *</label>
-            <input type="text" class="form-control" id="trelloBoardInput" name="trelloBoardId" required
-                   placeholder="" bind:value={trelloBoard}>
-        </div>
+        <Select items={trelloListChoices} groupBy={(item) => item.group} bind:value={trelloBoardAndList}
+                name="trelloBoardAndList" showChevron/>
 
-        <div class="mb-3">
-            <label for="trelloListInput" class="form-label">Trello List *</label>
-            <input type="text" class="form-control" id="trelloListInput" name="trelloListId" required
-                   placeholder="" bind:value={trelloList}>
-        </div>
+        <!--        <div class="mb-3">-->
+        <!--            <label for="trelloBoardInput" class="form-label">Trello Board *</label>-->
+        <!--            <input type="text" class="form-control" id="trelloBoardInput" name="trelloBoardId" required-->
+        <!--                   placeholder="" bind:value={trelloBoard}>-->
+        <!--        </div>-->
 
-        <h4>Onshape users on these teams can release parts in this project:</h4>
+        <!--        <div class="mb-3">-->
+        <!--            <label for="trelloListInput" class="form-label">Trello List *</label>-->
+        <!--            <input type="text" class="form-control" id="trelloListInput" name="trelloListId" required-->
+        <!--                   placeholder="" bind:value={trelloList}>-->
+        <!--        </div>-->
+
+        <h4 class="mt-2">Onshape users on these teams can release parts in this project:</h4>
 
         <MultipleInput label="Onshape Teams"
                        fieldNamePrefix="onshapeTeamsWrite"
                        placeholder="5bccf2e222e4bf1493e21d19"
+                       options={onshapeTeamChoices}
                        bind:inputs={onshapeTeamIds}
         />
 
@@ -171,6 +197,9 @@
             <input type="hidden" name="queryState" value={queryState}>
         {/if}
 
+        <a class="btn btn-outline-primary" href="/projects">
+            Cancel
+        </a>
         <button type="submit" form="createProjectForm" class="btn btn-success mb-3 float-end">
             Create
         </button>

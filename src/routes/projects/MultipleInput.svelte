@@ -1,5 +1,7 @@
 <script lang="ts">
 
+    import Select from "svelte-select";
+
     export let label: string;
     export let fieldNamePrefix: string;
     export let placeholder = "";
@@ -7,6 +9,8 @@
 
     export let inputs = [{id: 0}]; //@todo this should be a map
     export let counter = inputs.length;
+
+    export let options: null | { label: string, value: any, [key: string]: string }[] = null;
 
     const handleRemove = (index) => {
         inputs = [
@@ -24,9 +28,16 @@
     </div>
     {#each inputs as input, index (input.id)}
         <div class="input-group mt-2">
-            <input type="text" class="form-control" name={`${fieldNamePrefix}[${input.id}]`}
-                   placeholder={placeholder} required={isRequired}
-                   value={input?.value || ""}>
+            {#if options !== null}
+                <Select items={options} labelField="label" valueField="value"
+                        class="form-control" name={`${fieldNamePrefix}[${input.id}]`}
+                        placeholder={placeholder} required={isRequired} showChevron
+                />
+            {:else}
+                <input type="text" class="form-control" name={`${fieldNamePrefix}[${input.id}]`}
+                       placeholder={placeholder} required={isRequired}
+                       value={input?.value || ""}>
+            {/if}
             {#if inputs.length !== 1}
                 <button class="btn btn-outline-danger" type="button"
                         on:click={()=>{handleRemove(input.id)}}>
