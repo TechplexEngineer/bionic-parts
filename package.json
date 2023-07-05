@@ -46,6 +46,8 @@
     "bootstrap": "^5.2.3",
     "drizzle-kit": "^0.18.0",
     "drizzle-orm": "^0.26.0",
-    "svelte-select": "^5.6.1"
+    "svelte-select": "^5.6.1",
+    "sveltekit-flash-message": "^1.0.1",
+    "sveltekit-superforms": "^1.1.3"
   }
 }
