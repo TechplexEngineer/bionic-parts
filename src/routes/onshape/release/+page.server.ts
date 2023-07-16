@@ -55,8 +55,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
 
 
     if (!Onshape.client) {
-        const state = {searchParams, action: "release"} as OauthStateData;
-        throw Onshape.loginRedirect(state);
+        throw Onshape.loginRedirect();
         // login should always throw a redirect, but need this for typescript to understand
     }
 

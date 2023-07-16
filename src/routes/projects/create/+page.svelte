@@ -4,7 +4,6 @@
 </svelte:head>
 
 <script lang="ts">
-
     import type {PageData} from './$types';
     import MultipleInput from "../MultipleInput.svelte";
     import Select from "svelte-select";
@@ -27,9 +26,7 @@
             value: t.id,
             label: t.name
         }
-    })
-
-    $: console.log("trelloBoardAndList", trelloBoardAndList);
+    });
 
 
     let queryState = "";
@@ -38,8 +35,8 @@
     // form bound variables
     let name = "";
     let slug = "";
-    let onshapeDocIds = "";
-    let onshapeTeamIds = "";
+    let onshapeDocIds = [{id: 0}];
+    let onshapeTeamIds = [{id: 0}];
     let trelloBoardAndList = undefined;
     const setValues = (project) => {
         trelloBoardAndList = {board: "", list: ""};
@@ -145,53 +142,93 @@
             </div>
         {/if}
 
-        <div class="row">
-            <div class="mb-3 col-lg-6">
-                <label for="projectName" class="form-label">Project Name *</label>
-                <input type="text" class="form-control" id="projectName" name="name" required
-                       placeholder="Charged Up 2023" bind:value={name}>
+        <div class="card mb-3">
+            <div class="card-header">
+                <span class="fs-5">1. Project</span>
             </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="mb-3 col-lg-6">
+                        <label for="projectName" class="form-label">Project Name *</label>
+                        <input type="text" class="form-control" id="projectName" name="name" required
+                               placeholder="Charged Up 2023" bind:value={name}>
+                    </div>
 
-            <div class="mb-3 col-lg-6">
-                <label for="slugInput" class="form-label">Slug * (Short Project Name)</label>
-                <input type="text" class="form-control" id="slugInput" name="slug" required placeholder="23chargedup"
-                       bind:value={slug}>
+                    <div class="mb-3 col-lg-6">
+                        <label for="slugInput" class="form-label">Slug (Short Project Name) *</label>
+                        <input type="text" class="form-control" id="slugInput" name="slug" required
+                               placeholder="23chargedup"
+                               pattern="\w+"
+                               bind:value={slug}>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <h4>Parts from these documents:</h4>
-        <p></p>
+        <div class="row d-flex">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="fs-5">2. Documents</span>
+                    </div>
+                    <div class="card-body">
 
-        <MultipleInput label="Onshape Documents"
-                       fieldNamePrefix="onshapeDoc"
-                       bind:inputs={onshapeDocIds}
-        />
+                        <p>When parts are released from these Onshape documents, cards are created at Release
+                            Destination. <br> Documents can be added later.</p>
 
-        <h4>Are released to this Trello board list:</h4>
+                        <MultipleInput label="Onshape Documents"
+                                       fieldNamePrefix="onshapeDoc"
+                                       placeholder="Document(s) to include in project"
+                                       bind:inputs={onshapeDocIds}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <span class="fs-5">3. Release Destination</span>
+                    </div>
+                    <div class="card-body">
+                        <p>Cards will be created on the selected Trello list when a part is released.</p>
 
-        <Select items={trelloListChoices} groupBy={(item) => item.group} bind:value={trelloBoardAndList}
-                name="trelloBoardAndList" showChevron/>
+                        <label class="form-label">Trello List</label>
+                        <Select
+                                items={trelloListChoices}
+                                groupBy={(item) => item.group}
+                                bind:value={trelloBoardAndList}
+                                name="trelloBoardAndList"
+                                showChevron
+                                placeholder="Please select destination Trello List"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!--        <div class="mb-3">-->
-        <!--            <label for="trelloBoardInput" class="form-label">Trello Board *</label>-->
-        <!--            <input type="text" class="form-control" id="trelloBoardInput" name="trelloBoardId" required-->
-        <!--                   placeholder="" bind:value={trelloBoard}>-->
-        <!--        </div>-->
+        <div class="row mt-3 mb-3">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <span class="fs-5">
+                            4. Project Access
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <p>Optionally share this project with other Onshape users.
+                            Users on teams selected can release parts in this project.</p>
 
-        <!--        <div class="mb-3">-->
-        <!--            <label for="trelloListInput" class="form-label">Trello List *</label>-->
-        <!--            <input type="text" class="form-control" id="trelloListInput" name="trelloListId" required-->
-        <!--                   placeholder="" bind:value={trelloList}>-->
-        <!--        </div>-->
+                        <label class="form-label">Share With</label>
+                        <Select items={onshapeTeamChoices} labelField="label" valueField="value"
+                                class="form-control" name="onshapeTeamsWrite"
+                                placeholder="Onshape Teams" required={false} showChevron multiple
+                        />
 
-        <h4 class="mt-2">Onshape users on these teams can release parts in this project:</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <MultipleInput label="Onshape Teams"
-                       fieldNamePrefix="onshapeTeamsWrite"
-                       placeholder="5bccf2e222e4bf1493e21d19"
-                       options={onshapeTeamChoices}
-                       bind:inputs={onshapeTeamIds}
-        />
 
         {#if queryState}
             <input type="hidden" name="queryState" value={queryState}>
@@ -207,5 +244,17 @@
 </div>
 
 <style>
+    label.form-label {
+        font-weight: bold;
+    }
 
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .row > [class*='col-'] {
+        display: flex;
+        flex-direction: column;
+    }
 </style>

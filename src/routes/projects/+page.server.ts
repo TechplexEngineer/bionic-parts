@@ -1,8 +1,6 @@
 import type {Actions, PageServerLoad} from './$types';
 import {filterProjects} from "$lib/util";
 import {redirect} from "@sveltejs/kit";
-import {getTrelloClientFromCookies} from "$lib/trello";
-
 
 export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {searchParams}}) => {
     const projects = await db.getAllProjects();
@@ -15,18 +13,6 @@ export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {sear
     const userInfo = await Onshape.client.UserApi.sessionInfo();
 
     const filteredProjects = filterProjects(projects, teamInfo, userInfo.id);
-
-    const trello = await getTrelloClientFromCookies(cookies)
-    if (!trello) {
-        console.log("No Trello Client")
-        return {
-            projects: filteredProjects
-        };
-    }
-
-    const me = await trello.members.getMember({id: "me"});
-    console.log("member", me)
-
 
     return {
         projects: filteredProjects

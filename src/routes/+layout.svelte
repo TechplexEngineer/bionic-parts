@@ -1,7 +1,18 @@
 <script>
     import '../app.scss';
+
+    import {initFlash} from 'sveltekit-flash-message/client';
+    import {page} from '$app/stores';
+
+    const flash = initFlash(page);
 </script>
 
+{#if $flash}
+	{@const flashClass = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].includes($flash.type) ? `alert-${$flash.type}` : 'alert-primary'}
+	<div class="alert {flashClass} m-2" role="alert">
+		FLASH MESSAGE {$flash.message}
+	</div>
+{/if}
 <slot/>
 
 <style>

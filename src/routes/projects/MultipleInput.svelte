@@ -31,7 +31,7 @@
             {#if options !== null}
                 <Select items={options} labelField="label" valueField="value"
                         class="form-control" name={`${fieldNamePrefix}[${input.id}]`}
-                        placeholder={placeholder} required={isRequired} showChevron
+                        placeholder={placeholder} required={isRequired} showChevron multiple
                 />
             {:else}
                 <input type="text" class="form-control" name={`${fieldNamePrefix}[${input.id}]`}
@@ -48,3 +48,8 @@
     {/each}
 </div>
 
+<style>
+    label.form-label {
+        font-weight: bold;
+    }
+</style>

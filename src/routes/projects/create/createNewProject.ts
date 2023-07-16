@@ -4,7 +4,7 @@ import {type Action, fail} from "@sveltejs/kit";
 import type {ProjectModel} from "$lib/schema";
 import {getOauth1TokenFromCookie, trelloCookieName} from "$lib/trello";
 
-export const createNewProject: Action = async ({request, locals: {db, onshape}, cookies}) => {
+export const createNewProject: Action = async ({request, locals: {db, onshape, trello}, cookies}) => {
 
     const inputData = formDataToObject(await request.formData())
 
@@ -18,7 +18,6 @@ export const createNewProject: Action = async ({request, locals: {db, onshape}, 
 
     const userInfo = await onshape.client.UserApi.sessionInfo()
 
-    // const trello = await getTrelloClientFromCookies(cookies)
     const tokenInfo = getOauth1TokenFromCookie(cookies, trelloCookieName);
 
     if (!tokenInfo || !('oauthAccessToken' in tokenInfo) || !('oauthAccessTokenSecret' in tokenInfo)) {
