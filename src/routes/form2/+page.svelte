@@ -3,8 +3,10 @@
     import {superForm} from 'sveltekit-superforms/client'
     import type {PageData} from './$types';
     import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
-    import {schema} from "./schema";
     import * as flashModule from 'sveltekit-flash-message/client';
+    import FormErrors from "$lib/superform/FormErrors.svelte";
+    import Submit from "$lib/superform/Submit.svelte";
+    import {schema} from "../form/schema";
 
     export let data: PageData;
 
@@ -29,23 +31,7 @@
 <div class="container">
 	<h1>Superforms Test</h1>
 
-	{#if $allErrors.length}
-		<div class="alert alert-danger" role="alert">
-			<strong>Error: Unable to submit due to these errors:</strong>
-			<ul class="mb-0">
-				{#each $allErrors as error}
-					<li>
-						<b>{error.path}:</b>
-						{error.messages.join('. ')}
-					</li>
-				{/each}
-			</ul>
-		</div>
-	{/if}
-
-	{#if $message}
-		<div class="alert alert-primary">{$message}</div>
-	{/if}
+	<FormErrors {form}/>
 
 	<form method="post" use:enhance>
 		<div class="row">
@@ -57,17 +43,7 @@
 			</div>
 		</div>
 
-		<button type="submit" class="btn btn-primary mt-2">
-
-			{#if $delayed}
-				Submitting
-				<div class="spinner-border spinner-border-sm text-light" role="status">
-					<span class="visually-hidden">Loading...</span>
-				</div>
-			{:else}
-				Submit
-			{/if}
-		</button>
+		<Submit {form} class="btn btn-primary mt-2">Submit</Submit>
 	</form>
 
 	<div class="mt-3">
