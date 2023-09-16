@@ -1,9 +1,11 @@
 import type {Actions, PageServerLoad} from './$types';
 import {createNewProject} from "./createNewProject";
-import {redirect} from "@sveltejs/kit";
+import {fail, redirect} from "@sveltejs/kit";
 import type {Board} from "$lib/trelloAPI/api/models";
 import type {OauthTrelloClient} from "$lib/trelloClient";
 import type {BTTeamInfo} from "$lib/OnshapeAPI";
+import {superValidate} from "sveltekit-superforms/server";
+import {createProjectSchema} from "./createProject.schema";
 
 const getUserBoards = async (trello: OauthTrelloClient) => {
     const me = await trello.members.getMember({id: "me"});
@@ -31,18 +33,30 @@ export const load = (async ({locals: {db, onshape: Onshape, trello}, cookies, ur
     const currentUserTeams = await Onshape.client.TeamApi.find({});
     //@todo handle users with more than one page of teams
 
+    const form = await superValidate(createProjectSchema);
+
     return {
         trelloBoards: await getUserBoards(trello.client),
-        onshapeTeams: currentUserTeams.items!
+        onshapeTeams: currentUserTeams.items!,
+        form
     };
-}) satisfies PageServerLoad<{trelloBoards: Board[], onshapeTeams: BTTeamInfo[]}>;
+}) satisfies PageServerLoad<{ trelloBoards: Board[], onshapeTeams: BTTeamInfo[] }>;
 
 export const actions = {
-    createProject: async (event) => {
+    default: async (event) => {
+        const form = await superValidate(event.request, createProjectSchema);
+
+        // Convenient validation check:
+        if (!form.valid) {
+            // Again, always return { form } and things will just work.
+            return fail(400, {form});
+        }
+
         console.log("Create New Project", event);
 
         return
         const inputData = await createNewProject(event)
+
         // console.log("Create New Project", inputData);
 
         if (inputData?.queryState) {

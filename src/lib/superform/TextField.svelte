@@ -8,11 +8,14 @@
     export let form: SuperForm<ZodValidation<T>, unknown>;
     export let field: FormPathLeaves<z.infer<T>>;
 
+
     const {value, errors, constraints} = formFieldProxy(form, field);
 </script>
 
 <label class="form-label fw-bold">
-	{field}
+	<slot>
+		{field}
+	</slot>
 </label>
 <input
 		name={field}

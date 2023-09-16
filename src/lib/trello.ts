@@ -62,7 +62,7 @@ export const validLabelColors = [
 ];
 
 
-export const trelloRequestedExpiration = '30days'; // 1hour, 1day, 30days, never
+export const trelloRequestedExpiration = 'never'; // 1hour, 1day, 30days, never
 export const getTrelloRequestedExpirationStamp = () => {
     return Date.now() + 1000 * 60 * 60 * 24 * 29 // 29 days so we renew before the token expires
 }
@@ -127,7 +127,7 @@ export const doTrelloAuthFlow = async (cookies: Cookies, returnUrl: URL) => {
     if (!oauthRedirectUrl) {
         throw new Error('Missing VITE_TRELLO_OAUTH_REDIRECT_URI');
     }
-    
+
     const callbackUrl = new URL(oauthRedirectUrl)
     // oauth1 state can be stored un url parameters, as long as the URL path does not change
     // as there is a whitelist of redirect urls in the authorizing service (trello)
