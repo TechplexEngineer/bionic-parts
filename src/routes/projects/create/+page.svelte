@@ -21,7 +21,9 @@
     const form = superForm(data.form, {
         validators: {
             name: (name) => name.length < 3 ? 'Name must be at least 3 characters' : null,
-            trelloBoardAndList: (selection) => selection.value.board.length < 3 ? 'Please select a Trello List' : null
+            trelloBoardAndList: (selection) => selection.value.board.length < 3 ? 'Please select a Trello List' : null,
+            documents: (document) => (document && document.match(/https:\/\/[^.]+\.onshape.com\/documents\/[0-9a-f]+/)) ? null : 'Please enter a valid Onshape Document URL'
+
         },
         validationMethod: "onblur", //onblur only works if use:enhance is setup
         // defaultValidator: "keep"
