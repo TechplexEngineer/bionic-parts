@@ -1,25 +1,31 @@
 <script lang="ts">
-    import type {ProjectModel} from "$lib/schema";
-    // import NewProjectModal from "../../projects/NewProjectModal.svelte";
-    import TrelloLink from "./TrelloLink.svelte";
-    import {page} from "$app/stores";
+	import type {ProjectModel} from "$lib/schema";
+	import BiBoxArrowUpRight from '~icons/bi/box-arrow-up-right'
+	import TrelloLink from "./TrelloLink.svelte";
+	import {page} from "$app/stores";
 
-    export let projects: ProjectModel[];
-    export let onshapeDocId: string;
+	export let projects: ProjectModel[];
+	export let onshapeDocId: string;
 
-    $: queryState = $page.url.searchParams;
+	$: queryState = $page.url.searchParams;
 
-    let newProjectModalOpen = false;
+	let newProjectModalOpen = false;
 
 </script>
 
 
-<h3>The current document does not belong to a project.</h3>
-<h5>You can add the current document to an exising project you have
-	access to, or create a new project.</h5>
+<h3>Error: The current document does not belong to a project.</h3>
+<h5>There are 2 options:</h5>
+<ol>
+	<li>add the current document to an exising project you have
+		access to
+	</li>
+	<li>create a new project</li>
+</ol>
+
 
 <div class="row mt-4">
-	<div class="col">
+	<div class="col-md-6 col-12">
 		<div class="card">
 			<h2 class="card-header fs-4">
 				Existing Projects
@@ -60,14 +66,16 @@
 			</div>
 		</div>
 	</div>
-	<div class="col">
+	<div class="col-md-6 col-12 mt-4">
 		<div class="card">
 			<h2 class="card-header fs-4">
 				Create a new project
 			</h2>
 			<div class="card-body">
-				<button class="btn btn-warning btn-sm" on:click={()=>newProjectModalOpen=true}>Create Project</button>
-				<!--                <NewProjectModal bind:isOpen={newProjectModalOpen} queryState={queryState}/>-->
+				<a href="/projects/create" target="_blank" class="btn btn-primary" title="opens in a new tab">
+					Create New Project
+					<BiBoxArrowUpRight/>
+				</a>
 			</div>
 		</div>
 

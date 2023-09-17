@@ -4,7 +4,7 @@
 
     export let classes = "btn-outline-primary";
 
-    export let title: string | undefined;
+    export let title: string = "";
 
 </script>
 
