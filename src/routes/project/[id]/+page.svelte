@@ -6,22 +6,20 @@
 <script lang="ts">
     import TrelloLink from "../../onshape/release/TrelloLink.svelte";
 
-    const debug = true;
-    import type {PageData} from '../../../../.svelte-kit/types/src/routes';
+    import type {PageData} from './$types';
 
     export let data: PageData;
-    $: console.log(data.project.data.trello.boardId);
 
 </script>
 
 <div class="container">
 
     <div class="d-flex mb-2 mt-4">
-        <h1 class="flex-fill" title="ID: {data.project.id} -- Slug: {data.project.slug}">Project:
+        <h1 class="flex-fill" title="ID: {data.project.id}">Project:
             <small>{data.project.name}</small>
         </h1>
         <div>
-            <TrelloLink boardId={data.project.data.trello.boardId} class="btn btn-outline-primary"
+            <TrelloLink boardId={data.project.data.trello.boardId} classes="btn-outline-primary"
                         title="Parts released from this project are sent to this trello board.">Trello
             </TrelloLink>
             <a href="/projects" class="btn btn-outline-primary">All Projects</a>

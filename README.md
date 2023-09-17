@@ -41,3 +41,4 @@ You can preview the production build with `npm run preview`.
 ## Notes
 
 - Great article on cloudflare D1 and Drizzle integration: https://sat0shi.dev/posts/drizzle-migration/
+- Generate database migrations with `npx drizzle-kit generate:sqlite`

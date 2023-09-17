@@ -14,4 +14,5 @@ export const createProjectSchema = z.object({
         value: z.string(),
         label: z.string(),
     })),
+    queryState: z.string().optional(),
 });

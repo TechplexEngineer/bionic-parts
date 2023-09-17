@@ -45,10 +45,7 @@ const dbJson = customType({
 // A project relates onshape documents with a trello board and access permissions
 export const projectSchema = sqliteTable('projects', {
     id: integer('id').primaryKey(),
-    slug: text('slug').notNull(),
     name: text('name').notNull(),
     data: dbJson('data').notNull().$type<ProjectData>(), //json data
-}, (table) => ({
-    nameIdx: uniqueIndex('slugUniqueIdx').on(table.slug),
-}));
+});
 export type ProjectModel = InferModel<typeof projectSchema>;

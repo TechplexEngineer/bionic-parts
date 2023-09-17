@@ -1,4 +1,4 @@
-import type {PageServerLoad, Actions} from '../../../../.svelte-kit/types/src/routes';
+import type {PageServerLoad, Actions} from './$types';
 import {projectSchema} from "$lib/schema";
 import {eq} from "drizzle-orm";
 import {redirect} from "@sveltejs/kit";
@@ -8,9 +8,9 @@ export const load = (async ({params, locals: {db, onshape: Onshape}}) => {
     console.time("load project")
 
     console.time("db.getProjectBySlug")
-    const project = await db.getProjectBySlug(params.slug)
+    const project = await db.getProjectById(parseInt(params.id))
     if (!project) {
-        console.log(`project with slug: ${params.slug} not found`);
+        console.log(`project with id: ${params.id} not found`);
         throw redirect(307, '/projects');
     }
     console.timeEnd("db.getProjectBySlug")
@@ -37,7 +37,6 @@ export const load = (async ({params, locals: {db, onshape: Onshape}}) => {
         // filtered down what we publish about the project
         project: {
             id: project.id,
-            slug: project.slug,
             name: project.name,
             data: {
                 onshape: {

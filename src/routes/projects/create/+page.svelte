@@ -22,7 +22,7 @@
         validators: {
             name: (name) => name.length < 3 ? 'Name must be at least 3 characters' : null,
             trelloBoardAndList: (selection) => selection.value.board.length < 3 ? 'Please select a Trello List' : null,
-            documents: (document) => (document && document.match(/https:\/\/[^.]+\.onshape.com\/documents\/[0-9a-f]+/)) ? null : 'Please enter a valid Onshape Document URL'
+            documents: (document) => (document && document.match(/^[0-9a-f]{20,25}$/)) ? null : 'Please enter a valid Onshape Document Id'
 
         },
         validationMethod: "onblur", //onblur only works if use:enhance is setup
@@ -40,10 +40,10 @@
     let trelloListChoices = data.trelloBoards.map(b => {
         return (b.lists || []).map(l => {
             return {
-                value: {board: b.id, list: l.id},
-                label: l.name,
-                group: b.name
-            }
+				value: {board: b.id, list: l.id},
+				label: `${b.name} / ${l.name}`,
+				group: b.name
+			}
         })
     }).flat();
 
@@ -154,12 +154,6 @@
 				</div>
 			</div>
 		</div>
-
-
-		<div class="mt-3">
-			<SuperDebug data={$formData}/>
-		</div>
-
 
 		{#if queryState}
 			<input type="hidden" name="queryState" value={queryState}>

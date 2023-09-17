@@ -45,8 +45,8 @@ const getDbFromPlatform = async (platform: App.Platform | undefined): Promise<Dr
     // Migrator causing cannot start a transaction within a transaction
     // // Migrator requires node packages not available in workers env
     // if (import.meta.env.DEV) { //we can only apply migrations in dev
-    //     const ddb = drizzle(db as any);
-    //     await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
+    // const ddb = drizzle(db as any);
+    // await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
     //     return ddb;
     // }
 
@@ -58,12 +58,6 @@ export class DataLayer {
 
     constructor(db: DrizzleD1Database) {
         this.db = db;
-    }
-
-    public async getProjectBySlug(slug: string): Promise<ProjectModel> {
-        return this.db.select()
-            .from(projectSchema)
-            .where(eq(projectSchema.slug, slug)).get();
     }
 
     public async addNewProject(project: ProjectModel): Promise<any> {

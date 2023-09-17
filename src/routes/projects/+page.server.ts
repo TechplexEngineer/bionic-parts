@@ -34,7 +34,7 @@ export const actions = {
             throw redirect(303, `/onshape/release/?${queryState}`);
         } else {
             // 303 = request changed to GET and body thrown away as we have already processed it
-            throw redirect(303, `/project/${project?.slug}`);
+            throw redirect(303, `/project/${project?.id}`);
         }
     }
 } satisfies Actions;
