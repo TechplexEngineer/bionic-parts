@@ -100,18 +100,18 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         eid: searchParams.eid
     });
 
-    const title3SubsystemName = tab.properties?.find(p => p.name == "Title 3")?.value as unknown as string;
     const tabName = tab.properties?.find(p => p.name == "Name")?.value as unknown as string;
-    if (!title3SubsystemName) {
-        return {
-            searchParams,
-            tabName,
-            parts: [],
-            subsystemName: title3SubsystemName,
-            error: `Subsystem name MUST be set in Title 3 field of ${tabName}. (Close and reopen the tab to refresh the data.)`,
-            projects: [],
-        };
-    }
+    const title3SubsystemName = tab.properties?.find(p => p.name == "Title 3")?.value as unknown as string;
+    // if (!title3SubsystemName) {
+    //     return {
+    //         searchParams,
+    //         tabName,
+    //         parts: [],
+    //         subsystemName: title3SubsystemName,
+    //         error: `Subsystem name MUST be set in Title 3 field of ${tabName}. (Close and reopen the tab to refresh the data.)`,
+    //         projects: [],
+    //     };
+    // }
 
     return {
         searchParams,
