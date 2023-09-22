@@ -55,6 +55,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
 
 
     if (!Onshape.client) {
+        console.log("No Onshape client found in session", Onshape.client);
         throw Onshape.loginRedirect();
         // login should always throw a redirect, but need this for typescript to understand
     }

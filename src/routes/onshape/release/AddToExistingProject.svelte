@@ -14,7 +14,7 @@
 </script>
 
 
-<h3>Error: The current document does not belong to a project.</h3>
+<h3>The current document does not belong to a project.</h3>
 <h5>There are 2 options:</h5>
 <ol>
 	<li>add the current document to an exising project you have
@@ -55,7 +55,8 @@
 									{#if queryState}
 										<input type="hidden" name="queryState" value={queryState}>
 									{/if}
-									<button class="btn btn-primary btn-sm">Select
+									<button class="btn btn-primary btn-sm" title="Add current document to this project">
+										Add to this Project
 									</button>
 								</form>
 							</td>
@@ -72,7 +73,7 @@
 				Create a new project
 			</h2>
 			<div class="card-body">
-				<a href="/projects/create" target="_blank" class="btn btn-primary" title="opens in a new tab">
+				<a href="/projects/create" target="_blank" class="btn btn-primary" title="Opens in a new tab">
 					Create New Project
 					<BiBoxArrowUpRight/>
 				</a>
