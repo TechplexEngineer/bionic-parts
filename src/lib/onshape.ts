@@ -113,6 +113,9 @@ export const setOauthTokenInCookie = (cookies: Cookies, cookieName: string, toke
 
 export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?: (token: Oauth2Token) => void) => {
     const Onshape = new OnshapeClient(new Configuration({
+        headers: {
+            accept: "application/json"
+        },
         middleware: [{
             pre: async (context) => {
                 // console.log("tokenInfo", tokenInfo);
