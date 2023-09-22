@@ -35,6 +35,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
 
 
     const body = await res.json() as unknown as Oauth2Token;
+    console.log("setting cookie", onshapeCookieName, body);
     setOauthTokenInCookie(cookies, onshapeCookieName, body)
 
     const stateStr = searchParams.get("state")
@@ -46,6 +47,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     const decoded = JSON.parse(base64decode(stateStr || ""));
 
     if (decoded?.type == "url") {
+        console.log("redirecting to", decoded.url);
         throw redirect(302, decoded.url)
     }
     // below is the legacy way of doing redirects
@@ -63,7 +65,7 @@ export const load = (async ({url: {searchParams}, cookies}) => {
         }
     }
     const redirUrl = `/onshape/${state.action}?${redirSearchParams}`
-    // console.log("redirUrl", redirUrl.toString());
+    console.log("redir to (legacy)", redirUrl.toString());
 
     throw redirect(302, redirUrl) //@todo need state
     // console.log("OauthTokenBody", await res.text())
