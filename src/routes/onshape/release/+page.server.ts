@@ -58,11 +58,16 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         throw Onshape.loginRedirect();
         // login should always throw a redirect, but need this for typescript to understand
     }
-
+    let userInfo;
+    try {
+        userInfo = await Onshape.client.UserApi.sessionInfo();
+    } catch (e) {
+        //@todo if typeof e == "ResponseError" then
+        throw Onshape.loginRedirect();
+    }
 
     // ensure the user is on a team that has access to the project
     const teamInfo = await Onshape.client.TeamApi.find({});
-    const userInfo = await Onshape.client.UserApi.sessionInfo();
 
     // console.log("teamInfo", teamInfo?.items?.map(t => ({id: t.id, name: t.name})));
 
