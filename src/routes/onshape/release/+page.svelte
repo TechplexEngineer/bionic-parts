@@ -1,12 +1,10 @@
 <svelte:head>
-    <title>Part Release</title>
-    <meta name="description" content="Release parts from Onshape to Trello"/>
+	<title>Part Release</title>
+	<meta name="description" content="Release parts from Onshape to Trello"/>
 </svelte:head>
 
 <script lang="ts">
     import type {PageData} from './$types';
-
-    import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
     import PartList from "./PartList.svelte";
     import Options from "./Options.svelte";
     import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
@@ -74,46 +72,62 @@
 <div class="container-fluid mt-4">
 
 
-    {#if errorMessage}
-        <h1>Part Release: <small>{data.tabName}</small></h1>
-        <span class="text-danger">ERROR: {errorMessage}</span>
-    {:else}
-        <!--doing in page routing so we don't have to be careful to maintain the query string params and-->
-        <!--so we can add an onshape selector which requires postmessage-->
-        {#if data?.projects?.length === 0}
-            <!--User does not have access to any projects-->
-            <NoProjects/>
-        {:else if activeProjects?.length > 1}
-            <!-- Document is in multiple projects -->
-            <h1>Document is in more than one project</h1>
-            <p>Error: This is not currently supported. Sorry.</p>
-        {:else if selectedProject}
-            {#if stage === Stages.partlist}
-                <PartList
-                        parts={data?.parts}
-                        tabName={data?.tabName}
-                        project={data?.projects[0]}
-                        on:release={handleReleaseClick}
-                        on:rerelease={handleReReleaseClick}
-                ></PartList>
-            {:else if stage === Stages.options}
-                <Options
-                        selectedPart={selectedPart}
-                        subsystemName={data.subsystemName}
-                        selectedProject={selectedProject}
-                        on:cancel={()=>{stage = Stages.partlist; selectedPart = null;}}
-                        on:submit={handleSubmit}
-                ></Options>
-            {/if}
-        {:else}
-            <!--User has access to projects, but none of them have this doc in them-->
-            <AddToExistingProject
-                    onshapeDocId={data.searchParams.did}
-                    projects={data.projects}
-            />
-        {/if}
+	{#if errorMessage}
+		<h1>Part Release</h1>
+		<span class="text-danger">{errorMessage}</span>
 
-    {/if}
+		<p class="mt-4 fw-bold">To select a version:</p>
+		<ol>
+			<li>Click the Versions and History button (
+				<svg xmlns="http://www.w3.org/2000/svg" style="width: 20px;height: 20px;">
+					<path fill-rule="evenodd" clip-rule="evenodd"
+					      d="M0 5c0-2.205 1.794-4 4-4s4 1.795 4 4a4.007 4.007 0 01-3 3.873v4.075c.568-.297 1.242-.448 2-.448h1.5c.888 0 1.27-.344 1.426-.812a2 2 0 111.914.128C11.51 13.402 10.6 14.5 8.5 14.5H7c-.573 0-1.279.243-1.68.997a2 2 0 11-2.32-.23V8.873A4.007 4.007 0 010 5zm20-3H10v2h10V2zm-6.007 5H20v2h-6.007V7zM20 12h-6.007v2H20v-2zm-10 5h10v2H10v-2zM4 7.5a2.5 2.5 0 10.001-4.999A2.5 2.5 0 004 7.5z"
+					      fill="currentColor"></path>
+				</svg>
+				) from just beneath the Onshape logo at the top left of the
+				window.
+
+			</li>
+			<li>Choose an existing version or create a new version which includes the parts you wish to release.</li>
+			<li>Re-Open this release tool.</li>
+		</ol>
+	{:else}
+		<!--doing in page routing so we don't have to be careful to maintain the query string params and-->
+		<!--so we can add an onshape selector which requires postmessage-->
+		{#if data?.projects?.length === 0}
+			<!--User does not have access to any projects-->
+			<NoProjects/>
+		{:else if activeProjects?.length > 1}
+			<!-- Document is in multiple projects -->
+			<h1>Document is in more than one project</h1>
+			<p>Error: This is not currently supported. Sorry.</p>
+		{:else if selectedProject}
+			{#if stage === Stages.partlist}
+				<PartList
+						parts={data?.parts}
+						tabName={data?.tabName}
+						project={data?.projects[0]}
+						on:release={handleReleaseClick}
+						on:rerelease={handleReReleaseClick}
+				></PartList>
+			{:else if stage === Stages.options}
+				<Options
+						selectedPart={selectedPart}
+						subsystemName={data.subsystemName}
+						selectedProject={selectedProject}
+						on:cancel={()=>{stage = Stages.partlist; selectedPart = null;}}
+						on:submit={handleSubmit}
+				></Options>
+			{/if}
+		{:else}
+			<!--User has access to projects, but none of them have this doc in them-->
+			<AddToExistingProject
+					onshapeDocId={data.searchParams.did}
+					projects={data.projects}
+			/>
+		{/if}
+
+	{/if}
 </div>
 <style>
     :global(body) {
