@@ -46,6 +46,11 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     console.log("stateStr", stateStr);
     const decoded = JSON.parse(base64decode(stateStr || ""));
 
+    return {
+        state: decoded,
+        body,
+    }
+
     if (decoded?.type == "url") {
         console.log("redirecting to", decoded.url);
         throw redirect(302, decoded.url)

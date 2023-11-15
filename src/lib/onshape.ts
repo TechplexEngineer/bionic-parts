@@ -106,8 +106,8 @@ export const setOauthTokenInCookie = (cookies: Cookies, cookieName: string, toke
     });
     cookies.set(cookieName, cookieValue, {
         path: "/",
-        // secure: true, // needed for dev (and prod?)
-        // sameSite: "none", // needed for dev (and prod?)
+        secure: true, // needed for dev (and prod?)
+        sameSite: "none", // needed for dev (and prod?)
     })
 }
 

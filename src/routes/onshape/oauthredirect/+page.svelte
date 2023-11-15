@@ -1,3 +1,7 @@
+<script lang="ts">
+    import type {PageData} from './$types';
 
+    export let page: PageData;
+</script>
 
-<h1>here</h1>
+<pre>{JSON.stringify(page, null, 2)}</pre>
