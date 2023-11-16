@@ -34,7 +34,14 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     });
 
 
-    const body = await res.json() as unknown as Oauth2Token;
+    const body = await res.json() as any;
+    if (body.error) {
+        console.log("ERROR", body);
+        return {
+            error: body.error,
+            params: inParams
+        }
+    }
     console.log("setting cookie", onshapeCookieName, body);
     setOauthTokenInCookie(cookies, onshapeCookieName, body)
 
@@ -46,10 +53,10 @@ export const load = (async ({url: {searchParams}, cookies}) => {
     console.log("stateStr", stateStr);
     const decoded = JSON.parse(base64decode(stateStr || ""));
 
-    return {
-        state: decoded,
-        body,
-    }
+    // return {
+    //     state: decoded,
+    //     body,
+    // }
 
     if (decoded?.type == "url") {
         console.log("redirecting to", decoded.url);
