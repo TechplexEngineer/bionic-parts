@@ -247,7 +247,11 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             wvm: "v",
             wvmid: data.params.wvid,
             eid: data.params.eid,
+            partIds: data.part.partId,
             units: "millimeter", // @todo if you put MILLIMETER you get an invalid stl file, should get an error
+            angleTolerance: .04, //(degree)
+            chordTolerance: 0.06, //(millimeter)
+            minFacetWidth: 0.0254, //(millimeter)
         }, await getOauthTokenFromCookie(cookies, onshapeCookieName)!);
 
 
