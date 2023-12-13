@@ -22,10 +22,18 @@
         {value: 'v', label: 'V'},
         {value: 'm', label: 'M'},
     ];
-    let wvmValue = "v";
 
     let reqTypeItems = ["get", "post"];
     let reqTypeValue = "get";
+
+    console.log('$page.url.searchParams', Array.from($page.url.searchParams.entries()));
+    
+
+
+    const did = $page.url.searchParams.get('did') || "da2bc7f409791a8720b27217";
+    let wvmValue = $page.url.searchParams.get('wv') || "v";
+    const wvid = $page.url.searchParams.get('wvid') || "64f8366f6a92b0a27756bb6c";
+    const eid = $page.url.searchParams.get('eid') || "dfc0766722250803423263f8";
 </script>
 
 <form method="POST" action="?/runQuery">
@@ -57,7 +65,7 @@
             </div>
             <div class="col-md-2">
                 <label for="did" class="form-label">DocumentID</label>
-                <input type="text" class="form-control" id="did" name="did" value="da2bc7f409791a8720b27217">
+                <input type="text" class="form-control" id="did" name="did" value={did}>
             </div>
             <div class="col-md-2">
                 <label class="form-label" for="wvmInput">W-V-M</label>
@@ -66,11 +74,11 @@
             </div>
             <div class="col-md-2">
                 <label for="wvmidInput" class="form-label">WvmID</label>
-                <input type="text" class="form-control" id="wvmidInput" name="wvmid" value="64f8366f6a92b0a27756bb6c">
+                <input type="text" class="form-control" id="wvmidInput" name="wvmid" value={wvid}>
             </div>
             <div class="col-md-2">
                 <label for="eid" class="form-label">ElementID</label>
-                <input type="text" class="form-control" id="eid" name="eid" value="dfc0766722250803423263f8">
+                <input type="text" class="form-control" id="eid" name="eid" value={eid}>
             </div>
             <div class="col-md-2">
                 <label for="SubResourceInput" class="form-label">SubResource</label>
