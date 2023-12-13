@@ -258,7 +258,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         await trelloClient.cards.createCardAttachment({
             id: card.id,
             file: await res.blob(),
-            name: `${cardName}.stl`
+            name: `${cardName} QTY:${data.qty}.stl`
         })
 
         if (data.printerUsed == Printers.FormLabs) {
