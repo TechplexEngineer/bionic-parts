@@ -1,7 +1,8 @@
 export enum PartReleaseState {
     NeverReleased = "Never Released",
     Released = "Released",
-    ChangedSinceLastRelease = "Changed Since Last Release"
+    ChangedSinceLastRelease = "Changed Since Last Release",
+    Unknown = "Unknown",
 }
 
 interface test {

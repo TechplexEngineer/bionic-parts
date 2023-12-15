@@ -15,7 +15,7 @@
 
     export let data: PageData;
 
-    let errorMessage = null;
+    let errorMessage: string | undefined = undefined;
     $: errorMessage = ("error" in data) ? data.error : undefined
 
     enum Stages {

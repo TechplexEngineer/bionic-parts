@@ -19,19 +19,19 @@
             return {value: key, label: e[key]};
         });
     };
-    let qty; //bound to the value of the select
+    let qty: number; //bound to the value of the select
 
 
-    let mfgMethod; //bound to the value of the select
+    let mfgMethod: { value: any, label: string, created?: boolean }; //bound to the value of the select
     let mfgMethods: { value: any, label: string, created?: boolean }[] = enumToSelectOptions(MfgMethods);
 
 
-    let machinesUsed; //bound to the value of the select
+    let machinesUsed: { value: any, label: string}; //bound to the value of the select
     const machinesAvailable = enumToSelectOptions(Machines);
 
 
     const printersAvailable = enumToSelectOptions(Printers)
-    let printerUsed; //bound to the value of the select
+    let printerUsed: { value: any, label: string}; //bound to the value of the select
 
 
     const getMaterialsAvailableForPrinter = (printerUsed: Printers) => {
@@ -45,16 +45,16 @@
         }
     }
 
-    $: printerMaterialsAvailable = getMaterialsAvailableForPrinter(printerUsed?.label);
-    let printerMaterialUsed; //bound to the value of the select
+    let printerMaterialUsed: { value: any, label: string}; //bound to the value of the select
+    $: printerMaterialsAvailable = getMaterialsAvailableForPrinter(printerUsed?.label as any);
 
-    let cotsLink; //bound to the value of
+    let cotsLink: string; //bound to the value of the input field
 
 
     // https://stackoverflow.com/a/34064434/429544
-    function htmlDecode(input) {
+    function htmlDecode(input: string): string {
         const doc = new DOMParser().parseFromString(input, "text/html");
-        return doc.documentElement.textContent;
+        return doc.documentElement.textContent as string;
     }
 
     let notes = htmlDecode(`What stock should be used?
@@ -65,7 +65,7 @@ How should the part be made, what steps should be followed?
     2.&nbsp;
     3.&nbsp;`);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (): Promise<void> => {
         if (typeof qty !== "number") {
             alert("Please enter a number for the quantity");
             return;
@@ -89,7 +89,7 @@ How should the part be made, what steps should be followed?
             subsystemName: subsystemName,
             projectId: parseInt(selectedProject.id as string) //@todo
         } satisfies Omit<PartRelease, 'params'>)
-        return new Promise((resolve) => {
+        return new Promise<void>((resolve) => {
             setTimeout(() => {
                 resolve();
             }, 10 * 1000); // units are milliseconds

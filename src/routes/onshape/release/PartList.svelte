@@ -4,14 +4,57 @@
     import {fixType} from "$lib/util";
     import type {Part} from "./part";
     import {page} from "$app/stores";
-    import {createEventDispatcher} from 'svelte';
+    import {createEventDispatcher, onMount} from 'svelte';
     import type {ProjectModel} from "$lib/schema";
     import TrelloLink from "./TrelloLink.svelte";
+	import type { PartStatusRequest } from "./PartStatusRequest";
+    import { applyAction, deserialize } from '$app/forms';
+	import type { ActionResult } from "@sveltejs/kit";
 
     const dispatch = createEventDispatcher();
 
-    export let parts: Part[];
+    export let parts: Part[] = [];
     export let tabName: string;
+
+    onMount(() => {
+        
+        for (const part of parts) {
+            console.log('part', part);
+            
+            fetch('?/partState', {
+                method: 'POST',
+                body: JSON.stringify({
+                    parts: [part],
+                } satisfies PartStatusRequest),
+            })
+        .then(async res => {
+                const result: ActionResult = deserialize(await res.text());
+                if (result.type === 'success') {
+                    console.log('data', result.data);
+                    for (const part of result.data as any) {
+                        const match = parts.find(p => {
+                            console.log('checking match', p.part.id, part.part.part.id);
+                            
+                            return p.part.id === part.part.part.id
+                        });
+                        if (!match) {
+                            console.log('no match', part.part);
+                            continue;
+                        }
+                        console.log('old', parts[parts.indexOf(match)]);
+                        console.log('new', part.state);
+                        
+                        
+                        parts[parts.indexOf(match)].state = part.state;
+                        
+                        // match.state = result.data?.state;
+                    }
+                    parts = [...parts];
+                }
+            });
+        //     // part.state = PartReleaseState.NeverReleased;
+        }
+    });
 
     export let project: ProjectModel;
 
@@ -67,6 +110,8 @@ Here is a list of parts that can be released to manufacturing:
                     <button class="btn btn-info btn-sm" on:click={handleReReleaseClick(obj.part)} type="button">
                         Re-Release
                     </button>
+                {:else}
+                    {'loading...'}
                 {/if}
             </td>
         </tr>

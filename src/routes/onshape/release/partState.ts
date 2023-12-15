@@ -1,10 +1,15 @@
 import {PartReleaseState} from "./PartReleaseState";
 import type {BTPartMetadataInfo} from "$lib/OnshapeAPI";
 
+interface ReleasedPart {
+    partId: string,
+    microversionId: string
+}
+    
 
-export const getPartState = async (part: BTPartMetadataInfo): Promise<PartReleaseState> => {
+export const getPartState = async (part: BTPartMetadataInfo, releasedParts: ReleasedPart[]): Promise<PartReleaseState> => {
     if (partHasBeenReleased(part)) {
-        if (partHasChanged(part, getLatestReleasedVersion(part))) {
+        if (partHasChanged(part, getLatestReleasedVersion(part, releasedParts))) {
             return PartReleaseState.ChangedSinceLastRelease;
         } else {
             return PartReleaseState.Released;
@@ -23,6 +28,6 @@ const partHasChanged = (currentRev: BTPartMetadataInfo, releasedPart: BTPartMeta
     }
     return false
 }
-const getLatestReleasedVersion = (part: BTPartMetadataInfo) => {
-    return 0
+const getLatestReleasedVersion = (part: BTPartMetadataInfo, releasedParts: ReleasedPart[]) => {
+    return part;
 }

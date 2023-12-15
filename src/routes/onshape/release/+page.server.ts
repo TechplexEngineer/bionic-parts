@@ -6,6 +6,7 @@ import type {BTPartMetadataInfo, GetPartsWMVERequest} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
 import {partRelease} from "./PartRelease";
 import type {ProjectModel} from "$lib/schema";
+import type { PartStatusRequest } from './PartStatusRequest';
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -60,7 +61,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         throw Onshape.loginRedirect();
         // login should always throw a redirect, but need this for typescript to understand
     }
-    console.log('Onshape client found in session');
+    // console.log('Onshape client found in session');
     
     let userInfo;
     try {
@@ -69,7 +70,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         //@todo if typeof e == "ResponseError" then
         throw Onshape.loginRedirect();
     }
-    console.log('userinfo', userInfo);
+    // console.log('userinfo', userInfo);
 
     if (userInfo.id !== searchParams.userId) {
         console.log("User ID in session does not match user ID in query params");
@@ -79,7 +80,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
 
     // ensure the user is on a team that has access to the project
     const teamInfo = await Onshape.client.TeamApi.find({});
-    console.log('teamInfo', teamInfo);
+    // console.log('teamInfo', teamInfo);
     
 
     // console.log("teamInfo", teamInfo?.items?.map(t => ({id: t.id, name: t.name})));
@@ -95,14 +96,15 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         wvm: searchParams.wv,
         wvmid: searchParams.wvid,
         eid: searchParams.eid,
-        withThumbnails: true
+        withThumbnails: true// @todo remove this b/c new versions don't have thumbnails immediatley
     };
     if (searchParams.cfg && searchParams.cfg !== "{$configuration}") {
         getPartsParams._configuration = searchParams.cfg;
     }
     const partInDoc = await Onshape.client.PartApi.getPartsWMVE(getPartsParams);
+    // console.log("partInDoc", JSON.stringify(partInDoc, null, 2));
     const pageParts = partInDoc.map((p) => ({
-        part: p, state: PartReleaseState.NeverReleased //await getPartState(p)
+        part: p, state: PartReleaseState.Unknown //await getPartState(p)
     }));
 
     const tab = await Onshape.client.MetadataApi.getWMVEMetadata({
@@ -146,5 +148,18 @@ export const actions = {
 
     release: partRelease,
     re_release: partRelease,
+    partState: async ({request, locals: {db, onshape: Onshape}}) => {
+
+        const data = (await request.json()) as PartStatusRequest;
+        
+        const results = [];
+        for (const part of data.parts) {
+            const state = PartReleaseState.NeverReleased //await db.getPartStatus(part.partId);
+            results.push({part: part, state});
+        }
+
+        
+        return results
+    },
 
 } satisfies Actions;
