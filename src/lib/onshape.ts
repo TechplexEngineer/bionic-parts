@@ -121,10 +121,11 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
                 // console.log("tokenInfo", tokenInfo);
                 if (!tokenInfo) {
                     // if we get here, the user really needs to re-authenticate @todo
+                    console.log("no token info");
                     throw new Error("No tokenInfo. Re-auth needed");
                 }
                 if (tokenInfo?.expiryTimestamp && tokenInfo.expiryTimestamp <= Date.now()) {
-                    // console.log("token expired, refreshing"); //@todo store the state so we don't continually refresh
+                    console.log("token expired, refreshing"); //@todo store the state so we don't continually refresh
                     const res = await doTokenRefresh(tokenInfo.refresh_token);
                     const tokenResponse = await res.json() as unknown as Oauth2Token;
                     // console.log("tokenResponse", tokenResponse);
@@ -167,6 +168,10 @@ export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName =
     console.log("getOnshapeClientFromCookies", tokenInfo);
     if (!tokenInfo) {
         return null;
+    }
+
+    if (tokenInfo.expiryTimestamp && Date.now() >= tokenInfo.expiryTimestamp) {
+        console.log("token has expired, refresh required");
     }
 
     return await getOnshapeClient(tokenInfo, (tokenResponse) => {
