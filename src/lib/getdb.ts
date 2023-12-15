@@ -44,11 +44,11 @@ const getDbFromPlatform = async (platform: App.Platform | undefined): Promise<Dr
 
     // Migrator causing cannot start a transaction within a transaction
     // Migrator requires node packages not available in workers env
-    if (import.meta.env.DEV) { //we can only apply migrations in dev
-        const ddb = drizzle(db as any);
-        await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
-        return ddb;
-    }
+    // if (import.meta.env.DEV) { //we can only apply migrations in dev
+    //     const ddb = drizzle(db as any);
+    //     await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
+    //     return ddb;
+    // }
 
     return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
