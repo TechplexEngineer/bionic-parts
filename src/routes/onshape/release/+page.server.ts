@@ -2,11 +2,12 @@ import type {Actions, PageServerLoad} from './$types';
 import {PartReleaseState} from "./PartReleaseState";
 import type {OnshapeFrameQueryParams} from "./OnshapeFrameQueryParams";
 import {base64, filterProjects} from "$lib/util";
-import type {BTPartMetadataInfo, GetPartsWMVERequest} from "$lib/OnshapeAPI";
+import type {BTDiffInfo, BTPartMetadataInfo, BTRootDiffInfo, GetPartsWMVERequest, OnshapeClient} from "$lib/OnshapeAPI";
 import type {OauthStateData} from "$lib/onshape";
 import {partRelease} from "./PartRelease";
-import type {ProjectModel} from "$lib/schema";
+import type {PartModel, ProjectModel} from "$lib/schema";
 import type { PartStatusRequest } from './PartStatusRequest';
+import { fail, json } from '@sveltejs/kit';
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -143,6 +144,81 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
     projects: ProjectModel[],
 }>;
 
+interface CurrentRev {
+    did: string,
+    wv: any, //WVM.W | WVM.V,
+    wvid: string,
+    eid: string,
+    partId: string, //eg JHH
+}
+
+const hasReleasedPartChanged = (releasedPartId: string, res: BTRootDiffInfo): boolean => {
+    const entries = Object.entries(res.collectionChanges || {});
+    for (const [_key, value] of entries) {
+        for (const change of value) {
+            if (change.targetId == releasedPartId) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+const hasPartChanged = async (onshape: OnshapeClient, c: CurrentRev, releasedPart: PartModel): Promise<boolean> => {
+    //@todo prevent comparing a newer version to an older version
+    if (c.wvid == releasedPart.data.releasedFromVersion.versionId) {
+        return false;
+    }
+    const res = await onshape.PartStudioApi.comparePartStudios({
+        did: c.did,
+        wvm: c.wv,
+        wvmid: c.wvid,
+        eid: c.eid,
+        versionId: releasedPart.data.releasedFromVersion.versionId,
+    });
+    // .ComparePartstudios(c.did, c.wv, c.wvid, c.eid, {
+    //     versionId: releasedPart.releasedVersion,
+    // });
+    const hasChanged = hasReleasedPartChanged(releasedPart.data.partId, res)
+    // console.log("hasChanged", releasedPart.partId, hasChanged, JSON.stringify(res, null, 2));
+    return hasChanged
+}
+// export interface PartModel {
+//     partId: string,
+// } //todo will come from db schema
+
+const getPartState = async (onshape: OnshapeClient, currentRev: CurrentRev, releasedParts: PartModel[]): Promise<PartReleaseState> => {
+
+    // put this here for performance testing.
+    // return PartReleaseState.NeverReleased;
+
+    // ============================================================================================
+    // @todo check if the part has new id in the new verison
+    // ============================================================================================
+
+    // return PartReleaseState.NeverReleased;
+    // 1. check if the part has ever been released
+    const releasedPart = releasedParts.find(p => p.data.partId === currentRev.partId)
+    if (typeof releasedPart !== "undefined") {
+        if (await hasPartChanged(onshape, currentRev, releasedPart)) {
+            //  --- Yes => ChangedSinceLastRelease
+            return PartReleaseState.ChangedSinceLastRelease;
+        } else {
+            //  --- No  => Released
+            return PartReleaseState.Released;
+        }
+    } else {
+        //  --- No  => NeverReleased
+        return PartReleaseState.NeverReleased;
+    }
+    // 1. check if the part has ever been released
+    //  --- Yes => check if this part has changed since the last release
+    //  --- 2. Check if the part has changed since the last release
+    //  --- --- Yes => Changed
+    //  --- --- No  => Released
+    //  --- No  => NeverReleased
+}
+
 
 export const actions = {
 
@@ -150,16 +226,31 @@ export const actions = {
     re_release: partRelease,
     partState: async ({request, locals: {db, onshape: Onshape}}) => {
 
+        if (!Onshape.client) {
+            return fail(401, {error: "No Onshape client found in session"});
+        }
+    
         const data = (await request.json()) as PartStatusRequest;
         
         const results = [];
         for (const part of data.parts) {
-            const state = PartReleaseState.NeverReleased //await db.getPartStatus(part.partId);
-            results.push({part: part, state});
+
+            // console.log('part', part); 
+            const releasedParts = await db.getReleasedPartsForElement(data.did, part.part.elementId!)         
+
+            const state = await getPartState(Onshape.client, {
+                did: data.did,
+                wv: data.wvm,
+                wvid: data.wvmid,
+                eid: part.part.elementId!,
+                partId: part.part.partId!,
+            }, releasedParts)
+            // const state = PartReleaseState.NeverReleased //await db.getPartStatus(part.partId);
+            results.push({part: part, state: state});
         }
 
         
-        return results
+        return JSON.stringify(results)
     },
 
 } satisfies Actions;

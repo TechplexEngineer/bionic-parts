@@ -43,12 +43,12 @@ const getDbFromPlatform = async (platform: App.Platform | undefined): Promise<Dr
     }
 
     // Migrator causing cannot start a transaction within a transaction
-    // // Migrator requires node packages not available in workers env
-    // if (import.meta.env.DEV) { //we can only apply migrations in dev
-    // const ddb = drizzle(db as any);
-    // await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
-    //     return ddb;
-    // }
+    // Migrator requires node packages not available in workers env
+    if (import.meta.env.DEV) { //we can only apply migrations in dev
+        const ddb = drizzle(db as any);
+        await migrate(ddb, {migrationsFolder: "./src/lib/migrations"});
+        return ddb;
+    }
 
     return drizzle(db as any); //@todo why is Miniflare's D1Database incompatible with Cloudflare's?
 };
@@ -121,6 +121,17 @@ export class DataLayer {
 
     async getProjectById(projectId: number) {
         return this.db.select().from(projectSchema).where(eq(projectSchema.id, projectId)).get();
+    }
+
+
+    async getReleasedPartsForElement(did: string, eid: string) {
+        const qry = sql`SELECT *
+            FROM parts
+            WHERE data->'$.documentId' = ${did}
+            AND data->'$.releasedFromVersion' = ${eid};`
+        const parts = await this.db.all(qry)
+        return parts
+
     }
 }
 

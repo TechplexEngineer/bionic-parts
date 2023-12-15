@@ -25,13 +25,18 @@
                 method: 'POST',
                 body: JSON.stringify({
                     parts: [part],
+                    did: $page.url.searchParams.get('did')!,
+                    wvm: $page.url.searchParams.get('wvm')!,
+                    wvmid: $page.url.searchParams.get('wvmid')!,
                 } satisfies PartStatusRequest),
             })
         .then(async res => {
                 const result: ActionResult = deserialize(await res.text());
                 if (result.type === 'success') {
-                    console.log('data', result.data);
-                    for (const part of result.data as any) {
+                    const json = JSON.parse(result.data as any);
+                    console.log('data', json);
+                    for (const part of json) {
+                        console.log('---part', part);
                         const match = parts.find(p => {
                             console.log('checking match', p.part.id, part.part.part.id);
                             

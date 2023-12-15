@@ -49,3 +49,25 @@ export const projectSchema = sqliteTable('projects', {
     data: dbJson('data').notNull().$type<ProjectData>(), //json data
 });
 export type ProjectModel = InferModel<typeof projectSchema>;
+
+
+interface PartData {
+    partId: string,
+    documentId: string,
+    elementId: string,
+    releasedFromVersion: {
+        versionId: string,
+        versionDate: string,
+    },
+}
+
+export const parts = sqliteTable('parts', {
+    id: integer('id').primaryKey(),
+    projectId: integer('projectId'),
+    data: dbJson('data').notNull().$type<PartData>(), //json data
+    // partId: text('onshapePartId').notNull(),
+    // // partMetadata: blob('partMetadata', { mode: 'json'}).$type<{name:string, description:string}>(),
+    // releasedVersion: text('onshapeReleasedVersion').notNull(),
+    // userNotes: text('onshapeReleasedVersion'),
+});
+export type PartModel = InferModel<typeof parts>;
