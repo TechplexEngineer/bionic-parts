@@ -108,6 +108,7 @@ export const setOauthTokenInCookie = (cookies: Cookies, cookieName: string, toke
         path: "/",
         secure: true, // needed for dev (and prod?)
         sameSite: "none", // needed for dev (and prod?)
+        httpOnly: false,
     })
 }
 

@@ -70,6 +70,11 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         throw Onshape.loginRedirect();
     }
     console.log('userinfo', userInfo);
+
+    if (userInfo.id !== searchParams.userId) {
+        console.log("User ID in session does not match user ID in query params");
+        throw Onshape.loginRedirect();
+    }
     
 
     // ensure the user is on a team that has access to the project
@@ -82,7 +87,7 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
     // find projects that have this document in them
     const matchingProjects = await db.getAllProjects()
     // console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
-    
+
     const filteredProjects = filterProjects(matchingProjects, teamInfo, userInfo.id);
     // console.log("filteredProjects", JSON.stringify(filteredProjects, null, 2));
     const getPartsParams: GetPartsWMVERequest = {
