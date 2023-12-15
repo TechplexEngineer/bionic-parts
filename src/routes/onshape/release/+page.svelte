@@ -39,6 +39,7 @@
     let partReleaseCount = 0;
     const handleSubmit = async ({detail}: { detail: PartRelease }) => {
         stage = Stages.partlist; // back to part list (Putting this before the fetch makes the UI seem snappier even though the trello api is slow)
+        partReleaseCount += 1;
         const res = await fetch('?/release', {
             method: 'POST',
             body: JSON.stringify({
@@ -47,7 +48,7 @@
             } satisfies PartRelease),
         });
         //@todo handle errors
-        partReleaseCount += 1;
+        
     }
 
     let activeProjects: ProjectModel[] = [];
