@@ -27,6 +27,7 @@ const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams
 
 
 export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
+    console.log("load", url.toString());
 
 
     const searchParams = normalizeSearchParams(url.searchParams);
@@ -59,6 +60,8 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         throw Onshape.loginRedirect();
         // login should always throw a redirect, but need this for typescript to understand
     }
+    console.log('Onshape client found in session');
+    
     let userInfo;
     try {
         userInfo = await Onshape.client.UserApi.sessionInfo();
@@ -66,16 +69,20 @@ export const load = (async ({url, cookies, locals: {db, onshape: Onshape}}) => {
         //@todo if typeof e == "ResponseError" then
         throw Onshape.loginRedirect();
     }
+    console.log('userinfo', userInfo);
+    
 
     // ensure the user is on a team that has access to the project
     const teamInfo = await Onshape.client.TeamApi.find({});
+    console.log('teamInfo', teamInfo);
+    
 
     // console.log("teamInfo", teamInfo?.items?.map(t => ({id: t.id, name: t.name})));
 
     // find projects that have this document in them
     const matchingProjects = await db.getAllProjects()
     // console.log("matchingProjects", JSON.stringify(matchingProjects, null, 2))
-
+    
     const filteredProjects = filterProjects(matchingProjects, teamInfo, userInfo.id);
     // console.log("filteredProjects", JSON.stringify(filteredProjects, null, 2));
     const getPartsParams: GetPartsWMVERequest = {
