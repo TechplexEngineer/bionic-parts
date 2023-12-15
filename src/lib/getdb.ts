@@ -129,7 +129,8 @@ export class DataLayer {
         const qry = sql`SELECT *
             FROM parts
             WHERE json_extract(data, '$.documentId') = ${did}
-            AND json_extract(data, '$.elementId') = ${eid};`
+            AND json_extract(data, '$.elementId') = ${eid}
+            ORDER BY id DESC;`
         const parts = await this.db.all(qry);
 
         const columns = getTableColumns(partsSchema);
