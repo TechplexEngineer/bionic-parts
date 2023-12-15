@@ -106,7 +106,7 @@
 				<PartList
 						parts={data?.parts}
 						tabName={data?.tabName}
-						project={data?.projects[0]}
+						project={selectedProject}
 						on:release={handleReleaseClick}
 						on:rerelease={handleReReleaseClick}
 				></PartList>
