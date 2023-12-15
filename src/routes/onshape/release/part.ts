@@ -4,4 +4,5 @@ import type {PartReleaseState} from "./PartReleaseState";
 export interface Part {
     part: BTPartMetadataInfo,
     state: PartReleaseState
+    releasedIn?: string
 }

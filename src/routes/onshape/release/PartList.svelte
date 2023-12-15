@@ -16,29 +16,31 @@
     export let parts: Part[] = [];
     export let tabName: string;
 
+    // console.log("$page.url.searchParams", Array.from($page.url.searchParams))
+
     onMount(() => {
+        console.log('onmount');
+        
         
         for (const part of parts) {
-            console.log('part', part);
-            
             fetch('?/partState', {
                 method: 'POST',
                 body: JSON.stringify({
                     parts: [part],
                     did: $page.url.searchParams.get('did')!,
-                    wvm: $page.url.searchParams.get('wvm')!,
-                    wvmid: $page.url.searchParams.get('wvmid')!,
+                    wvm: $page.url.searchParams.get('wv')!,
+                    wvmid: $page.url.searchParams.get('wvid')!,
                 } satisfies PartStatusRequest),
             })
         .then(async res => {
                 const result: ActionResult = deserialize(await res.text());
                 if (result.type === 'success') {
                     const json = JSON.parse(result.data as any);
-                    console.log('data', json);
+                    // console.log('data', json);
                     for (const part of json) {
-                        console.log('---part', part);
+                        // console.log('---part', part);
                         const match = parts.find(p => {
-                            console.log('checking match', p.part.id, part.part.part.id);
+                            // console.log('checking match', p.part.id, part.part.part.id);
                             
                             return p.part.id === part.part.part.id
                         });
@@ -46,11 +48,14 @@
                             console.log('no match', part.part);
                             continue;
                         }
-                        console.log('old', parts[parts.indexOf(match)]);
-                        console.log('new', part.state);
+                        // console.log('old', parts[parts.indexOf(match)]);
+                        // console.log('new', part.state);
+                        
+                        console.log('part', JSON.stringify(part, (key, value)=>key === 'part' ? undefined : value, 2));
                         
                         
                         parts[parts.indexOf(match)].state = part.state;
+                        parts[parts.indexOf(match)].releasedIn = part.releasedIn;
                         
                         // match.state = result.data?.state;
                     }
@@ -100,8 +105,7 @@ Here is a list of parts that can be released to manufacturing:
     </tr>
     </thead>
     <tbody>
-    {#each parts as p}
-        {@const obj = fixType(parts, p)}
+    {#each parts as obj}
         <tr>
             <td><span title="{obj.part.id} - {obj.part.partId}">{obj.part.name}</span></td>
             <td>
@@ -110,11 +114,12 @@ Here is a list of parts that can be released to manufacturing:
                         Release
                     </button>
                 {:else if obj.state === PartReleaseState.Released}
-                    {'No Actions'}
+                    No changes since release: {obj.releasedIn}
                 {:else if obj.state === PartReleaseState.ChangedSinceLastRelease}
                     <button class="btn btn-info btn-sm" on:click={handleReReleaseClick(obj.part)} type="button">
                         Re-Release
                     </button>
+                    Last released in: {obj.releasedIn}
                 {:else}
                     {'loading...'}
                 {/if}

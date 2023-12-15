@@ -51,17 +51,18 @@ export const projectSchema = sqliteTable('projects', {
 export type ProjectModel = InferModel<typeof projectSchema>;
 
 
-interface PartData {
+export interface PartData {
     partId: string,
     documentId: string,
     elementId: string,
     releasedFromVersion: {
         versionId: string,
+        versionName: string,
         versionDate: string,
     },
 }
 
-export const parts = sqliteTable('parts', {
+export const partsSchema = sqliteTable('parts', {
     id: integer('id').primaryKey(),
     projectId: integer('projectId'),
     data: dbJson('data').notNull().$type<PartData>(), //json data
@@ -70,4 +71,4 @@ export const parts = sqliteTable('parts', {
     // releasedVersion: text('onshapeReleasedVersion').notNull(),
     // userNotes: text('onshapeReleasedVersion'),
 });
-export type PartModel = InferModel<typeof parts>;
+export type PartModel = InferModel<typeof partsSchema>;

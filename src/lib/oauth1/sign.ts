@@ -60,7 +60,6 @@ export const HMAC_SHA256 = {
   },
 
   hash: async (message: string): Promise<string> => {
-    //@todo untested
 
     const enc = new TextEncoder(/*"utf-8"*/);
     const algorithm = "SHA-256";

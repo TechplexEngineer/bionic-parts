@@ -41,6 +41,8 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
 
     const project = await db.getProjectById(data.projectId);
 
+    
+
 
     // const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
     if (!Onshape.client) {
@@ -73,7 +75,9 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
     }
 
 
-    const version = await Onshape.client.DocumentApi.getVersion({did: data.params.did, vid: data.params.wvid})
+    const version = await Onshape.client.DocumentApi.getVersion({did: data.params.did, vid: data.params.wvid});
+    // console.log('version', version);
+    
     const doc = await Onshape.client.DocumentApi.getDocument({did: data.params.did});
     const tab = await Onshape.client.MetadataApi.getWMVEMetadata({
         did: data.params.did,
@@ -81,6 +85,20 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
         wvmid: data.params.wvid,
         eid: data.params.eid
     });
+
+    await db.addReleasedPart({
+        projectId: data.projectId,
+        data: {
+            partId: data.part.partId!,
+            documentId: data.params.did,
+            elementId: data.params.eid,
+            releasedFromVersion: {
+                versionId: data.params.wvid,
+                versionName: version.name!,
+                versionDate: version.createdAt?.toISOString()!, // unclear when this might be undefined
+            },
+        }
+    })
     const tabName = tab.properties?.find(p => p.name == "Name")?.value;
 
     const cardName = `${data.part.name} - ${version.name}`;

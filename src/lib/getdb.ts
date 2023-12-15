@@ -4,8 +4,8 @@ import {drizzle} from "drizzle-orm/d1";
 import type {DrizzleD1Database} from "drizzle-orm/d1";
 import {migrate} from "drizzle-orm/d1/migrator";
 import {eq, getTableColumns, sql} from "drizzle-orm";
-import type {ProjectModel} from "$lib/schema";
-import {projectSchema} from "$lib/schema";
+import type {PartData, PartModel, ProjectModel} from "$lib/schema";
+import {partsSchema, projectSchema} from "$lib/schema";
 
 
 let getDevDb = async (): Promise<any> => {
@@ -124,14 +124,33 @@ export class DataLayer {
     }
 
 
+    // @todo should probs include the project id
     async getReleasedPartsForElement(did: string, eid: string) {
         const qry = sql`SELECT *
             FROM parts
-            WHERE data->'$.documentId' = ${did}
-            AND data->'$.releasedFromVersion' = ${eid};`
-        const parts = await this.db.all(qry)
-        return parts
+            WHERE json_extract(data, '$.documentId') = ${did}
+            AND json_extract(data, '$.elementId') = ${eid};`
+        const parts = await this.db.all(qry);
 
+        const columns = getTableColumns(partsSchema);
+
+        return parts.map(p => {
+            const newp: Record<string, any> = {};
+            for (const column of Object.values(columns)) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                newp[column.name] = column.mapFromDriverValue(p[column.name])
+            }
+
+            return newp as PartModel
+        });
+    }
+
+    async addReleasedPart(args: {projectId: number, data: PartData}) {
+        return await this.db.insert(partsSchema).values({
+            projectId: args.projectId,
+            data: args.data
+        }).run();
     }
 }
 

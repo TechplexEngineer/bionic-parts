@@ -1,7 +1,7 @@
 <script>
     import Modal from "$lib/Modal.svelte";
     import ChipLoad from "./ChipLoad.svg";
-    import ChipLoads from "../ChipLoads.svelte"; //@todo
+    import ChipLoads from "../ChipLoads.svelte";
 
     export let isOpen = false;
 

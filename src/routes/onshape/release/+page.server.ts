@@ -8,6 +8,7 @@ import {partRelease} from "./PartRelease";
 import type {PartModel, ProjectModel} from "$lib/schema";
 import type { PartStatusRequest } from './PartStatusRequest';
 import { fail, json } from '@sveltejs/kit';
+import type { Part } from './part';
 
 
 const normalizeSearchParams = (params: URLSearchParams): OnshapeFrameQueryParams => {
@@ -150,6 +151,7 @@ interface CurrentRev {
     wvid: string,
     eid: string,
     partId: string, //eg JHH
+    versionDate: string, // iso8601 date of when the version was created
 }
 
 const hasReleasedPartChanged = (releasedPartId: string, res: BTRootDiffInfo): boolean => {
@@ -164,22 +166,34 @@ const hasReleasedPartChanged = (releasedPartId: string, res: BTRootDiffInfo): bo
     return false
 }
 
-const hasPartChanged = async (onshape: OnshapeClient, c: CurrentRev, releasedPart: PartModel): Promise<boolean> => {
+const hasPartChanged = async (onshape: OnshapeClient, cur: CurrentRev, rel: PartModel): Promise<boolean> => {
     //@todo prevent comparing a newer version to an older version
-    if (c.wvid == releasedPart.data.releasedFromVersion.versionId) {
+
+    // don't allow releaseing older version over newer versions
+    // if (rel.data.releasedFromVersion.versionDate > cur.versionDate) {
+    //     return false;
+    // }
+    // lets just tell them what version was released
+
+
+    if (cur.wvid == rel.data.releasedFromVersion.versionId) {
         return false;
     }
-    const res = await onshape.PartStudioApi.comparePartStudios({
-        did: c.did,
-        wvm: c.wv,
-        wvmid: c.wvid,
-        eid: c.eid,
-        versionId: releasedPart.data.releasedFromVersion.versionId,
-    });
+    const params = {
+        did: cur.did,
+        wvm: cur.wv,
+        wvmid: cur.wvid,
+        eid: cur.eid,
+        versionId: rel.data.releasedFromVersion.versionId,
+    };
+    console.log('params', params);
+    
+
+    const res = await onshape.PartStudioApi.comparePartStudios(params);
     // .ComparePartstudios(c.did, c.wv, c.wvid, c.eid, {
     //     versionId: releasedPart.releasedVersion,
     // });
-    const hasChanged = hasReleasedPartChanged(releasedPart.data.partId, res)
+    const hasChanged = hasReleasedPartChanged(rel.data.partId, res)
     // console.log("hasChanged", releasedPart.partId, hasChanged, JSON.stringify(res, null, 2));
     return hasChanged
 }
@@ -187,7 +201,7 @@ const hasPartChanged = async (onshape: OnshapeClient, c: CurrentRev, releasedPar
 //     partId: string,
 // } //todo will come from db schema
 
-const getPartState = async (onshape: OnshapeClient, currentRev: CurrentRev, releasedParts: PartModel[]): Promise<PartReleaseState> => {
+const getPartState = async (onshape: OnshapeClient, currentRev: CurrentRev, releasedPart?: PartModel): Promise<PartReleaseState> => {
 
     // put this here for performance testing.
     // return PartReleaseState.NeverReleased;
@@ -198,7 +212,7 @@ const getPartState = async (onshape: OnshapeClient, currentRev: CurrentRev, rele
 
     // return PartReleaseState.NeverReleased;
     // 1. check if the part has ever been released
-    const releasedPart = releasedParts.find(p => p.data.partId === currentRev.partId)
+    
     if (typeof releasedPart !== "undefined") {
         if (await hasPartChanged(onshape, currentRev, releasedPart)) {
             //  --- Yes => ChangedSinceLastRelease
@@ -231,22 +245,39 @@ export const actions = {
         }
     
         const data = (await request.json()) as PartStatusRequest;
-        
+        // console.log('data', JSON.stringify(data, null, 2));
+
+        const version = await Onshape.client.DocumentApi.getVersion({ did: data.did, vid: data.wvmid });
+
         const results = [];
         for (const part of data.parts) {
 
             // console.log('part', part); 
-            const releasedParts = await db.getReleasedPartsForElement(data.did, part.part.elementId!)         
+            const releasedParts = await db.getReleasedPartsForElement(data.did, part.part.elementId!);
 
-            const state = await getPartState(Onshape.client, {
+            const currentRev = {
                 did: data.did,
                 wv: data.wvm,
                 wvid: data.wvmid,
                 eid: part.part.elementId!,
                 partId: part.part.partId!,
-            }, releasedParts)
+                versionDate: version.createdAt?.toISOString()!,
+            };
+            
+            const releasedPart = releasedParts.find(p => p.data.partId === currentRev.partId)
+            // console.log('releasedParts', JSON.stringify(releasedParts, null, 2));
+            // console.log('releasedPart', releasedPart);
+
+            const state = await getPartState(Onshape.client, currentRev, releasedPart)
             // const state = PartReleaseState.NeverReleased //await db.getPartStatus(part.partId);
-            results.push({part: part, state: state});
+
+            const res: Part = { part: part, state: state }; // @todo now that we don't calcualte the part state on initial load, we should change the inner part def
+            if (releasedPart) {
+                console.log('HERES', releasedPart.data.releasedFromVersion.versionName);
+                
+                res.releasedIn = releasedPart.data.releasedFromVersion.versionName;
+            }
+            results.push(res);
         }
 
         

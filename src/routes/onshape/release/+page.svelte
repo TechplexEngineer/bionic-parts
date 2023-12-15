@@ -36,6 +36,7 @@
         selectedPart = part;
         stage = Stages.options; // move to next state
     }
+    let partReleaseCount = 0;
     const handleSubmit = async ({detail}: { detail: PartRelease }) => {
         stage = Stages.partlist; // back to part list (Putting this before the fetch makes the UI seem snappier even though the trello api is slow)
         const res = await fetch('?/release', {
@@ -46,6 +47,7 @@
             } satisfies PartRelease),
         });
         //@todo handle errors
+        partReleaseCount += 1;
     }
 
     let activeProjects: ProjectModel[] = [];
@@ -103,6 +105,7 @@
 			<p>Error: This is not currently supported. Sorry.</p>
 		{:else if selectedProject}
 			{#if stage === Stages.partlist}
+            {#key partReleaseCount}
 				<PartList
 						parts={data?.parts}
 						tabName={data?.tabName}
@@ -110,6 +113,7 @@
 						on:release={handleReleaseClick}
 						on:rerelease={handleReReleaseClick}
 				></PartList>
+            {/key}
 			{:else if stage === Stages.options}
 				<Options
 						selectedPart={selectedPart}
