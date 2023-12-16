@@ -166,7 +166,7 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
  */
 export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName = onshapeCookieName) => {
     const tokenInfo = getOauthTokenFromCookie(cookies, cookieName);
-    console.log("getOnshapeClientFromCookies", tokenInfo);
+    // console.log("getOnshapeClientFromCookies", tokenInfo);
     if (!tokenInfo) {
         return null;
     }

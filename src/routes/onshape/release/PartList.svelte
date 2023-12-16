@@ -15,6 +15,8 @@
 
     export let parts: Part[] = [];
     export let tabName: string;
+    export let showLoadingForSelectedPart: boolean = false;
+    export let selectedPart: BTPartMetadataInfo | null = null;
 
     // console.log("$page.url.searchParams", Array.from($page.url.searchParams))
 
@@ -51,7 +53,7 @@
                         // console.log('old', parts[parts.indexOf(match)]);
                         // console.log('new', part.state);
                         
-                        console.log('part', JSON.stringify(part, (key, value)=>key === 'part' ? undefined : value, 2));
+                        // console.log('part', JSON.stringify(part, (key, value)=>key === 'part' ? undefined : value, 2));
                         
                         
                         parts[parts.indexOf(match)].state = part.state;
@@ -109,19 +111,25 @@ Here is a list of parts that can be released to manufacturing:
         <tr>
             <td><span title="{obj.part.id} - {obj.part.partId}">{obj.part.name}</span></td>
             <td>
-                {#if obj.state === PartReleaseState.NeverReleased}
-                    <button class="btn btn-info btn-sm" on:click={handleReleaseClick(obj.part)} type="button">
-                        Release
-                    </button>
-                {:else if obj.state === PartReleaseState.Released}
-                    No changes since release: {obj.releasedIn}
-                {:else if obj.state === PartReleaseState.ChangedSinceLastRelease}
-                    <button class="btn btn-info btn-sm" on:click={handleReReleaseClick(obj.part)} type="button">
-                        Re-Release
-                    </button>
-                    Last released in: {obj.releasedIn}
+                {#if showLoadingForSelectedPart && selectedPart === obj.part}
+                    <div class="spinner-border spinner-border-sm" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
                 {:else}
-                    {'loading...'}
+                    {#if obj.state === PartReleaseState.NeverReleased}
+                        <button class="btn btn-info btn-sm" on:click={handleReleaseClick(obj.part)} type="button">
+                            Release
+                        </button>
+                    {:else if obj.state === PartReleaseState.Released}
+                        No changes since release: {obj.releasedIn}
+                    {:else if obj.state === PartReleaseState.ChangedSinceLastRelease}
+                        <button class="btn btn-info btn-sm" on:click={handleReReleaseClick(obj.part)} type="button">
+                            Re-Release
+                        </button>
+                        Last released in: {obj.releasedIn}
+                    {:else}
+                        {'loading...'}
+                    {/if}
                 {/if}
             </td>
         </tr>

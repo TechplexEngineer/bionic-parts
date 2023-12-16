@@ -265,7 +265,7 @@ export const actions = {
             };
             
             const releasedPart = releasedParts.find(p => p.data.partId === currentRev.partId)
-            // console.log('releasedParts', JSON.stringify(releasedParts, null, 2));
+            console.log('releasedParts', JSON.stringify(releasedParts, null, 2));
             // console.log('releasedPart', releasedPart);
 
             const state = await getPartState(Onshape.client, currentRev, releasedPart)

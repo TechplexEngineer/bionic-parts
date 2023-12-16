@@ -37,9 +37,10 @@
         stage = Stages.options; // move to next state
     }
     let partReleaseCount = 0;
+    let showLoadingForSelectedPart = false;
     const handleSubmit = async ({detail}: { detail: PartRelease }) => {
+        showLoadingForSelectedPart = true;
         stage = Stages.partlist; // back to part list (Putting this before the fetch makes the UI seem snappier even though the trello api is slow)
-        partReleaseCount += 1;
         const res = await fetch('?/release', {
             method: 'POST',
             body: JSON.stringify({
@@ -48,7 +49,8 @@
             } satisfies PartRelease),
         });
         //@todo handle errors
-        
+        showLoadingForSelectedPart = false;
+        partReleaseCount += 1; // has to happen after the part is released, used to trigger a re-render of the part list
     }
 
     let activeProjects: ProjectModel[] = [];
@@ -113,6 +115,8 @@
 						project={selectedProject}
 						on:release={handleReleaseClick}
 						on:rerelease={handleReReleaseClick}
+                        showLoadingForSelectedPart={showLoadingForSelectedPart}
+                        selectedPart={selectedPart}
 				></PartList>
             {/key}
 			{:else if stage === Stages.options}
