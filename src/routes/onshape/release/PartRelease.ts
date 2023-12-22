@@ -79,7 +79,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
     console.log('4. version', version);
     
     const doc = await Onshape.client.DocumentApi.getDocument({did: data.params.did});
-    onsole.log("5. doc", doc);
+    console.log("5. doc", doc);
     const tab = await Onshape.client.MetadataApi.getWMVEMetadata({
         did: data.params.did,
         wvm: data.params.wv as any,
