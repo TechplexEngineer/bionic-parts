@@ -86,7 +86,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
         wvmid: data.params.wvid,
         eid: data.params.eid
     });
-    onsole.log("6. tab", tab);
+    console.log("6. tab", tab);
 
     await db.addReleasedPart({
         projectId: data.projectId,
@@ -101,7 +101,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
             },
         }
     })
-    onsole.log("7. db");
+    console.log("7. db");
     const tabName = tab.properties?.find(p => p.name == "Name")?.value;
 
     const cardName = `${data.part.name} - ${version.name}`;
@@ -123,14 +123,14 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         idList: project.data.trello.listId,
         pos: "top",
     });
-    onsole.log("8. card");
+    console.log("8. card");
 
     await trelloClient.cards.createCardAttachment({
         id: card.id,
         url: doc.href,
         name: `Part released from: '${doc.name}'`
     });
-    onsole.log("9. attachment");
+    console.log("9. attachment");
 
     if (data.cotsLink) {
         await trelloClient.cards.createCardAttachment({
@@ -145,7 +145,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
                 value: memberId_blake
             })
         }
-        onsole.log("10. cots");
+        console.log("10. cots");
     }
 
     if (thumbnailBlob) {
@@ -249,7 +249,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         // console.log("webhook created", wh);
 
 
-        // console.log("-------------request translation\n\n");
+        console.log("-------------request translation\n\n");
         const trans = await Onshape.client.PartStudioApi.createPartStudioTranslation({
             did: data.params.did,
             wv: data.params.wv,
@@ -264,10 +264,10 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             }
         })
 
-        // console.log("translation response", trans)
+        console.log("translation response", trans)
     } else if (data.mfgMethod == MfgMethods.Printed) {
         // attach stl file
-        // console.log("attach stl file");
+        console.log("attach stl file");
 
         const res = await Onshape.client.request.exportPartStudioStl({
             did: data.params.did,
