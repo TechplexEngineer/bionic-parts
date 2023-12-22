@@ -34,15 +34,12 @@ export interface PartRelease {
 }
 
 export const partRelease: Action = async ({request, url: {searchParams}, cookies, locals: {db, onshape: Onshape}}) => {
-
+    console.log("1. Part Release");
     const data = (await request.json()) as PartRelease;
     // console.log("data", data);
     //@todo validate data
 
     const project = await db.getProjectById(data.projectId);
-
-    
-
 
     // const Onshape = await getOnshapeClientFromCookies(cookies, onshapeCookieName);
     if (!Onshape.client) {
@@ -50,7 +47,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
     }
 
     const currentUser = await Onshape.client.UserApi.sessionInfo();
-
+    console.log("2. currentUser", currentUser);
     let thumbnailBlob = null;
     const thumbnailInfo = data.part.thumbnailInfo
 
@@ -59,7 +56,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
         if (bestThumb && bestThumb.href) {
             const thumbnailLink = bestThumb.href;
             const thumbnailLinkPath = "/thumbnails" + thumbnailLink.split("/thumbnails")[1];
-
+            try {
             // get the thumbnail
             const res = await Onshape.client.request.raw({
                 method: "GET",
@@ -71,20 +68,25 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
                 }
             });
             thumbnailBlob = await res.blob();
+            } catch (e) {
+                console.log("3. thumbnailBlob", e);
+            }
         }
     }
 
 
     const version = await Onshape.client.DocumentApi.getVersion({did: data.params.did, vid: data.params.wvid});
-    // console.log('version', version);
+    console.log('4. version', version);
     
     const doc = await Onshape.client.DocumentApi.getDocument({did: data.params.did});
+    onsole.log("5. doc", doc);
     const tab = await Onshape.client.MetadataApi.getWMVEMetadata({
         did: data.params.did,
         wvm: data.params.wv as any,
         wvmid: data.params.wvid,
         eid: data.params.eid
     });
+    onsole.log("6. tab", tab);
 
     await db.addReleasedPart({
         projectId: data.projectId,
@@ -99,6 +101,7 @@ export const partRelease: Action = async ({request, url: {searchParams}, cookies
             },
         }
     })
+    onsole.log("7. db");
     const tabName = tab.properties?.find(p => p.name == "Name")?.value;
 
     const cardName = `${data.part.name} - ${version.name}`;
@@ -120,12 +123,14 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
         idList: project.data.trello.listId,
         pos: "top",
     });
+    onsole.log("8. card");
 
     await trelloClient.cards.createCardAttachment({
         id: card.id,
         url: doc.href,
         name: `Part released from: '${doc.name}'`
     });
+    onsole.log("9. attachment");
 
     if (data.cotsLink) {
         await trelloClient.cards.createCardAttachment({
@@ -140,6 +145,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
                 value: memberId_blake
             })
         }
+        onsole.log("10. cots");
     }
 
     if (thumbnailBlob) {
@@ -149,6 +155,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
             name: "Part Image",
             mimeType: "image/png",
         });
+        console.log("11. thumbnail");
     }
 
     if (typeof data.qty !== "undefined") {
@@ -165,6 +172,7 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
                 pos: "bottom",
             })
         }
+        console.log("12. checklist");
     }
     if (data.subsystemName) {
         const labels = await trelloClient.boards.getBoardLabels({
@@ -192,8 +200,9 @@ ${data.cotsLink ? `COTS Link: ${data.cotsLink}` : ""}`,
                 value: label.id
             })
         }
+        console.log("13. subsystemName", data.subsystemName);
     } else {
-        console.log("No subsystem name")
+        console.log("13. No subsystem name")
     }
 
     if (data.mfgMethod == MfgMethods.Machined) {
