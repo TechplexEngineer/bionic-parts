@@ -72,7 +72,7 @@ export const encoder = (props: EncoderProps) => {
         case 'Phone Number':
             return `tel:${telPhoneNumber}`;
         case 'Text Message':
-            return `sms:${smsPhoneNumber}:${smsMessage}`;
+            return `smsto:${smsPhoneNumber}:${smsMessage}`;
         case 'Wi-Fi Credentials':
             return `WIFI:T:${wifiAuth};S:${wifiNetworkName};P:${wifiPassword};H:${wifiIsHidden};`;
         case 'Email':
