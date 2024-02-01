@@ -3,7 +3,7 @@
     import {formFieldProxy, type SuperForm} from "sveltekit-superforms/client";
     import type {AnyZodObject} from "zod";
     import type {FormPathLeaves, ZodValidation} from "sveltekit-superforms";
-    import {z} from "zod";
+    import type {z} from "zod";
 
 
     type T = $$Generic<AnyZodObject>;

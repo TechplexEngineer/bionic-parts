@@ -6,6 +6,7 @@
     import * as flashModule from 'sveltekit-flash-message/client';
     import FormErrors from "$lib/superform/FormErrors.svelte";
     import Submit from "$lib/superform/Submit.svelte";
+    import SuperForm from "$lib/superform/SuperForm.svelte";
     import {schema} from "../form/schema";
 
     export let data: PageData;
@@ -33,7 +34,7 @@
 
 	<FormErrors {form}/>
 
-	<form method="post" use:enhance>
+	<SuperForm {form}>
 		<div class="row">
 			<div class="col">
 				<TextField {form} field="name"></TextField>
@@ -44,7 +45,7 @@
 		</div>
 
 		<Submit {form} class="btn btn-primary mt-2">Submit</Submit>
-	</form>
+	</SuperForm>
 
 	<div class="mt-3">
 		<SuperDebug data={$f}/>
