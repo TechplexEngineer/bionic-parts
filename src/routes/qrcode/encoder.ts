@@ -63,7 +63,7 @@ export const encoder = (props: EncoderProps) => {
         vcardWebsite
     } = props;
 
-
+    // See https://github.com/zxing/zxing/wiki/Barcode-Contents for more information
     switch (activeItem) {
         case 'Raw Data':
             return rawText;
