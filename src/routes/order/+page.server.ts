@@ -4,9 +4,14 @@ import { message, superValidate } from 'sveltekit-superforms/server';
 import { orderRequestSchema } from './orderRequestSchemea';
 import { fail, redirect } from '@sveltejs/kit';
 
-export const load = (async () => {
+export const load = (async ({ url }) => {
     // Server API:
     const form = await superValidate(orderRequestSchema);
+
+    form.data.item = url.searchParams.get('item') || "";
+    form.data.partNumber = url.searchParams.get('partNumber') || "";
+    form.data.quantity = url.searchParams.get('quantity') || "";
+    form.data.requester = url.searchParams.get('requester') || "";
 
     // Always return { form } in load and form actions.
     return { form };
@@ -25,10 +30,13 @@ export const actions = {
         const resp = await fetch("https://script.google.com/macros/s/AKfycbzWeROGIu3-TzXGCZVnJ6qSil0CTAr1oW9T3-HdNJnv13JSl8TQnZSZGyATmasvhbTrBg/exec", {
             method: "POST",
             body: JSON.stringify({
-                "item": "test",
-                "part number": "test pn"
+                "item": form.data.item,
+                "part number": form.data.partNumber,
+                "qty": form.data.quantity,
+                "requester": form.data.requester
             })
         })
+
 
         // TODO: Do something with the validated data
         console.log('POST', request.url, form.data);
