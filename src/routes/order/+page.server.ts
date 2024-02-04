@@ -2,7 +2,8 @@ import type { Actions, PageServerLoad } from './$types';
 
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { orderRequestSchema } from './orderRequestSchemea';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import { redirect } from 'sveltekit-flash-message/server'
 
 export const load = (async ({ url }) => {
     // Server API:
@@ -18,7 +19,8 @@ export const load = (async ({ url }) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    default: async ({request}) => {
+    default: async (props) => {
+        const { request } = props;
         const form = await superValidate(request, orderRequestSchema);
 
         // Convenient validation check:
@@ -38,19 +40,25 @@ export const actions = {
         })
 
 
-        // TODO: Do something with the validated data
-        console.log('POST', request.url, form.data);
+        // // TODO: Do something with the validated data
+        // console.log('POST', request.url, form.data);
 
-        return message(form, "Form Submitted"); // use this for forms to make changes without redirecting
+        // return message(form, "Item added to Order Sheet Submitted"); // use this for forms to make changes without redirecting
 
-        // add a large delay to demonstrate the loading indicator
-        await new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve("")
-            }, 5000)
-        })
+        // // add a large delay to demonstrate the loading indicator
+        // await new Promise((resolve, reject) => {
+        //     setTimeout(() => {
+        //         resolve("")
+        //     }, 5000)
+        // })
 
-        throw redirect(302, request.url)
+        const reqUrl = new URL(request.url)
+
+        console.log('reqUrl', reqUrl.origin + reqUrl.pathname);
+
+
+
+        throw redirect(reqUrl.origin + reqUrl.pathname, { type: "success", message: "Item added to Order Sheet Submitted" }, props);
 
         // Yep, return { form } here too
         return {form};

@@ -10,7 +10,7 @@
 {#if $flash}
 	{@const flashClass = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'].includes($flash.type) ? `alert-${$flash.type}` : 'alert-primary'}
 	<div class="alert {flashClass} m-2" role="alert">
-		FLASH MESSAGE {$flash.message}
+		{$flash.message}
 	</div>
 {/if}
 <slot/>
