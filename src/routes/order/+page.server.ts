@@ -9,10 +9,11 @@ export const load = (async ({ url }) => {
     // Server API:
     const form = await superValidate(orderRequestSchema);
 
-    form.data.item = url.searchParams.get('item') || "";
-    form.data.partNumber = url.searchParams.get('partNumber') || "";
-    form.data.quantity = url.searchParams.get('quantity') || "";
-    form.data.requester = url.searchParams.get('requester') || "";
+    form.data.item = url.searchParams.get('item') || url.searchParams.get('i') || "";
+    form.data.partNumber = url.searchParams.get('partNumber') || url.searchParams.get('pn') || "";
+    form.data.vendor = url.searchParams.get('vendor') || url.searchParams.get('v') || "";
+    form.data.quantity = url.searchParams.get('quantity') || url.searchParams.get('q') || "";
+    form.data.requester = url.searchParams.get('requester') || url.searchParams.get('req') || "";
 
     // Always return { form } in load and form actions.
     return { form };
