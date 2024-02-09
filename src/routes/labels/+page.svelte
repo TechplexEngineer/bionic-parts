@@ -1,88 +1,82 @@
 <script lang="ts">
     import { page } from '$app/stores';
+	import { links } from '../l/links';
 	import QrCode from '../qrcode/QRCode.svelte';
+	import {buildShortLinkUrl} from '../l/links';
 
     interface Item {
         name: string;
         partNumber?: string;
 		vendor?: string;
         quantity: number;
+		location?: string;
     }
 
-	const items: Item[] = [
-    ];
 
-    const itemsToReplicate: Item[] = [
+
+    const items: Item[] = [
         {
 			name: `#9 Drill Bits [12 pk]`,
 			partNumber: "DWDCO9P12",
 			vendor: 'amz',
-			quantity: 1
+			quantity: 1,
+			location: "Husky Tool Box"
 		},
 		{
 			name: `#9 Drill Bit Extended Length`,
 			partNumber: '3096A319',
 			vendor: 'mcm',
-			quantity: 2
+			quantity: 2,
+			location: "Husky Tool Box"
 		},
 
 		{
 			name: `#7 Drill Bits [12 pk]`,
 			partNumber: 'KFD7P12',
 			vendor: 'amz',
-			quantity: 1
+			quantity: 1,
+			location: "Husky Tool Box"
 		},
 		{
 			name: `#7 Drill Bit Extended Length`,
 			partNumber: '3096A317',
-			quantity: 2
+			quantity: 2,
+			location: "Husky Tool Box"
 		},
 
 		{
 			name: `#21 Drill Bits [12 pk]`,
 			partNumber: 'KFD21P12',
 			vendor: 'amz',
-			quantity: 1
+			quantity: 1,
+			location: "Husky Tool Box"
 		},
 		{
 			name: `#21 Drill Bit Extended Length`,
 			partNumber: '3096A333',
 			vendor: 'mcm',
-			quantity: 2
+			quantity: 2,
+			location: "Husky Tool Box"
 		},
 
 		{
 			name: `F Drill Bits [12 pk]`,
 			partNumber: 'KFDFP12',
 			vendor: 'amz',
-			quantity: 1
+			quantity: 1,
+			location: "Husky Tool Box"
 		},
 		{
 			name: `F Drill Bit Extended Length`,
 			vendor: 'mcm',
 			partNumber: '3110A56',
-			quantity: 2
+			quantity: 2,
+			location: "Husky Tool Box"
 		}
         
     ];
 
-    for (const item of itemsToReplicate) {
-        for (let i = 0; i < 3; i++) {
-            items.push(item);
-        }
-        
-    }
-
-	// for (let i = 0; i < 35; i++) {
-	// 	items.push({
-	// 		name: `Item ${i}`,
-	// 		partNumber: '12345',
-	// 		quantity: 1
-	// 	});
-	// }
-	// console.log('items', Math.ceil(items.length / 30));
-
-    const buildUrl = (item: Item, currentUrl: URL) => {
+    const buildOrderUrl = (item: Item, currentUrl: URL) => {
         
         const address = new URL(currentUrl.origin + "/order");
         address.searchParams.append("i", item.name);
@@ -91,21 +85,56 @@
         address.searchParams.append("q", item.quantity.toString());
         return address.toString();
     }
+
+	const labels: {title: string, subtitle?: string, qrCodeValue?: string}[] = [
+		// {
+		// 	title: "",
+		// 	subtitle: "",
+		// 	qrCodeValue: ""
+		// }
+	];
+	for (const item of items) {
+		labels.push({
+			title: item.name,
+			subtitle: `Add to Order Sheet`,
+			qrCodeValue: buildOrderUrl(item, $page.url)
+		});
+		if (item.location) {
+			labels.push({
+				title: item.name,
+				subtitle: `Restock From ${item.location}`,
+				qrCodeValue: undefined //buildOrderUrl(item, $page.url)
+			});
+		}
+	}
+
+	for (const [key, {title, link, desc}] of Object.entries(links)) {
+		labels.push({
+			title: title || "",
+			subtitle: desc,
+			qrCodeValue: buildShortLinkUrl(key, $page.url)
+		});
+		
+	}
 </script>
 
-{#each [...Array(Math.ceil(items.length / 30)).keys()] as pageIdx}
+{#each [...Array(Math.ceil(labels.length / 30)).keys()] as pageIdx}
 	<div class="page">
-		{#each items.slice(pageIdx * 30, (pageIdx + 1) * 30) as item}
+		{#each labels.slice(pageIdx * 30, (pageIdx + 1) * 30) as item}
 			<div class="label justify-content-between">
 
 				<div class="vert-center me-2 flex-grow-1 align-self-center">
-                    <span class="fw-bold">{item.name}</span>
+                    <span class="fw-bold">{@html item.title}</span>
+					{#if item.subtitle}
                     <br>
-                    <span class="fw-lighter">Add to Order Sheet</span>
+                    <span class="fw-lighter">{item.subtitle}</span>
+					{/if}
 				</div>
-                <a class="qrcode align-self-center" href={buildUrl(item, $page.url)} target="_blank">
-                    <QrCode value={buildUrl(item, $page.url)} />
+				{#if item.qrCodeValue}
+                <a class="qrcode align-self-center" href={item.qrCodeValue} target="_blank">
+                    <QrCode value={item.qrCodeValue} />
                 </a>
+				{/if}
         
 			</div>
 		{/each}

@@ -15,12 +15,6 @@
     return await QRcode.toDataURL(value);
   }
 
-  $: generateQrCode(value);
-    
-  onMount(() => {
-    generateQrCode(value);
-  });
-
 </script>
 
 {#await generateQrCode(value)}
