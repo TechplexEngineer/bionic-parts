@@ -1,7 +1,7 @@
 export const links: Record<string, { title?: string, link: string, desc?: string }> = {
     "veloxOn": {
         title: "How to turn the Velox CNC On",
-        link: "https://www.youtube.com/@team4909",
+        link: "https://www.youtube.com/watch?v=tCMKBqZ1Vi0",
         desc: "Scan to watch"
     },
     "440On": {
@@ -11,7 +11,7 @@ export const links: Record<string, { title?: string, link: string, desc?: string
     },
     "slantOn": {
         title: "How to turn the Tormach Lathe On",
-        link: "https://www.youtube.com/@team4909",
+        link: "https://www.youtube.com/watch?v=Blp9nuuO4-A",
         desc: "Scan to watch"
     },
     "prusaOn": {
