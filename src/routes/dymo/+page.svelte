@@ -105,8 +105,8 @@
 		dataView.set(startDoc, 0);
 		var offset = startDoc.length;
 		// Set Bytes Per Line
-		// dataView.set([ESC, 0x44, 75], offset);
-		// offset += 3;
+		dataView.set([ESC, 0x44, 84], offset);
+		offset += 3;
 
 		for (var x = 0; x < img.width; x++) {
 			var off1 = offset;
