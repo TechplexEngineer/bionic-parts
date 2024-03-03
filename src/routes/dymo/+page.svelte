@@ -45,7 +45,7 @@
 			ctx.drawImage(image, -image.width/2, -image.height/2);
 
 			// // we’re done with the rotating so restore the unrotated context
-			ctx.restore();
+			// ctx.restore();
 
 			var img = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
