@@ -19,8 +19,8 @@
 			console.log('image', image.width, image.height);
 
 			// const canvas = document.querySelector('canvas');
-			canvas.width = image.height;
-			canvas.height = image.width;
+			canvas.width = image.width;
+			canvas.height = image.height;
 			const ctx = canvas.getContext('2d');
 			if (!ctx) {
 				console.log('no canvas 2d context');
@@ -141,7 +141,7 @@
 			}
 			offset = off2;
 		}
-		dataView.set(endDoc, offset);
+		//dataView.set(endDoc, offset);
 
 		return data;
 	}
