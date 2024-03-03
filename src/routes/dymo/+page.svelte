@@ -87,8 +87,14 @@
 		pageHeight: number,
 		startDoc: number[]) {
 		const endDoc = [ESC, 0x45]; // Form feed
+		console.log('----');
+		
 
-		var dataBytesPerLine = pageWidth / 8;
+		console.log('pageWidth', pageWidth, 'pageHeight', pageHeight);
+		
+
+		var dataBytesPerLine = pageHeight / 8;
+		console.log('dataBytesPerLine', dataBytesPerLine);
 
 		// every row of the image results in 2 rows of pixels to be printed, both
 		// with one extra byte in front of it
@@ -105,7 +111,7 @@
 		dataView.set(startDoc, 0);
 		var offset = startDoc.length;
 		// Set Bytes Per Line
-		dataView.set([ESC, 0x44, 75], offset);
+		dataView.set([ESC, 0x44, dataBytesPerLine], offset);
 		offset += 3;
 
 		for (var x = 0; x < img.width; x++) {
