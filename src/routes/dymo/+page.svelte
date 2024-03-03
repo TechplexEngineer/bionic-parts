@@ -112,8 +112,8 @@
 			var off1 = offset;
 			var off2 = offset + dataBytesPerLine + 1;
 			dataView[off1++] = SYN;
-			dataView[off2++] = SYN;
-			for (var y = 0; y < img.height; y += 8) {
+			// dataView[off2++] = SYN;
+			for (var y = 0; y < img.height; y += 4) {
 				var cur1 = 0;
 				var cur2 = 0;
 				for (var bit = 0; bit < 8; bit++) {
@@ -137,9 +137,9 @@
 					}
 				}
 				dataView[off1++] = cur1;
-				dataView[off2++] = cur2;
+				// dataView[off2++] = cur2;
 			}
-			offset = off2;
+			offset = off1;
 		}
 		//dataView.set(endDoc, offset);
 
