@@ -141,7 +141,7 @@
 			}
 			offset = off1;
 		}
-		//dataView.set(endDoc, offset);
+		dataView.set(endDoc, offset);
 
 		return data;
 	}
