@@ -56,26 +56,6 @@ export class DymoService {
         }
     };
 
-
-    /**
-     * Print the image.
-     * The size of the image should match the size of the label.
-     *
-     * @param {Jimp} image image object in landscape orientation
-     * @param {number} [printCount] Number of prints (defaults to 1)
-     * @return {Promise<Buffer>} Resolves in case of success, rejects otherwise
-     */
-    // static print(image: number[][], printCount = 1) {
-    //     return new Promise((resolve, reject) => {
-    //         const rotatedImage = rotateImage90DegreesCounterClockwise(image);
-    //         convertImageToBitmap(rotatedImage)
-    //             .then(bitmapImageBuffer => {
-    //                 resolve(DymoService.printBitmap(bitmapImageBuffer, printCount));
-    //             })
-    //             .catch(reject);
-    //     });
-    // }
-
     /**
      * @private
      *
