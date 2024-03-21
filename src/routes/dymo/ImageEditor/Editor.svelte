@@ -15,6 +15,7 @@
 	import DownloadIconSVG from '~icons/bi/filetype-svg';
 	import DownloadIconPNG from '~icons/bi/filetype-png';
 	import DownloadIconJPG from '~icons/bi/filetype-jpg';
+	import DownloadIconJSON from '~icons/bi/filetype-json';
 	import SaveIcon from '~icons/mdi/content-save';
 	import UndoIcon from '~icons/material-symbols/undo';
 	import RedoIcon from '~icons/material-symbols/redo';
@@ -28,7 +29,7 @@
 	// ClearIcon
 
 	import { initializeZoomEvents } from './zoom';
-	import { downloadImage, downloadSVG } from './download';
+	import { downloadImage, downloadJson, downloadSVG } from './download';
 	
 
 	export let canvasElement: HTMLCanvasElement;
@@ -267,6 +268,15 @@
 					}), 'canvas');
 			}
 		},
+		{
+			icon: DownloadIconJSON,
+			tooltip: 'Download JSON',
+			action: () => {
+				downloadJson(JSON.stringify(fabricCanvas.toJSON(), null, 2), 'canvasTemplate');
+			}
+		},
+
+		
 		// {
 		// 	icon: SaveIcon,
 		// 	tooltip: 'Save',
