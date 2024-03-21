@@ -11,7 +11,10 @@
 	import SettingsIcon from '~icons/mdi/settings';
 
 
-	import DownloadIcon from '~icons/mdi/tray-download';
+	import DownloadIcon from '~icons/mdi/export-variant';
+	import DownloadIconSVG from '~icons/bi/filetype-svg';
+	import DownloadIconPNG from '~icons/bi/filetype-png';
+	import DownloadIconJPG from '~icons/bi/filetype-jpg';
 	import SaveIcon from '~icons/mdi/content-save';
 	import UndoIcon from '~icons/material-symbols/undo';
 	import RedoIcon from '~icons/material-symbols/redo';
@@ -25,6 +28,7 @@
 	// ClearIcon
 
 	import { initializeZoomEvents } from './zoom';
+	import { downloadImage, downloadSVG } from './download';
 	
 
 	export let canvasElement: HTMLCanvasElement;
@@ -34,7 +38,7 @@
     let activeSelection: fabric.FabricObject[] = [];
 
     enum Tool {
-        SELECT,
+		SELECT,
         SHAPE,
         PAINT,
         LINE,
@@ -42,6 +46,7 @@
         TEXT,
         IMAGE
     }
+	let activeTool = Tool.SELECT;
 
 
 	let fabricCanvas: fabric.Canvas;
@@ -68,8 +73,6 @@
 		// initializeZoomEvents(fabricCanvas, width, height);
 
         
-
-
 		fabricCanvas.add(
 			new fabric.Rect({
 				left: 100,
@@ -79,15 +82,6 @@
 				height: 100,
 
                 cornerStyle: 'circle'
-			})
-		);
-
-		fabricCanvas.add(
-			new fabric.Textbox('Hello world', {
-				left: 100,
-				top: 100,
-				width: 100,
-				fontSize: 20
 			})
 		);
 
@@ -174,19 +168,10 @@
 		fabricCanvas.forEachObject(o => {
 			o.selectable = true;
 			o.evented = true;
-		})
-	}
+		});
 
-	const addText = () => {
-		fabricCanvas.add(
-			new fabric.Textbox('ChangeMe', {
-				left: 100,
-				top: 100,
-				width: 100,
-				fontSize: 50
-			})
-		);
-	};
+		activeTool = tool;
+	}
 
 	type NavTool = {
 		icon: any; 
@@ -201,7 +186,6 @@
 			icon: SelectIcon,
 			tool: Tool.SELECT,
 			tooltip: 'Select'
-			
 		},
 		{
 			icon: ShapesIcon,
@@ -225,8 +209,18 @@
 		},
 		{
 			icon: TextIcon,
-			tool: Tool.TEXT,
-			tooltip: 'Add Textbox'
+			// tool: Tool.TEXT,
+			tooltip: 'Add Textbox',
+			action: () => {
+				fabricCanvas.add(
+				new fabric.Textbox('ChangeMe', {
+					left: width / 2,
+					top: height / 2,
+					width: width,
+					fontSize: 50
+				})
+			);
+			}
 		},
 		{
 			icon: ImageIcon,
@@ -243,15 +237,43 @@
 			action: () => {}
 		},
 		{
-			icon: DownloadIcon,
-			tooltip: 'Download',
-			action: () => {}
+			icon: DownloadIconSVG,
+			tooltip: 'Download SVG',
+			action: () => {
+				downloadSVG(fabricCanvas.toSVG(undefined, (a)=> a), 'canvas');
+			}
 		},
 		{
-			icon: SaveIcon,
-			tooltip: 'Save',
-			action: () => {}
+			icon: DownloadIconPNG,
+			tooltip: 'Download PNG',
+			action: () => {
+				downloadImage(
+					fabricCanvas.toDataURL({
+						format: 'png',
+						quality: 0.8,
+						multiplier: 1
+					}), 'canvas');
+			}
 		},
+		{
+			icon: DownloadIconJPG,
+			tooltip: 'Download JPG',
+			action: () => {
+				downloadImage(
+					fabricCanvas.toDataURL({
+						format: 'jpeg',
+						quality: 0.8,
+						multiplier: 1
+					}), 'canvas');
+			}
+		},
+		// {
+		// 	icon: SaveIcon,
+		// 	tooltip: 'Save',
+		// 	action: () => {
+				
+		// 	}
+		// },
 		// {
 		// 	icon: UndoIcon,
 		// 	tooltip: 'Undo',
