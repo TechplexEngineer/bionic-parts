@@ -30,6 +30,7 @@
 	import { downloadImage, downloadJson, downloadSVG } from './download';
 	import textBoxDrawing from './tools/textBoxDrawing';
 	import lineDrawing from './tools/lineDrawing';
+	import pathDrawing from './tools/pathDrawing';
 
 	export let canvasElement: HTMLCanvasElement;
 	export let width = 540;
@@ -135,8 +136,9 @@
 		// 	this.history.push(JSON.stringify(currentState));
 		// }, 1000);
 
-		textBoxDrawing(fabricCanvas, fabric);
 		lineDrawing(fabricCanvas, fabric);
+		pathDrawing(fabricCanvas, fabric);
+		textBoxDrawing(fabricCanvas, fabric);
 
 		return () => {
 			fabricCanvas.dispose();
