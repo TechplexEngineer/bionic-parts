@@ -1,13 +1,29 @@
 <script lang="ts">
 	import * as fabric from 'fabric';
 	import { onMount } from 'svelte';
-	import Select   from '~icons/mdi/cursor-default-outline';
-	import Text     from '~icons/mdi/format-textbox';
-	import Line     from '~icons/mdi/vector-line';
-	import Polyline from '~icons/la/bezier-curve';
-	import Image    from '~icons/mdi/cloud-upload';
-	import Shapes   from '~icons/gravity-ui/shapes-3';
-	import Paint    from '~icons/mdi/paintbrush';
+	import SelectIcon   from '~icons/mdi/cursor-default-outline';
+	import ShapesIcon   from '~icons/gravity-ui/shapes-3';
+	import PaintIcon    from '~icons/mdi/paintbrush';
+	import LineIcon     from '~icons/mdi/vector-line';
+	import PolylineIcon from '~icons/la/bezier-curve';
+	import TextIcon     from '~icons/mdi/format-textbox';
+	import ImageIcon    from '~icons/mdi/cloud-upload';
+	import SettingsIcon from '~icons/mdi/settings';
+
+
+	import DownloadIcon from '~icons/mdi/tray-download';
+	import SaveIcon from '~icons/mdi/content-save';
+	import UndoIcon from '~icons/material-symbols/undo';
+	import RedoIcon from '~icons/material-symbols/redo';
+	import ClearIcon from '~icons/mdi/eraser-variant';
+
+
+	// DownloadIcon
+	// SaveIcon
+	// UndoIcon
+	// RedoIcon
+	// ClearIcon
+
 	import { initializeZoomEvents } from './zoom';
 	
 
@@ -24,8 +40,7 @@
         LINE,
         POLYLINE,
         TEXT,
-        IMAGE,
-        SETTINGS
+        IMAGE
     }
 
 
@@ -52,28 +67,7 @@
 		// Zooming out makes the print smaller
 		// initializeZoomEvents(fabricCanvas, width, height);
 
-        const setActiveTool = (tool: Tool) => {
-            console.log('tool', tool);
-
-            // clear settings from previous tool
-            if (tool !== Tool.SELECT) {
-                fabricCanvas.discardActiveObject();
-                fabricCanvas.renderAll();
-                activeSelection = [];
-            }
-
-            // fabricCanvas.isDrawingLineMode = false;
-            // fabricCanvas.isDrawingPathMode = false;
-            fabricCanvas.isDrawingMode = false;
-            // fabricCanvas.isDrawingTextMode = false;
-
-            fabricCanvas.defaultCursor = 'default';
-            fabricCanvas.selection = true;
-            fabricCanvas.forEachObject(o => {
-                o.selectable = true;
-                o.evented = true;
-            })
-        }
+        
 
 
 		fabricCanvas.add(
@@ -147,51 +141,7 @@
 		//     fabricCanvas.loadFromJSON(savedCanvas, fabricCanvas.renderAll.bind(fabricCanvas));
 		// }
 
-		// move objects with arrow keys
-		document.addEventListener('keydown', (e) => {
-			const key = e.code;
-			let activeObject;
-
-			// if we are in a textarea or input, don't move the object
-			if (document.querySelectorAll('textarea:focus, input:focus').length > 0) return;
-
-			if (key !== 'ArrowLeft' && key !== 'ArrowUp' && key !== 'ArrowRight' && key !== 'ArrowDown') {
-				return;
-			}
-			e.preventDefault();
-			activeObject = fabricCanvas.getActiveObject();
-
-			if (!activeObject) {
-				return;
-			}
-
-			if (key === 'ArrowLeft') {
-				activeObject.left -= 1;
-			} else if (key === 'ArrowRight') {
-				activeObject.left += 1;
-			} else if (key === 'ArrowUp') {
-				activeObject.top -= 1;
-			} else if (key === 'ArrowDown') {
-				activeObject.top += 1;
-			}
-
-			activeObject.setCoords();
-			fabricCanvas.renderAll();
-			// fabricCanvas.trigger('object:modified'); //@todo history
-		});
-
-		document.addEventListener('keydown', (e) => {
-			const key = e.which || e.keyCode;
-			if (key === 46 && document.querySelectorAll('textarea:focus, input:focus').length === 0) {
-				fabricCanvas.getActiveObjects().forEach((obj) => {
-					fabricCanvas.remove(obj);
-				});
-
-				fabricCanvas.discardActiveObject();
-				fabricCanvas.requestRenderAll();
-				// fabricCanvas.trigger('object:modified')
-			}
-		});
+		
 
         // @todo history
 		// setTimeout(() => {
@@ -204,6 +154,29 @@
 		};
 	});
 
+	const setActiveTool = (tool: Tool) => {
+		console.log('tool', tool);
+
+		// clear settings from previous tool
+		if (tool !== Tool.SELECT) {
+			fabricCanvas.discardActiveObject();
+			fabricCanvas.renderAll();
+			activeSelection = [];
+		}
+
+		// fabricCanvas.isDrawingLineMode = false;
+		// fabricCanvas.isDrawingPathMode = false;
+		fabricCanvas.isDrawingMode = false;
+		// fabricCanvas.isDrawingTextMode = false;
+
+		fabricCanvas.defaultCursor = 'default';
+		fabricCanvas.selection = true;
+		fabricCanvas.forEachObject(o => {
+			o.selectable = true;
+			o.evented = true;
+		})
+	}
+
 	const addText = () => {
 		fabricCanvas.add(
 			new fabric.Textbox('ChangeMe', {
@@ -214,40 +187,157 @@
 			})
 		);
 	};
+
+	type NavTool = {
+		icon: any; 
+		tooltip: string;
+	} & ( 
+		{tool: Tool;} | 
+		{action: () => void;} 
+	);
+
+	const leftTools: NavTool[] = [
+		{
+			icon: SelectIcon,
+			tool: Tool.SELECT,
+			tooltip: 'Select'
+			
+		},
+		{
+			icon: ShapesIcon,
+			tool: Tool.SHAPE,
+			tooltip: 'Add a Shape'
+		},
+		{
+			icon: PaintIcon,
+			tool: Tool.PAINT,
+			tooltip: 'Paint'
+		},
+		{
+			icon: LineIcon,
+			tool: Tool.LINE,
+			tooltip: 'Line'
+		},
+		{
+			icon: PolylineIcon,
+			tool: Tool.POLYLINE,
+			tooltip: 'Polyline'
+		},
+		{
+			icon: TextIcon,
+			tool: Tool.TEXT,
+			tooltip: 'Add Textbox'
+		},
+		{
+			icon: ImageIcon,
+			tool: Tool.IMAGE,
+			tooltip: 'Upload Image'
+		}
+		
+	];
+
+	const rightTools: NavTool[] = [
+		{
+			icon: SettingsIcon,
+			tooltip: 'Settings',
+			action: () => {}
+		},
+		{
+			icon: DownloadIcon,
+			tooltip: 'Download',
+			action: () => {}
+		},
+		{
+			icon: SaveIcon,
+			tooltip: 'Save',
+			action: () => {}
+		},
+		// {
+		// 	icon: UndoIcon,
+		// 	tooltip: 'Undo',
+		// 	action: () => {}
+		// },
+		// {
+		// 	icon: RedoIcon,
+		// 	tooltip: 'Redo',
+		// 	action: () => {}
+		// },
+		{
+			icon: ClearIcon,
+			tooltip: 'Clear',
+			action: () => {
+				if (window.confirm('This will clear the canvas! Are you sure?')) {
+					fabricCanvas.clear();
+				}
+			}
+		}
+	];
+
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-body">
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-body">
 	<div class="container-fluid">
-		<button
-			class="navbar-toggler"
-			type="button"
-			data-bs-toggle="collapse"
-			data-bs-target="#navbarNavAltMarkup"
-			aria-controls="navbarNavAltMarkup"
-			aria-expanded="false"
-			aria-label="Toggle navigation"
-		>
-			<span class="navbar-toggler-icon" />
-		</button>
-		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-			<div class="navbar-nav">
-				
-				<button class="nav-link active" title="Select"><Select class="fs-3"/></button>
-				<button class="nav-link" title="Show Shapes"><Shapes class="fs-3"/></button>
-				<button class="nav-link" title="Paint Tool"><Paint class="fs-3"/></button>
-				<button class="nav-link" title="Line Tool"><Line class="fs-3"/></button>
-				<button class="nav-link" title="Polyline Tool"><Polyline class="fs-3" /></button>
-				<button class="nav-link" on:click={addText} title="Add Textbox"><Text class="fs-3"/></button>
-				<button class="nav-link" title="Upload Image"><Image class="fs-3"/></button>
-				<button class="nav-link">Settings</button>
-			</div>
+		
+		<div class="navbar-nav">
+			{#each leftTools as tool}
+				<button class="nav-link" on:click={() => tool?.tool && setActiveTool(tool?.tool)} title={tool.tooltip}>
+					<svelte:component this={tool.icon} class="fs-3" />
+				</button>
+			{/each}
 		</div>
 	</div>
+</nav> -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+		{#each leftTools as tool}
+			<button class="nav-link" on:click={() => {
+				if ("tool" in tool) setActiveTool(tool?.tool);
+				if ("action" in tool) tool.action();
+			}} title={tool.tooltip}>
+				<svelte:component this={tool.icon} class="fs-3" />
+			</button>
+		{/each}
+        <!-- <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Features</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li> -->
+      </ul>
+
+	  <ul class="navbar-nav mb-2 mb-lg-0">
+		{#each rightTools as tool}
+			<button class="nav-link" on:click={() => {
+				if ("tool" in tool) setActiveTool(tool?.tool);
+				if ("action" in tool) tool.action();
+			}} title={tool.tooltip}>
+				<svelte:component this={tool.icon} class="fs-3" />
+			</button>
+		{/each}
+      </ul>
+    </div>
+  </div>
 </nav>
 
-<div>
-	<div class="canvas-container">
-		<canvas bind:this={canvasElement} />
+
+<div class="d-flex">
+	<div class="flex-column p-4 col-2">
+		Left Sidebar
+	</div>
+	<div class="canvas-container" style="width:{width}px; height:{height}px">
+		<canvas bind:this={canvasElement}/>
+	</div>
+	<div class="flex-column p-4 col-2" style="background-color: red;">
+		Right Sidebar
 	</div>
 </div>
 
@@ -256,6 +346,8 @@
 		border: 1px solid black;
 	}
     .canvas-container {
+		width: var(--canvasWidth);
+		height: var(--canvasHeight);
         background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAHUlEQVQ4jWNgYGAQIYAJglEDhoUBg9+FowbQ2gAARjwKARjtnN8AAAAASUVORK5CYII=");
         background-size: 30px 30px;
         border: 1px solid #ccc;

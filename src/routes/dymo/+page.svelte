@@ -117,12 +117,14 @@
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col">
+		<div class="col-md-9">
 			<h1>Editor</h1>
 			<!-- <canvas bind:this={canvas} /> -->
-			<LabelEditor bind:canvasElement={canvasElement}/>
+			<div style="border: 1px solid green">
+				<LabelEditor bind:canvasElement={canvasElement}/>
+			</div>
 		</div>
-		<div class="col">
+		<div class="col-md-3">
 			<h1>Data</h1>
 			<button class="btn btn-primary" on:click={print}>Print</button>
 			<br>
