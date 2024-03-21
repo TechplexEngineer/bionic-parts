@@ -31,9 +31,6 @@ export function convertImageToBitmap(image: ImageData): number[][] {
         const x = (pixel/4) % image.width;
         const y = Math.floor((pixel/4) / image.width);        
 
-        // make the alpha channel opaque
-        image.data[pixel + 3] = 255;
-
         // convert to greyscale
         const grey = 0.2126 * image.data[pixel] +
             0.7152 * image.data[pixel + 1] +
@@ -76,7 +73,8 @@ export function convertImageToBitmap(image: ImageData): number[][] {
         }
 
         // The image is posterized, so we only have to check the "red" channel.
-        const black = (image.data[pixel] < 50);
+        // if the pixel is fully transparent, convert the color to white
+        const black = image.data[pixel + 3] === 255 && (image.data[pixel] < 50);
         if (black) {
             const row = bitmap[y];
             // Set the right bit.
