@@ -6,7 +6,7 @@
 	import 'mini-canvas-editor/css/editor.css';
 	import { DymoService } from './dymoService';
 	import { convertImageToBitmap } from './imageService';
-	import Editor from './ImageEditor/Editor.svelte';
+	import LabelEditor from './ImageEditor/Editor.svelte';
 
 	const debug = (bitmap: number[][]) => {
 		let outString = "[\n";
@@ -120,7 +120,7 @@
 		<div class="col">
 			<h1>Editor</h1>
 			<!-- <canvas bind:this={canvas} /> -->
-			<Editor bind:canvasElement={canvasElement}/>
+			<LabelEditor bind:canvasElement={canvasElement}/>
 		</div>
 		<div class="col">
 			<h1>Data</h1>

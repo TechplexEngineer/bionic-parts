@@ -1,15 +1,21 @@
 <script lang="ts">
 	import * as fabric from 'fabric';
 	import { onMount } from 'svelte';
+	import Select   from '~icons/mdi/cursor-default-outline';
+	import Text     from '~icons/mdi/format-textbox';
+	import Line     from '~icons/mdi/vector-line';
+	import Polyline from '~icons/la/bezier-curve';
+	import Image    from '~icons/mdi/cloud-upload';
+	import Shapes   from '~icons/gravity-ui/shapes-3';
+	import Paint    from '~icons/mdi/paintbrush';
+	import { initializeZoomEvents } from './zoom';
+	
 
 	export let canvasElement: HTMLCanvasElement;
+	export let width = 540;
+	export let height = 900;
 
-    let activeSelection: any;
-
-	const setActiveSelection = (selection: any) => {
-		console.log('selection', selection);
-        activeSelection = selection;
-	};
+    let activeSelection: fabric.FabricObject[] = [];
 
     enum Tool {
         SELECT,
@@ -22,6 +28,8 @@
         SETTINGS
     }
 
+
+	let fabricCanvas: fabric.Canvas;
     
 
 	onMount(async () => {
@@ -36,10 +44,13 @@
 
         // FabricObject.prototype.cornerColor = 'blue';
 
-		const fabricCanvas = new fabric.Canvas(canvasElement, {
-			width: 540,
-			height: 900
+		fabricCanvas = new fabric.Canvas(canvasElement, {
+			width: width,
+			height: height
 		});
+
+		// Zooming out makes the print smaller
+		// initializeZoomEvents(fabricCanvas, width, height);
 
         const setActiveTool = (tool: Tool) => {
             console.log('tool', tool);
@@ -48,7 +59,7 @@
             if (tool !== Tool.SELECT) {
                 fabricCanvas.discardActiveObject();
                 fabricCanvas.renderAll();
-                activeSelection = null;
+                activeSelection = [];
             }
 
             // fabricCanvas.isDrawingLineMode = false;
@@ -103,10 +114,17 @@
         // fabricCanvas.selection = true;
         // fabricCanvas.selectionBorderColor = 'ping';
 
-		// retrieve active selection to react state
-		fabricCanvas.on('selection:created', ({ selected }) => setActiveSelection(selected));
-		fabricCanvas.on('selection:updated', ({ selected }) => setActiveSelection(selected));
-		fabricCanvas.on('selection:cleared', ({ e }) => setActiveSelection(null));
+		fabricCanvas.on('selection:created', (e) => {
+			activeSelection.push(...e.selected);
+		});
+		fabricCanvas.on('selection:updated', e => {
+			activeSelection.push(...e.selected);
+			// remove all deselected objects
+			activeSelection = activeSelection.filter((obj) => !e.deselected.includes(obj));
+		});
+		fabricCanvas.on('selection:cleared', e => {
+			activeSelection = [];
+		});
 
 		// snap to an angle on rotate if shift key is down
 		fabricCanvas.on('object:rotating', (e) => {
@@ -185,6 +203,17 @@
 			fabricCanvas.dispose();
 		};
 	});
+
+	const addText = () => {
+		fabricCanvas.add(
+			new fabric.Textbox('ChangeMe', {
+				left: 100,
+				top: 100,
+				width: 100,
+				fontSize: 50
+			})
+		);
+	};
 </script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-body">
@@ -202,21 +231,24 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 			<div class="navbar-nav">
-				<a class="nav-link active" href="/">Select Tool</a>
-				<a class="nav-link" href="#">Shapes Tool</a>
-				<a class="nav-link" href="#">Paint Tool</a>
-				<a class="nav-link" href="#">Line Tool</a>
-				<a class="nav-link" href="#">Polyline Tool</a>
-				<a class="nav-link" href="#">Text Tool</a>
-				<a class="nav-link" href="#">Image Tool</a>
-				<a class="nav-link" href="#">Settings</a>
+				
+				<button class="nav-link active" title="Select"><Select class="fs-3"/></button>
+				<button class="nav-link" title="Show Shapes"><Shapes class="fs-3"/></button>
+				<button class="nav-link" title="Paint Tool"><Paint class="fs-3"/></button>
+				<button class="nav-link" title="Line Tool"><Line class="fs-3"/></button>
+				<button class="nav-link" title="Polyline Tool"><Polyline class="fs-3" /></button>
+				<button class="nav-link" on:click={addText} title="Add Textbox"><Text class="fs-3"/></button>
+				<button class="nav-link" title="Upload Image"><Image class="fs-3"/></button>
+				<button class="nav-link">Settings</button>
 			</div>
 		</div>
 	</div>
 </nav>
 
-<div class="canvas-container">
-    <canvas bind:this={canvasElement} />
+<div>
+	<div class="canvas-container">
+		<canvas bind:this={canvasElement} />
+	</div>
 </div>
 
 <style>

@@ -27,34 +27,7 @@ const CMD_NO_DOT_TAB = Buffer.from([0x1b, 'B'.charCodeAt(0), 0]);
 const CMD_START_ESC = Buffer.from(new Array(313).fill(0x1b));
 
 
-
-
-/**
- * Create service that connects to configured DYMO LabelWriter.
- * If no configuration found, try to find the DYMO printer. First one found is used.
- */
 export class DymoService {
-
-    /**
-     * Dymo 99010 labels S0722370 compatible , 89mm x 28mm (3.5inch x 1.1inch, 300dpi).
-     */
-    static DYMO_LABELS = {
-        '89mm x 28mm': {
-            title: '89mm x 28mm',
-            imageWidth: 964,
-            imageHeight: 300
-        },
-        '89mm x 36mm': {
-            title: '89mm x 36mm',
-            imageWidth: 964,
-            imageHeight: 390
-        },
-        '54mm x 25mm': {
-            title: '54mm x 25mm',
-            imageWidth: 584,
-            imageHeight: 270
-        }
-    };
 
     /**
      * @private
@@ -64,9 +37,9 @@ export class DymoService {
      *
      * @param {number[][]} imageBuffer Bitmap image array, lines and rows in portrait orientation
      * @param {number} [printCount] Number of prints
-     * @return Promise<void> Resolves in case of success, rejects otherwise
+     * @return {Buffer} to send to the printer
      */
-    static printBitmap(imageBuffer: number[][], printCount = 1) {
+    static printBitmap(imageBuffer: number[][], printCount = 1): Buffer {
         if (!imageBuffer || imageBuffer.length === 0) {
             throw Error('Empty imageBuffer, cannot print');
         }
