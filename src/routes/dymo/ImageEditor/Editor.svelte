@@ -31,6 +31,7 @@
 	import textBoxDrawing from './tools/textBoxDrawing';
 	import lineDrawing from './tools/lineDrawing';
 	import pathDrawing from './tools/pathDrawing';
+	import { initNudge } from './nudge';
 
 	export let canvasElement: HTMLCanvasElement;
 	export let width = 540;
@@ -139,6 +140,7 @@
 		lineDrawing(fabricCanvas, fabric);
 		pathDrawing(fabricCanvas, fabric);
 		textBoxDrawing(fabricCanvas, fabric);
+		initNudge(fabricCanvas);
 
 		return () => {
 			fabricCanvas.dispose();
