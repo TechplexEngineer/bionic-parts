@@ -2,13 +2,13 @@
  * The logic behind textbox drawing.
  */
 
-import type * as fabric from 'fabric';
+import type * as Fabric from 'fabric';
 import { __ } from './translations';
 
-export const textBoxDrawing = (fabricCanvas: fabric.Canvas, fabric: any) => {
+export const textBoxDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
 
     let isDrawingText = false;
-    let textboxRect: fabric.Rect;
+    let textboxRect: Fabric.Rect;
     let origX: number;
     let origY: number;
     let pointer;

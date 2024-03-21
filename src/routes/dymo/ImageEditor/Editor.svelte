@@ -96,10 +96,10 @@
 		// fabricCanvas.selectionBorderColor = 'ping';
 
 		fabricCanvas.on('selection:created', (e) => {
-			activeSelection.push(...e.selected);
+			activeSelection = [...activeSelection, ...e.selected];
 		});
 		fabricCanvas.on('selection:updated', (e) => {
-			activeSelection.push(...e.selected);
+			activeSelection = [...activeSelection, ...e.selected];
 			// remove all deselected objects
 			activeSelection = activeSelection.filter((obj) => !e.deselected.includes(obj));
 		});
@@ -343,19 +343,6 @@
 	
 </script>
 
-<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-body">
-	<div class="container-fluid">
-		
-		<div class="navbar-nav">
-			{#each leftTools as tool}
-				<button class="nav-link" on:click={() => tool?.tool && setActiveTool(tool?.tool)} title={tool.tooltip}>
-					<svelte:component this={tool.icon} class="fs-3" />
-				</button>
-			{/each}
-		</div>
-	</div>
-</nav> -->
-
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 	<div class="container-fluid">
 		<button
@@ -375,9 +362,7 @@
 					<button
 						class="nav-link"
 						class:active={'tool' in tool && activeTool === tool.tool}
-						on:click={() => {
-							console.log('clicking tool', tool.tool, activeTool);
-							
+						on:click={() => {							
 							if (tool.tool != undefined) setActiveTool(tool?.tool);
 							if (tool.action != undefined) tool.action();
 						}}
@@ -386,15 +371,7 @@
 						<svelte:component this={tool.icon} class="fs-3" />
 					</button>
 				{/each}
-				<!-- <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Features</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Pricing</a>
-        </li> -->
+
 			</ul>
 
 			<ul class="navbar-nav mb-2 mb-lg-0">
@@ -417,7 +394,7 @@
 </nav>
 
 <div class="d-flex">
-	{#if activeTool == SidebarTool.SELECT}
+	{#if activeTool == SidebarTool.SELECT && activeSelection.length > 0}
 		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
 			<h3>Selection Settings</h3>
 			<hr />
