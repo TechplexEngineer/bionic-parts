@@ -29,6 +29,7 @@
 	import { initializeZoomEvents } from './zoom';
 	import { downloadImage, downloadJson, downloadSVG } from './download';
 	import textBoxDrawing from './tools/textBoxDrawing';
+	import lineDrawing from './tools/lineDrawing';
 
 	export let canvasElement: HTMLCanvasElement;
 	export let width = 540;
@@ -135,6 +136,7 @@
 		// }, 1000);
 
 		textBoxDrawing(fabricCanvas, fabric);
+		lineDrawing(fabricCanvas, fabric);
 
 		return () => {
 			fabricCanvas.dispose();
