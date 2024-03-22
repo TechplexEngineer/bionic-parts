@@ -86,6 +86,8 @@
 			await device.claimInterface(0);
 
 			await device.transferOut(2, data2Send);
+
+			await device.close();
 		} catch (err) {
 			bindPrintMessages = (err as Error).message;
 		}

@@ -2,7 +2,7 @@
  * The logic behind path drawing.
  */
 
-import * as Fabric from 'fabric';
+import type * as Fabric from 'fabric';
 import { __ } from '../translations';
 
 
@@ -16,8 +16,6 @@ const inRange = (radius: number, cursorX: number, cursorY: number, targetX: numb
 
     return false;
 }
-
-
 
 const pathDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
 
@@ -41,7 +39,7 @@ const pathDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
 
         // if first point, no extras, just place the point
         if (!pathToDraw) {
-            pathToDraw = new Fabric.Path(`M${pointer.x} ${pointer.y} L${pointer.x} ${pointer.y}`, {
+            pathToDraw = new fabric.Path(`M${pointer.x} ${pointer.y} L${pointer.x} ${pointer.y}`, {
                 strokeWidth: 2,
                 stroke: '#000000',
                 // fill: false
@@ -266,7 +264,7 @@ const pathDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
         }
 
         fabricCanvas.renderAll();
-        // fabricCanvas.trigger('object:modified') //@todo history
+        fabricCanvas.fire('object:modified');
 
         pathToDraw = null;
         isDrawingPath = false;

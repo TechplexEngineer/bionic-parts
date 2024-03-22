@@ -10,6 +10,7 @@
 	import ImageIcon from '~icons/mdi/cloud-upload';
 	import SettingsIcon from '~icons/mdi/settings';
 
+	import PrintIcon from '~icons/material-symbols/print';
 	import DownloadIcon from '~icons/mdi/export-variant';
 	import DownloadIconSVG from '~icons/bi/filetype-svg';
 	import DownloadIconPNG from '~icons/bi/filetype-png';
@@ -32,6 +33,9 @@
 	import lineDrawing from './tools/lineDrawing';
 	import pathDrawing from './tools/pathDrawing';
 	import { initNudge } from './nudge';
+	import Shapes from './sidebar/Shapes.svelte';
+	import { convertImageToBitmap } from '../imageService';
+	import { DymoService } from '../dymoService';
 
 	export let canvasElement: HTMLCanvasElement;
 	export let width = 540;
@@ -151,7 +155,7 @@
 		console.log('setActiveTool', newTool);
 		
 		// reset all modes
-		fabricCanvas.set('isDrawingMode', false);
+		fabricCanvas.isDrawingMode = false;
 		fabricCanvas.set('isDrawingLineMode', false);
 		fabricCanvas.set('isDrawingPathMode', false);
 		fabricCanvas.set('isDrawingTextMode', false);
@@ -164,7 +168,8 @@
 
 		// drawing mode
 		if (newTool === SidebarTool.PAINT) {
-			fabricCanvas.set('isDrawingMode', true);
+			fabricCanvas.isDrawingMode = true;
+			console.log('paint mode');
 		}
 
 		// drawing line mode
@@ -223,11 +228,11 @@
 			tool: SidebarTool.SHAPE,
 			tooltip: 'Add a Shape'
 		},
-		{
-			icon: PaintIcon,
-			tool: SidebarTool.PAINT,
-			tooltip: 'Paint'
-		},
+		// {
+		// 	icon: PaintIcon,
+		// 	tool: SidebarTool.PAINT,
+		// 	tooltip: 'Paint'
+		// },
 		{
 			icon: LineIcon,
 			tool: SidebarTool.LINE,
@@ -242,16 +247,6 @@
 			icon: TextIcon,
 			tool: SidebarTool.TEXT,
 			tooltip: 'Add Textbox',
-			action: () => {
-				// fabricCanvas.add(
-				// 	new fabric.Textbox('ChangeMe', {
-				// 		left: width / 2,
-				// 		top: height / 2,
-				// 		width: width,
-				// 		fontSize: 50
-				// 	})
-				// );
-			}
 		},
 		{
 			icon: ImageIcon,
@@ -272,6 +267,51 @@
 	} & ({ tool: SidebarTool } | { action: () => void });
 
 	const rightTools: RightNavTool[] = [
+		{
+			icon: PrintIcon,
+			tooltip: 'Print',
+			action: async () => {
+				const ctx = canvasElement.getContext('2d');
+				if (!ctx) {
+					// bindPrintMessages = 'no canvas 2d context';
+					return;
+				}
+
+				const imageData = ctx.getImageData(0, 0, canvasElement.width, canvasElement.height);
+
+				const bitmap = await convertImageToBitmap(imageData);
+
+				// debug(bitmap);
+
+				const data2Send = DymoService.printBitmap(bitmap);
+
+
+				try {
+					const device = await navigator.usb.requestDevice({
+						filters: [
+							{
+								vendorId: 0x0922
+							}
+						]
+					});
+					await device.open();
+
+					if (device.configuration === null) {
+						await device.selectConfiguration(0);
+					}
+
+					await device.claimInterface(0);
+
+					await device.transferOut(2, data2Send);
+
+					await device.close();
+				} catch (err) {
+					// bindPrintMessages = (err as Error).message;
+					console.log('error', err);
+					
+				}
+			}
+		},
 		{
 			icon: DownloadIconSVG,
 			tooltip: 'Download SVG',
@@ -412,7 +452,7 @@
 		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
 			<h3>Shapes</h3>
 			<hr />
-			ToDo
+			<Shapes fabric={fabric} canvas={fabricCanvas}/>
 		</div>
 	{/if}
 

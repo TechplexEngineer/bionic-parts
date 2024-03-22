@@ -73,7 +73,7 @@ export const textBoxDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
         fabricCanvas.add(textbox);
         fabricCanvas.setActiveObject(textbox);
         textbox.setControlsVisibility({ 'mb': false });
-        // fabricCanvas.trigger('object:modified'); //@todo history
+        fabricCanvas.fire('object:modified');
     });
 
 }

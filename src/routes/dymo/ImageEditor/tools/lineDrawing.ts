@@ -62,11 +62,11 @@ const lineDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
     });
 
     fabricCanvas.on('mouse:up', () => {
-        if (!isDrawingLine) return
+        if (!isDrawingLine) return;
 
-        lineToDraw.setCoords()
-        isDrawingLine = false
-        // fabricCanvas.trigger('object:modified') //@todo history
+        lineToDraw.setCoords();
+        isDrawingLine = false;
+        fabricCanvas.fire('object:modified');
     });
 
 }

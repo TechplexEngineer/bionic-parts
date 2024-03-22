@@ -29,7 +29,7 @@ export const initNudge = (fabricCanvas: fabric.Canvas) => {
 
         activeObject.setCoords();
         fabricCanvas.renderAll();
-        // fabricCanvas.trigger('object:modified'); //@todo history
+        fabricCanvas.fire('object:modified');
     });
 
     document.addEventListener('keydown', (e) => {
@@ -42,7 +42,7 @@ export const initNudge = (fabricCanvas: fabric.Canvas) => {
 
             fabricCanvas.discardActiveObject();
             fabricCanvas.requestRenderAll();
-            // fabricCanvas.trigger('object:modified'); //@todo history
+            fabricCanvas.fire('object:modified');
         }
     });
 }
