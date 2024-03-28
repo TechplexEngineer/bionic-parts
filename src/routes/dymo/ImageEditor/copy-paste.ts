@@ -1,12 +1,12 @@
-import type * as fabric from 'fabric'; 
+import type * as Fabric from 'fabric';
 
 /**
  * Define copy/paste actions on fabric js canvas
  */
-export const copyPaste = (canvas: fabric.Canvas) => {
+export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
 
     // copy
-    document.addEventListener('copy', (e) => {
+    document.addEventListener('copy', async (e) => {
         const activeObject = canvas.getActiveObject()
         if (!activeObject) return
 
@@ -21,9 +21,9 @@ export const copyPaste = (canvas: fabric.Canvas) => {
         // if selection is not an image, copy as JSON
         if (activeObject.type !== 'image') {
             e.preventDefault()
-            activeObject.clone((cloned) => {
-                e.clipboardData?.setData('text/plain', JSON.stringify(cloned.toJSON()))
-            })
+            const cloned = await activeObject.clone();
+            e.clipboardData?.setData('text/plain', JSON.stringify(cloned.toJSON()))
+            
         }
     })
 
@@ -50,72 +50,97 @@ export const copyPaste = (canvas: fabric.Canvas) => {
     }
 
     // paste
-    document.addEventListener('paste', (e) => {
+    document.addEventListener('paste', async (e) => {
+        console.log('paste event triggered');
+        
         let pasteTextData = e.clipboardData?.getData('text')
 
         // check if base64 image
         if (pasteTextData && isBase64String(pasteTextData)) {
-            fabric.FabricImage.fromURL(pasteTextData, (img) => {
-                img.set({
-                    left: 0,
-                    top: 0
-                })
-                img.scaleToHeight(100)
-                img.scaleToWidth(100)
-                canvas.add(img)
-                canvas.setActiveObject(img)
-                canvas.trigger('object:modified')
+            console.log('first');
+            const img = await fabric.FabricImage.fromURL(pasteTextData, {}, {});
+
+            img.set({
+                left: 0,
+                top: 0
             })
+            img.scaleToHeight(100)
+            img.scaleToWidth(100)
+            canvas.add(img)
+            canvas.setActiveObject(img)
+            // canvas.trigger('object:modified') //@todo history
 
             return
         }
 
         // check if there's an image in clipboard items
         if (e.clipboardData?.items && e.clipboardData.items.length > 0) {
+            console.log('second');
             for (let i = 0; i < e.clipboardData.items.length; i++) {
-                if (e.clipboardData.items[i].type.indexOf('image') === 0) {
-                    let blob = e.clipboardData.items[i].getAsFile()
-                    if (blob !== null) {
-                        let reader = new FileReader()
-                        reader.onload = (f) => {
-                            fabric.FabricImage.fromURL(f.target.result, (img) => {
-                                img.set({
-                                    left: 0,
-                                    top: 0
-                                })
-                                img.scaleToHeight(100)
-                                img.scaleToWidth(100)
-                                canvas.add(img)
-                                canvas.setActiveObject(img)
-                                canvas.trigger('object:modified')
-                            })
-                        }
-                        reader.readAsDataURL(blob)
-                    }
+                if (e.clipboardData.items[i].type.indexOf('image') !== 0) {
+                    console.log('not an image');
+                    continue;
                 }
+                let blob = e.clipboardData.items[i].getAsFile()
+                if (blob == null) {
+                    console.log('blob is null');
+                    continue;
+                }
+                let reader = new FileReader()
+                reader.onload = async (f) => {
+                    const img = await fabric.FabricImage.fromURL(f.target!.result as any, {}, {});
+
+                    img.set({
+                        left: 0,
+                        top: 0
+                    })
+                    img.scaleToHeight(100)
+                    img.scaleToWidth(100)
+                    canvas.add(img)
+                    canvas.setActiveObject(img)
+                    // canvas.trigger('object:modified') //@todo history
+
+                    // fabric.FabricImage.fromURL(f.target.result, (img) => {
+                    //     img.set({
+                    //         left: 0,
+                    //         top: 0
+                    //     })
+                    //     img.scaleToHeight(100)
+                    //     img.scaleToWidth(100)
+                    //     canvas.add(img)
+                    //     canvas.setActiveObject(img)
+                    //     canvas.trigger('object:modified')
+                    // })
+                }
+                reader.readAsDataURL(blob);
             }
         }
 
         // check if JSON and type is valid
         const validTypes = ['rect', 'circle', 'line', 'path', 'polygon', 'polyline', 'textbox', 'group']
         if (pasteTextData && isJSONObjectString(pasteTextData)) {
+            console.log('third', pasteTextData);
             const obj = JSON.parse(pasteTextData)
-            if (!validTypes.includes(obj.type)) return
-
+            if (!validTypes.includes((obj.type as string).toLowerCase())){
+                console.log('not valid type:', obj.type);
+                return
+            }
+            console.log('here');
+            
             // insert and select
-            fabric.util.enlivenObjects([obj], function (objects) {
-                objects.forEach(function (o) {
-                    o.set({
-                        left: 0,
-                        top: 0
-                    })
-                    canvas.add(o)
-                    o.setCoords()
-                    canvas.setActiveObject(o)
+            const objects = await fabric.util.enlivenObjects([obj]);
+            
+            (objects as Fabric.FabricObject[]).forEach(function (o) {
+                o.set({
+                    left: o.get('left') + 10,
+                    top: o.get('top') + 10
                 })
-                canvas.renderAll()
-                canvas.trigger('object:modified')
+                canvas.add(o)
+                // o.setCoords()
+                canvas.setActiveObject(o)
             })
+            canvas.renderAll()
+            //canvas.trigger('object:modified')//@todo history
         }
     })
 };

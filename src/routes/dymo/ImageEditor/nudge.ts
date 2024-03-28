@@ -33,7 +33,6 @@ export const initNudge = (fabricCanvas: fabric.Canvas) => {
     });
 
     document.addEventListener('keydown', (e) => {
-        console.log('e.code', e.code);
         
         if (e.code === "Delete" && document.querySelectorAll('textarea:focus, input:focus').length === 0) {
             fabricCanvas.getActiveObjects().forEach((obj) => {

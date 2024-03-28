@@ -172,7 +172,7 @@ export const getOnshapeClientFromCookies = async (cookies: Cookies, cookieName =
     }
 
     if (tokenInfo.expiryTimestamp && Date.now() >= tokenInfo.expiryTimestamp) {
-        console.log("token has expired, refresh required");
+        console.log("onshape token has expired, refresh required");
     }
 
     return await getOnshapeClient(tokenInfo, (tokenResponse) => {

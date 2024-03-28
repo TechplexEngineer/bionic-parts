@@ -36,12 +36,12 @@
 	import Shapes from './sidebar/Shapes.svelte';
 	import { convertImageToBitmap } from '../imageService';
 	import { DymoService } from '../dymoService';
+	import ColorSettings from './tools/selection/colorSettings.svelte';
+	import { initCopyPaste } from './copy-paste';
 
 	export let canvasElement: HTMLCanvasElement;
 	export let width = 540;
 	export let height = 900;
-
-	let activeSelection: fabric.FabricObject[] = [];
 
 	enum SidebarTool {
 		SELECT,
@@ -56,6 +56,8 @@
 	let activeTool = SidebarTool.SELECT;
 
 	let fabricCanvas: fabric.Canvas;
+
+	let activeSelection: fabric.FabricObject[] = [];
 
 	onMount(async () => {
 		// FabricObject.prototype.transparentCorners = false;
@@ -72,6 +74,9 @@
 			height: height
 		});
 
+		activeSelection = fabricCanvas.getActiveObjects();
+		
+
 		// Zooming out makes the print smaller
 		// initializeZoomEvents(fabricCanvas, width, height);
 
@@ -87,16 +92,16 @@
 			})
 		);
 
-		const img = await fabric.FabricImage.fromURL('Label Test (1.8 x 3 in).png', {}, {});
+		// const img = await fabric.FabricImage.fromURL('Label Test (1.8 x 3 in).png', {}, {});
 
-		fabricCanvas.add(
-			img.set({
-				left: 0,
-				top: 0,
-				width: img.width,
-				height: img.height
-			})
-		);
+		// fabricCanvas.add(
+		// 	img.set({
+		// 		left: 0,
+		// 		top: 0,
+		// 		width: img.width,
+		// 		height: img.height
+		// 	})
+		// );
 
 		// set up selection style
 		// fabricCanvas.selection = true;
@@ -104,8 +109,10 @@
 
 		fabricCanvas.on('selection:created', (e) => {
 			activeSelection = [...activeSelection, ...e.selected];
+			console.log('activeSelection', activeSelection);
 		});
 		fabricCanvas.on('selection:updated', (e) => {
+			// add all selected objects
 			activeSelection = [...activeSelection, ...e.selected];
 			// remove all deselected objects
 			activeSelection = activeSelection.filter((obj) => !e.deselected.includes(obj));
@@ -145,6 +152,7 @@
 		pathDrawing(fabricCanvas, fabric);
 		textBoxDrawing(fabricCanvas, fabric);
 		initNudge(fabricCanvas);
+		initCopyPaste(fabricCanvas, fabric);
 
 		return () => {
 			fabricCanvas.dispose();
@@ -152,7 +160,6 @@
 	});
 
 	const setActiveTool = (newTool: SidebarTool) => {
-		console.log('setActiveTool', newTool);
 		
 		// reset all modes
 		fabricCanvas.isDrawingMode = false;
@@ -206,7 +213,11 @@
 				o.evented = false;
 			});
 		}
-
+		if (newTool === activeTool && activeTool === SidebarTool.SELECT) {
+			// clear selection
+			fabricCanvas.discardActiveObject();
+			fabricCanvas.requestRenderAll();
+		}
 		activeTool = newTool;
 	};
 
@@ -444,6 +455,7 @@
 		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
 			<h3>Selection Settings</h3>
 			<hr />
+			<ColorSettings fabric={fabric} canvas={fabricCanvas} activeSelection={activeSelection} />
 			ToDo
 		</div>
 	{/if}
