@@ -90,27 +90,16 @@ export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
                 reader.onload = async (f) => {
                     const img = await fabric.FabricImage.fromURL(f.target!.result as any, {}, {});
 
+                    
+
                     img.set({
-                        left: 0,
-                        top: 0
+                        left: canvas.getActiveObject()?.get("left") || 0,
+                        top: canvas.getActiveObject()?.get("top") || 0
                     })
                     img.scaleToHeight(100)
                     img.scaleToWidth(100)
                     canvas.add(img)
                     canvas.setActiveObject(img)
-                    // canvas.trigger('object:modified') //@todo history
-
-                    // fabric.FabricImage.fromURL(f.target.result, (img) => {
-                    //     img.set({
-                    //         left: 0,
-                    //         top: 0
-                    //     })
-                    //     img.scaleToHeight(100)
-                    //     img.scaleToWidth(100)
-                    //     canvas.add(img)
-                    //     canvas.setActiveObject(img)
-                    //     canvas.trigger('object:modified')
-                    // })
                 }
                 reader.readAsDataURL(blob);
             }
@@ -131,9 +120,16 @@ export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
             const objects = await fabric.util.enlivenObjects([obj]);
             
             (objects as Fabric.FabricObject[]).forEach(function (o) {
+                let left = o.get('left') + 10;
+                let top = o.get('top') + 10;
+                const ao = canvas.getActiveObject();
+                if (ao) {
+                    left = ao.left + 10;
+                    top = ao.top + 10;
+                }
                 o.set({
-                    left: o.get('left') + 10,
-                    top: o.get('top') + 10
+                    left: left,
+                    top: top
                 })
                 canvas.add(o)
                 // o.setCoords()
