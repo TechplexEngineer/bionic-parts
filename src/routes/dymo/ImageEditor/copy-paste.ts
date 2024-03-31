@@ -51,13 +51,12 @@ export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
 
     // paste
     document.addEventListener('paste', async (e) => {
-        console.log('paste event triggered');
         
         let pasteTextData = e.clipboardData?.getData('text')
 
         // check if base64 image
         if (pasteTextData && isBase64String(pasteTextData)) {
-            console.log('first');
+
             const img = await fabric.FabricImage.fromURL(pasteTextData, {}, {});
 
             img.set({
@@ -75,10 +74,9 @@ export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
 
         // check if there's an image in clipboard items
         if (e.clipboardData?.items && e.clipboardData.items.length > 0) {
-            console.log('second');
+
             for (let i = 0; i < e.clipboardData.items.length; i++) {
                 if (e.clipboardData.items[i].type.indexOf('image') !== 0) {
-                    console.log('not an image');
                     continue;
                 }
                 let blob = e.clipboardData.items[i].getAsFile()
@@ -89,8 +87,6 @@ export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
                 let reader = new FileReader()
                 reader.onload = async (f) => {
                     const img = await fabric.FabricImage.fromURL(f.target!.result as any, {}, {});
-
-                    
 
                     img.set({
                         left: canvas.getActiveObject()?.get("left") || 0,
@@ -108,13 +104,12 @@ export const initCopyPaste = (canvas: Fabric.Canvas, fabric: typeof Fabric) => {
         // check if JSON and type is valid
         const validTypes = ['rect', 'circle', 'line', 'path', 'polygon', 'polyline', 'textbox', 'group']
         if (pasteTextData && isJSONObjectString(pasteTextData)) {
-            console.log('third', pasteTextData);
+
             const obj = JSON.parse(pasteTextData)
             if (!validTypes.includes((obj.type as string).toLowerCase())){
                 console.log('not valid type:', obj.type);
                 return
             }
-            console.log('here');
             
             // insert and select
             const objects = await fabric.util.enlivenObjects([obj]);
