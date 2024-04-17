@@ -28,7 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "better-sqlite3": "^8.0.1",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.3",
     "eslint": "^8.28.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-svelte": "^2.26.0",
@@ -47,7 +47,7 @@
   "type": "module",
   "dependencies": {
     "@types/qrcode": "^1.5.5",
-    "bootstrap": "^5.2.3",
+    "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
     "drizzle-kit": "^0.18.0",
     "drizzle-orm": "^0.29.0",
