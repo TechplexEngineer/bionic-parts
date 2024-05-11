@@ -17,7 +17,7 @@
     
 
     export let canvas: Fabric.Canvas;
-    export let fabric: any;
+    export let fabric: typeof Fabric;
 
 	const handleShapeAdd = async (e: MouseEvent) => {
         console.log('here1', e.currentTarget.children[0].outerHTML);

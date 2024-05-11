@@ -5,7 +5,7 @@
 import type * as Fabric from 'fabric';
 import { __ } from '../translations';
 
-const lineDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
+const lineDrawing = (fabricCanvas: Fabric.Canvas, fabric: typeof Fabric) => {
 
     let isDrawingLine = false;
     let lineToDraw: Fabric.Line;

@@ -38,6 +38,7 @@
 	import { DymoService } from '../dymoService';
 	import ColorSettings from './tools/selection/colorSettings.svelte';
 	import { initCopyPaste } from './copy-paste';
+	import CanvasSettings from './sidebar/CanvasSettings.svelte';
 
 	export let canvasElement: HTMLCanvasElement;
 	export let width = 540;
@@ -50,7 +51,7 @@
 		LINE,
 		POLYLINE,
 		TEXT,
-		IMAGE,
+		UPLOAD,
 		SETTINGS
 	}
 	let activeTool = SidebarTool.SELECT;
@@ -58,6 +59,17 @@
 	let fabricCanvas: fabric.Canvas;
 
 	let activeSelection: fabric.FabricObject[] = [];
+
+	let enabledTools = [
+		SidebarTool.SELECT,
+		SidebarTool.SHAPE,
+		SidebarTool.PAINT,
+		SidebarTool.LINE,
+		SidebarTool.POLYLINE,
+		SidebarTool.TEXT,
+		SidebarTool.UPLOAD,
+		SidebarTool.SETTINGS
+	];
 
 	onMount(async () => {
 		// FabricObject.prototype.transparentCorners = false;
@@ -109,7 +121,6 @@
 
 		fabricCanvas.on('selection:created', (e) => {
 			activeSelection = [...activeSelection, ...e.selected];
-			console.log('activeSelection', activeSelection);
 		});
 		fabricCanvas.on('selection:updated', (e) => {
 			// add all selected objects
@@ -261,7 +272,7 @@
 		},
 		{
 			icon: ImageIcon,
-			tool: SidebarTool.IMAGE,
+			tool: SidebarTool.UPLOAD,
 			tooltip: 'Upload Image'
 		},
 		{
@@ -451,47 +462,39 @@
 </nav>
 
 <div class="d-flex">
+	<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
 	{#if activeTool == SidebarTool.SELECT && activeSelection.length > 0}
-		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
-			<h3>Selection Settings</h3>
-			<hr />
-			<ColorSettings fabric={fabric} canvas={fabricCanvas} activeSelection={activeSelection} />
-			ToDo
-		</div>
+		<h3>Selection Settings</h3>
+		<hr />
+		<ColorSettings fabric={fabric} canvas={fabricCanvas} activeSelection={activeSelection} />
+		ToDo
 	{/if}
-
+		
 	{#if activeTool == SidebarTool.SHAPE}
-		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
-			<h3>Shapes</h3>
-			<hr />
-			<Shapes fabric={fabric} canvas={fabricCanvas}/>
-		</div>
+		<h3>Shapes</h3>
+		<hr />
+		<Shapes fabric={fabric} canvas={fabricCanvas}/>
 	{/if}
 
 	{#if activeTool == SidebarTool.PAINT}
-		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
-			<h3>Free Draw</h3>
-			<hr />
-			ToDo
-		</div>
+		<h3>Free Draw</h3>
+		<hr />
+		ToDo
 	{/if}
 
-	{#if activeTool == SidebarTool.IMAGE}
-		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
-			<h3>Upload Image</h3>
-			<hr />
-			ToDo
-		</div>
+	{#if activeTool == SidebarTool.UPLOAD}
+		<h3>Upload Image</h3>
+		<hr />
+		ToDo
 	{/if}
 
 	{#if activeTool == SidebarTool.SETTINGS}
-		<div class="flex-column p-4 col-2 bg-dark-subtle border-end border-dark-subtle">
-			<h3>Canvas Settings</h3>
-			<hr />
-			ToDo
-		</div>
+		<CanvasSettings fabric={fabric} canvas={fabricCanvas} />
+		
 	{/if}
-
+	</div>
+	
+	
 	<div class="canvas-container" style="width:{width}px; height:{height}px">
 		<canvas bind:this={canvasElement} />
 	</div>

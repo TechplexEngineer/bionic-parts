@@ -17,7 +17,7 @@ const inRange = (radius: number, cursorX: number, cursorY: number, targetX: numb
     return false;
 }
 
-const pathDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
+const pathDrawing = (fabricCanvas: Fabric.Canvas, fabric: typeof Fabric) => {
 
     let isDrawingPath = false;
     let pathToDraw: Fabric.Path | null = null;

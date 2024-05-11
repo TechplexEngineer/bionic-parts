@@ -5,7 +5,7 @@
 import type * as Fabric from 'fabric';
 import { __ } from '../translations';
 
-export const textBoxDrawing = (fabricCanvas: Fabric.Canvas, fabric: any) => {
+export const textBoxDrawing = (fabricCanvas: Fabric.Canvas, fabric: typeof Fabric) => {
 
     let isDrawingText = false;
     let textboxRect: Fabric.Rect;
