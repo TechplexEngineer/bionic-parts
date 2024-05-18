@@ -3,7 +3,7 @@
  */
 
 import type * as Fabric from 'fabric';
-import { __ } from '../translations';
+import { __ } from '../utils/translations';
 
 
 const inRange = (radius: number, cursorX: number, cursorY: number, targetX: number, targetY: number) => {

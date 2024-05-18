@@ -3,7 +3,7 @@
  */
 
 import type * as Fabric from 'fabric';
-import { __ } from '../translations';
+import { __ } from '../utils/translations';
 
 export const textBoxDrawing = (fabricCanvas: Fabric.Canvas, fabric: typeof Fabric) => {
 

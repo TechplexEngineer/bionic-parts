@@ -28,16 +28,16 @@
 	// ClearIcon
 
 	import { initializeZoomEvents } from './zoom';
-	import { downloadImage, downloadJson, downloadSVG } from './download';
+	import { downloadImage, downloadJson, downloadSVG } from './utils/download';
 	import textBoxDrawing from './tools/textBoxDrawing';
 	import lineDrawing from './tools/lineDrawing';
 	import pathDrawing from './tools/pathDrawing';
-	import { initNudge } from './nudge';
+	import { initNudge } from './utils/nudge';
 	import Shapes from './sidebar/Shapes.svelte';
 	import { convertImageToBitmap } from '../imageService';
 	import { DymoService } from '../dymoService';
 	import ColorSettings from './tools/selection/colorSettings.svelte';
-	import { initCopyPaste } from './copy-paste';
+	import { initCopyPaste } from './utils/copy-paste';
 	import CanvasSettings from './sidebar/CanvasSettings.svelte';
 
 	export let canvasElement: HTMLCanvasElement;
@@ -60,17 +60,6 @@
 
 	let activeSelection: fabric.FabricObject[] = [];
 
-	let enabledTools = [
-		SidebarTool.SELECT,
-		SidebarTool.SHAPE,
-		SidebarTool.PAINT,
-		SidebarTool.LINE,
-		SidebarTool.POLYLINE,
-		SidebarTool.TEXT,
-		SidebarTool.UPLOAD,
-		SidebarTool.SETTINGS
-	];
-
 	onMount(async () => {
 		// FabricObject.prototype.transparentCorners = false;
 		// FabricObject.prototype.cornerStyle = 'circle';
@@ -92,17 +81,17 @@
 		// Zooming out makes the print smaller
 		// initializeZoomEvents(fabricCanvas, width, height);
 
-		fabricCanvas.add(
-			new fabric.Rect({
-				left: 100,
-				top: 100,
-				fill: 'blue',
-				width: 100,
-				height: 100,
+		// fabricCanvas.add(
+		// 	new fabric.Rect({
+		// 		left: 100,
+		// 		top: 100,
+		// 		fill: 'blue',
+		// 		width: 100,
+		// 		height: 100,
 
-				cornerStyle: 'circle'
-			})
-		);
+		// 		cornerStyle: 'circle'
+		// 	})
+		// );
 
 		// const img = await fabric.FabricImage.fromURL('Label Test (1.8 x 3 in).png', {}, {});
 
@@ -245,41 +234,41 @@
 			tool: SidebarTool.SELECT,
 			tooltip: 'Select'
 		},
-		{
-			icon: ShapesIcon,
-			tool: SidebarTool.SHAPE,
-			tooltip: 'Add a Shape'
-		},
+		// {
+		// 	icon: ShapesIcon,
+		// 	tool: SidebarTool.SHAPE,
+		// 	tooltip: 'Add a Shape'
+		// },
 		// {
 		// 	icon: PaintIcon,
 		// 	tool: SidebarTool.PAINT,
 		// 	tooltip: 'Paint'
 		// },
-		{
-			icon: LineIcon,
-			tool: SidebarTool.LINE,
-			tooltip: 'Line'
-		},
-		{
-			icon: PolylineIcon,
-			tool: SidebarTool.POLYLINE,
-			tooltip: 'Polyline'
-		},
+		// {
+		// 	icon: LineIcon,
+		// 	tool: SidebarTool.LINE,
+		// 	tooltip: 'Line'
+		// },
+		// {
+		// 	icon: PolylineIcon,
+		// 	tool: SidebarTool.POLYLINE,
+		// 	tooltip: 'Polyline'
+		// },
 		{
 			icon: TextIcon,
 			tool: SidebarTool.TEXT,
 			tooltip: 'Add Textbox',
 		},
-		{
-			icon: ImageIcon,
-			tool: SidebarTool.UPLOAD,
-			tooltip: 'Upload Image'
-		},
-		{
-			icon: SettingsIcon,
-			tool: SidebarTool.SETTINGS,
-			tooltip: 'Settings'
-		}
+		// {
+		// 	icon: ImageIcon,
+		// 	tool: SidebarTool.UPLOAD,
+		// 	tooltip: 'Upload Image'
+		// },
+		// {
+		// 	icon: SettingsIcon,
+		// 	tool: SidebarTool.SETTINGS,
+		// 	tooltip: 'Settings'
+		// }
 	];
 
 	type RightNavTool = {
@@ -495,7 +484,7 @@
 	</div>
 	
 	
-	<div class="canvas-container" style="width:{width}px; height:{height}px">
+	<div class="canvas-container">
 		<canvas bind:this={canvasElement} />
 	</div>
 	<!-- <div class="flex-column p-4 col-2" style="background-color: red;">
@@ -503,16 +492,18 @@
 	</div> -->
 </div>
 
-<style>
+<style lang="scss">
 	canvas {
 		border: 1px solid black;
-	}
-	.canvas-container {
-		width: var(--canvasWidth);
-		height: var(--canvasHeight);
 		background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAHUlEQVQ4jWNgYGAQIYAJglEDhoUBg9+FowbQ2gAARjwKARjtnN8AAAAASUVORK5CYII=');
 		background-size: 30px 30px;
-		border: 1px solid #ccc;
+	}
+	.canvas-container {
+		// width: var(--canvasWidth);
+		// height: var(--canvasHeight);
+		// background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAHUlEQVQ4jWNgYGAQIYAJglEDhoUBg9+FowbQ2gAARjwKARjtnN8AAAAASUVORK5CYII=');
+		// background-size: 30px 30px;
+		// border: 1px solid #ccc;
 		margin: auto;
 	}
 </style>
