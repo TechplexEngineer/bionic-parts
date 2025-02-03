@@ -1,8 +1,8 @@
-import type {Actions, PageServerLoad} from './$types';
-import {filterProjects} from "$lib/util";
-import {redirect} from "@sveltejs/kit";
+import type { Actions, PageServerLoad } from './$types';
+import { filterProjects } from "$lib/util";
+import { redirect } from "@sveltejs/kit";
 
-export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {searchParams}}) => {
+export const load = (async ({ locals: { db, onshape: Onshape }, cookies, url: { searchParams } }) => {
     const projects = await db.getAllProjects();
 
     if (!Onshape.client) {
@@ -21,7 +21,7 @@ export const load = (async ({locals: {db, onshape: Onshape}, cookies, url: {sear
 
 export const actions = {
 
-    addDoc2Project: async ({request, locals: {db}}) => {
+    addDoc2Project: async ({ request, locals: { db } }) => {
         const data = await request.formData();
         const onshapeDocId = data.get("onshapeDocId") as string;
         const projectId = data.get("projectId") as string;

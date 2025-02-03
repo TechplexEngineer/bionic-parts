@@ -1,6 +1,6 @@
 import type {Action} from 'svelte/action';
 
-export const click: Action<HTMLButtonElement> = ((node, callback) => {
+export const click: Action<HTMLButtonElement, any> = ((node, callback) => {
     node.addEventListener('click', callback)
     node.addEventListener('keypress', callback)
 
