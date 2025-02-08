@@ -1,81 +1,7 @@
 <script lang="ts">
-    import { page } from '$app/stores';
-	import { links } from '../l/links';
-	import QrCode from '../qrcode/QRCode.svelte';
-	import {buildShortLinkUrl} from '../l/links';
 	import KanbanCard from './KanbanCard.svelte';
-
-    // interface Item {
-    //     name: string;
-    //     partNumber?: string;
-	// 	vendor?: string;
-    //     quantity: number;
-	// 	location?: string;
-    // }
-
-
-
-    // const items: Item[] = [
-    //     {
-	// 		name: `#9 Drill Bits [12 pk]`,
-	// 		partNumber: "DWDCO9P12",
-	// 		vendor: 'amz',
-	// 		quantity: 1,
-	// 		location: "Husky Tool Box"
-	// 	},
-	// 	{
-	// 		name: `#9 Drill Bit Extended Length`,
-	// 		partNumber: '3096A319',
-	// 		vendor: 'mcm',
-	// 		quantity: 2,
-	// 		location: "Husky Tool Box"
-	// 	},
-
-	// 	{
-	// 		name: `#7 Drill Bits [12 pk]`,
-	// 		partNumber: 'KFD7P12',
-	// 		vendor: 'amz',
-	// 		quantity: 1,
-	// 		location: "Husky Tool Box"
-	// 	},
-	// 	{
-	// 		name: `#7 Drill Bit Extended Length`,
-	// 		partNumber: '3096A317',
-	// 		quantity: 2,
-	// 		location: "Husky Tool Box"
-	// 	},
-
-	// 	{
-	// 		name: `#21 Drill Bits [12 pk]`,
-	// 		partNumber: 'KFD21P12',
-	// 		vendor: 'amz',
-	// 		quantity: 1,
-	// 		location: "Husky Tool Box"
-	// 	},
-	// 	{
-	// 		name: `#21 Drill Bit Extended Length`,
-	// 		partNumber: '3096A333',
-	// 		vendor: 'mcm',
-	// 		quantity: 2,
-	// 		location: "Husky Tool Box"
-	// 	},
-
-	// 	{
-	// 		name: `F Drill Bits [12 pk]`,
-	// 		partNumber: 'KFDFP12',
-	// 		vendor: 'amz',
-	// 		quantity: 1,
-	// 		location: "Husky Tool Box"
-	// 	},
-	// 	{
-	// 		name: `F Drill Bit Extended Length`,
-	// 		vendor: 'mcm',
-	// 		partNumber: '3110A56',
-	// 		quantity: 2,
-	// 		location: "Husky Tool Box"
-	// 	}
-        
-    // ];
+    import * as XLSX from 'xlsx';
+  
 
     let cards = [
 		{
@@ -181,49 +107,46 @@
 		}
 	];
 
-    // const buildOrderUrl = (item: Item, currentUrl: URL) => {
-        
-    //     const address = new URL(currentUrl.origin + "/order");
-    //     address.searchParams.append("i", item.name);
-    //     item.partNumber && address.searchParams.append("pn", item.partNumber);
-	// 	item.vendor && address.searchParams.append("v", item.vendor);
-    //     address.searchParams.append("q", item.quantity.toString());
-    //     return address.toString();
-    // }
-
-	// const labels: {title: string, subtitle?: string, qrCodeValue?: string}[] = [
-	// 	// {
-	// 	// 	title: "",
-	// 	// 	subtitle: "",
-	// 	// 	qrCodeValue: ""
-	// 	// }
-	// ];
-	// for (const item of items) {
-	// 	labels.push({
-	// 		title: item.name,
-	// 		subtitle: `Add to Order Sheet`,
-	// 		qrCodeValue: buildOrderUrl(item, $page.url)
-	// 	});
-	// 	if (item.location) {
-	// 		labels.push({
-	// 			title: item.name,
-	// 			subtitle: `Restock From ${item.location}`,
-	// 			qrCodeValue: undefined //buildOrderUrl(item, $page.url)
-	// 		});
-	// 	}
-	// }
-
-	// for (const [key, {title, link, desc}] of Object.entries(links)) {
-	// 	labels.push({
-	// 		title: title || "",
-	// 		subtitle: desc,
-	// 		qrCodeValue: buildShortLinkUrl(key, $page.url)
-	// 	});
-		
-	// }
-
     const numPerPage = 2;
+
+    const fileChange = (e) => {
+		const file = e.target.files[0];
+		const reader = new FileReader();
+		reader.onload = (e) => {
+			const data = e.target.result;
+			const workbook = XLSX.read(data, { type: 'binary' });
+			const sheetName = workbook.SheetNames[0];
+			const sheet = workbook.Sheets[sheetName];
+			const rows = XLSX.utils.sheet_to_json(sheet);
+
+			cards = rows.map(r => {
+				return {
+					name: r['Product Name'],
+					desc: r['Description'],
+					pn: r['Part Number'],
+					minQty: r['Reorder Point'],
+					reorderQty: r['Reorder QTY'],
+					location: r['Location'],
+					department: r['Department'],
+					img: r['Image Link'],
+					link: r['Product Link'],
+					rev: r['Revision Number'],
+					revDate: r['Revision Date']
+				};
+			})
+
+			console.log();
+		};
+		reader.readAsArrayBuffer(file);
+	};
 </script>
+
+<div class="no-print">
+	<div class="mb-3">
+		<label for="formFile" class="form-label">Upload a CSV or XLSX</label>
+		<input class="form-control" type="file" id="formFile" on:change={fileChange} />
+	</div>
+</div>
 
 {#each [...Array(Math.ceil(cards.length / numPerPage)).keys()] as pageIdx}
 	<div class="page">
@@ -257,6 +180,11 @@
         .page {
             outline: none;
         }
+		.no-print, .no-print *
+		{
+			display: none !important;
+		}
+	
     }
 
 	.label {

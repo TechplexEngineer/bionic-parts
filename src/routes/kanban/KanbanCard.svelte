@@ -55,17 +55,6 @@
             </div>
         </div>
     </div>
-    <!-- <h1>{card.name}</h1>
-    <img src={card.img} alt={card.name} />
-    <p>{card.desc}</p>
-    <p>Part Number: {card.pn}</p>
-    <p>Minimum Quantity: {card.minQty}</p>
-    <p>Reorder Quantity: {card.reorderQty}</p>
-    <p>Location: {card.location}</p>
-    <p>Department: {card.department}</p>
-    <p>Revision: {card.rev}</p>
-    <p>Revision Date: {card.revDate}</p>
-    <a href={card.link}>Link</a> -->
 </div>
 
 <style lang="scss">
