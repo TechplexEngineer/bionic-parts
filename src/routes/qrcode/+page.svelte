@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import Navbar from '$lib/Navbar.svelte';
+	import { routes } from '$lib/routes';
 	import type { Snapshot } from './$types';
 
 	import ListGroup from './ListGroup.svelte';
@@ -100,12 +103,14 @@
 </script>
 
 <svelte:head>
-	<title>QR Code Generator : Bionic Parts</title>
-	<meta name="description" content="QR Code Generator" />
+    <title>{routes.find(r => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
+    <meta name="description" content={routes.find(r => r.link == $page.url.pathname)?.description}/>
 </svelte:head>
 
+<Navbar/>
+
 <div class="container mt-4">
-	<h1>Qr Code Generator</h1>
+	<h1>QR Code Generator</h1>
 
 	<div class="row">
 		<div class="col">

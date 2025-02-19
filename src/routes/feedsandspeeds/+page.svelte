@@ -1,6 +1,6 @@
 <svelte:head>
-    <title>Feed and Speed calculator : Bionic Parts</title>
-    <meta name="description" content="Calc feeds and speeds for CNC machining operations"/>
+    <title>{routes.find(r => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
+    <meta name="description" content={routes.find(r => r.link == $page.url.pathname)?.description}/>
 </svelte:head>
 
 <script lang="ts">
@@ -11,6 +11,9 @@
     import FlutesModal from "./modals/FlutesModal.svelte";
     import SurfaceSpeedModal from "./modals/SurfaceSpeedModal.svelte";
     import ChipLoadModal from "./modals/ChipLoadModal.svelte";
+	import Navbar from "$lib/Navbar.svelte";
+	import { routes } from "$lib/routes";
+	import { page } from "$app/stores";
 
     const calcMachiningPrams = ({toolDiameterIn, surfaceSpeedFPM, chipLoadIPT, numFlutes}: {
         toolDiameterIn: number,
@@ -34,10 +37,10 @@
     }
 
     // variables bound to input controls
-    let toolDiameterIn;
-    let numFlutes;
-    let surfaceSpeedFPM;
-    let chipLoadIPT;
+    let toolDiameterIn:number;
+    let numFlutes:number;
+    let surfaceSpeedFPM:number;
+    let chipLoadIPT:number;
 
     let diameterModalOpen = false;
     let flutesModalOpen = false;
@@ -45,6 +48,8 @@
     let chipLoadModalOpen = false;
 
 </script>
+
+<Navbar/>
 
 <div class="container mt-4">
     <h1>Feeds and Speeds calculator</h1>
@@ -61,7 +66,7 @@
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => toolDiameterIn=.25}>.25"
                     </button>
-                    <div class="btn btn-outline-primary" on:click={() => diameterModalOpen=true}>Details</div>
+                    <button class="btn btn-outline-primary" on:click={() => diameterModalOpen=true}>Details</button>
                 </div>
                 <DiameterModal bind:isOpen={diameterModalOpen}/>
             </div>
@@ -74,7 +79,7 @@
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=2}>2</button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=3}>3</button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => numFlutes=4}>4</button>
-                    <div class="btn btn-outline-primary" on:click={() => flutesModalOpen=true}>Details</div>
+                    <button class="btn btn-outline-primary" on:click={() => flutesModalOpen=true}>Details</button>
                 </div>
                 <FlutesModal bind:isOpen={flutesModalOpen}/>
             </div>
@@ -93,7 +98,9 @@
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=500}>500
                     </button>
-                    <div class="btn btn-outline-primary" on:click={() => surfaceSpeedModalOpen=true}>Details</div>
+                    <button class="btn btn-outline-secondary" type="button" on:click={() => surfaceSpeedFPM=600}>600
+                    </button>
+                    <button class="btn btn-outline-primary" on:click={() => surfaceSpeedModalOpen=true}>Details</button>
                 </div>
                 <SurfaceSpeedModal bind:isOpen={surfaceSpeedModalOpen}/>
             </div>
@@ -112,7 +119,7 @@
                     </button>
                     <button class="btn btn-outline-secondary" type="button" on:click={() => chipLoadIPT=.005}>.005
                     </button>
-                    <div class="btn btn-outline-primary" on:click={() => chipLoadModalOpen=true}>Details</div>
+                    <button class="btn btn-outline-primary" on:click={() => chipLoadModalOpen=true}>Details</button>
                 </div>
                 <ChipLoadModal bind:isOpen={chipLoadModalOpen}/>
 

@@ -1,43 +1,16 @@
 <script lang="ts">
-	const panels = [
-		{
-			title: 'Feed and Speed calculator',
-			description: 'Use to calculate feeds and speeds for CNC machining.',
-			link: '/feedsandspeeds'
-		},
-		{
-			title: '1678 Tool Database',
-			description: 'Feeds and Speeds published by FRC 1678, Citrus Circuits.',
-			link: 'https://docs.google.com/spreadsheets/d/115sOf7gw1nv_ZooKCAiivwwFtCRomxCifUcU8_FmLUY/edit#gid=0'
-		},
-		{
-			title: 'Bionic Parts Projects',
-			description:
-				'Projects group multiple Onshape documents and describe where parts from those documents go when released.',
-			link: '/projects'
-		},
-		{
-			title: 'QR Code Generator',
-			description: 'Tool to generate QR Codes',
-			link: '/qrcode'
-		},
-		{
-			title: 'Kanban Generator',
-			description: 'Tool to Kanban Codes',
-			link: '/kanban'
-		}
-	];
+	import { routes } from "$lib/routes";
 
-	function blankIfExt(link) {
+	function blankIfExt(link: string) {
 		return link.startsWith('http') ? '_blank' : '';
 	}
 </script>
 
 <div class="container mt-4">
-	<h1>Welcome to Bionic Parts</h1>
+	<h1>Welcome to Bionic Tools</h1>
 
 	<div class="wrapper">
-		{#each panels as panel}
+		{#each routes as panel}
 
 				<div class="card">
 					<div class="card-body">

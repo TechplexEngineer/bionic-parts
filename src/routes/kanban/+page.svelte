@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { page } from '$app/stores';
+	import Navbar from '$lib/Navbar.svelte';
+	import { routes } from '$lib/routes';
 	import KanbanCard from './KanbanCard.svelte';
     import * as XLSX from 'xlsx';
   
@@ -109,17 +112,18 @@
 
     const numPerPage = 2;
 
-    const fileChange = (e) => {
+    const fileChange = (e: ChangeEventHandler<HTMLInputElement>) => {
+		if (!e.target.files) return;
 		const file = e.target.files[0];
 		const reader = new FileReader();
 		reader.onload = (e) => {
-			const data = e.target.result;
+			const data = e.target?.result;
 			const workbook = XLSX.read(data, { type: 'binary' });
 			const sheetName = workbook.SheetNames[0];
 			const sheet = workbook.Sheets[sheetName];
 			const rows = XLSX.utils.sheet_to_json(sheet);
 
-			cards = rows.map(r => {
+			cards = rows.map((r: any) => {
 				return {
 					name: r['Product Name'],
 					desc: r['Description'],
@@ -141,8 +145,14 @@
 	};
 </script>
 
+<svelte:head>
+    <title>{routes.find(r => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
+    <meta name="description" content={routes.find(r => r.link == $page.url.pathname)?.description}/>
+</svelte:head>
+
 <div class="no-print">
-	<div class="mb-3">
+	<Navbar/>
+	<div class="m-3">
 		<label for="formFile" class="form-label">Upload a CSV or XLSX</label>
 		<input class="form-control" type="file" id="formFile" on:change={fileChange} />
 	</div>
