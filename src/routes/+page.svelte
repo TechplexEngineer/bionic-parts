@@ -36,17 +36,16 @@
 <div class="container mt-4">
 	<h1>Welcome to Bionic Parts</h1>
 
-	<div class="row mt-4">
+	<div class="wrapper">
 		{#each panels as panel}
-			<div class="col">
-				<div class="card" style="width: 24rem;">
+
+				<div class="card">
 					<div class="card-body">
 						<h5 class="card-title">{panel.title}</h5>
 						<p class="card-text">{panel.description}</p>
 						<a href={panel.link} target={blankIfExt(panel.link)} class="btn btn-primary">Go</a>
 					</div>
 				</div>
-			</div>
 		{/each}
 	</div>
 </div>
@@ -55,5 +54,12 @@
 	a[target='_blank']::after {
 		margin: 0 3px 0 5px;
 		content: '↗';
+	}
+	.card {
+		margin: 10px;
+	}
+	.wrapper {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
 	}
 </style>
