@@ -64,31 +64,31 @@ export const load = (async ({ params, url }) => {
 
 
     const ourNextMatch = {
-        match_name: upcommingMatches[0].label,
+        match_name: upcommingMatches[0]?.label || "",
         alliances: {
             red1: {
-                number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[0] : "",
-                epa: upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[0]))?.epa.total_points.mean || "??" : "?"
+                number: upcommingMatches.length && upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[0] : "",
+                epa: upcommingMatches.length && upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[0]))?.epa.total_points.mean || "??" : "?"
             },
             red2: {
-                number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[1] : "",
-                epa: upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[1]))?.epa.total_points.mean || "??" : "?"
+                number: upcommingMatches.length && upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[1] : "",
+                epa: upcommingMatches.length && upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[1]))?.epa.total_points.mean || "??" : "?"
             },
             red3: {
-                number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[2] : "",
-                epa: upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[2]))?.epa.total_points.mean || "??" : "?"
+                number: upcommingMatches.length && upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[2] : "",
+                epa: upcommingMatches.length && upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[2]))?.epa.total_points.mean || "??" : "?"
             },
             blue1: {
-                number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[0] : "",
-                epa: upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[0]))?.epa.total_points.mean || "??" : "?"
+                number: upcommingMatches.length && upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[0] : "",
+                epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[0]))?.epa.total_points.mean || "??" : "?"
             },
             blue2: {
-                number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[1] : "",
-                epa: upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[1]))?.epa.total_points.mean || "??" : "?"
+                number: upcommingMatches.length && upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[1] : "",
+                epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[1]))?.epa.total_points.mean || "??" : "?"
             },
             blue3: {
-                number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[2] : "",
-                epa: upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??" : "?"
+                number: upcommingMatches.length && upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[2] : "",
+                epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??" : "?"
             }
         },
         ourWinProb: ourWinProb
@@ -99,7 +99,7 @@ export const load = (async ({ params, url }) => {
         teamNumber,
         year,
         teamYear,
-        upcommingMatches: upcommingMatches.map((m) => ({
+        upcommingMatches: upcommingMatches.filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)).map((m) => ({
             match: m.label,
             predictedTime: timestampToDateTime(m.times.estimatedQueueTime),
             color: m.blueTeams?.includes(`${teamNumber}`)
@@ -109,7 +109,7 @@ export const load = (async ({ params, url }) => {
                     : '',
             // blueTeams: m.blueTeams || '',
             // redTeams: m.redTeams || ''
-        })).filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)),
+        })),
         nextmatch: ourNextMatch, //matches.filter((m) => m.result.winner == null)[0],
         rankings: rankings.map((t) => {
             return {

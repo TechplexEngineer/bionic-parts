@@ -1,4 +1,7 @@
 export const nexusToTBA = (nexusMatch: string) => {
+    if (!nexusMatch) {
+        return '';
+    }
     // Split by space, e.g. "Playoff 2" => ["Playoff", "2"]
     const [type, numString] = nexusMatch.split(' ');
     const matchNum = parseInt(numString, 10);
