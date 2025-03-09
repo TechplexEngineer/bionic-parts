@@ -1,14 +1,17 @@
-import type {Cookies} from "@sveltejs/kit";
+import type { Cookies } from "@sveltejs/kit";
+import { Configuration, Oauth, OnshapeClient } from "$lib/OnshapeAPI";
+import APIKeyAuthMiddleware from "$lib/OnshapeAPI/authMiddleware";
+import { ONSHAPE_OAUTH_CLIENT_ID, ONSHAPE_OAUTH_CLIENT_SECRET, ONSHAPE_OAUTH_REDIRECT_URI } from "$env/static/private";
 
-export const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
+export const clientId = ONSHAPE_OAUTH_CLIENT_ID;
 if (!clientId) {
     throw new Error("No Onshape oauth client id set");
 }
-export const clientSecret = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_SECRET;
+export const clientSecret = ONSHAPE_OAUTH_CLIENT_SECRET;
 if (!clientSecret) {
     throw new Error("No Onshape oauth client secret set");
 }
-export const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI;
+export const redirectUrl = ONSHAPE_OAUTH_REDIRECT_URI;
 if (!redirectUrl) {
     throw new Error("No Onshape oauth redirect url set");
 }
@@ -19,8 +22,7 @@ export interface OauthStateData {
 }
 
 
-import {Configuration, Oauth, OnshapeClient} from "$lib/OnshapeAPI";
-import APIKeyAuthMiddleware from "$lib/OnshapeAPI/authMiddleware";
+
 
 // export const OnshapeAPIKeyClient = new OnshapeClient(new Configuration({
 // 	middleware: [APIKeyAuthMiddleware(secretKey, accessKey)]
@@ -149,7 +151,7 @@ export const getOnshapeClient = async (tokenInfo: Oauth2Token | null, refreshCb?
                         console.log("ERROR! NO HEADERS 2");
                     }
                 }
-                return {url: context.url, init: context.init}
+                return { url: context.url, init: context.init }
             },
             post: async (context) => {
                 return context.response
