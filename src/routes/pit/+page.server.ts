@@ -23,23 +23,16 @@ export const load = (async ({ params, url }) => {
     // const event = await eventRequest.json<StatboticsEvent>();
     // console.log('event', event);
 
-
-    const teamYearRequest = await fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`);
-    const teamYear = await teamYearRequest.json<StatboticsTeamYear>();
-
-    const matchesRequest = await fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`); //team=${teamNumber}&
-    const matches = await matchesRequest.json<StatboticsTeamMatches>();
-
-    const rankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`);
-    const rankings = await rankingsRequest.json<StatboticsTeamEvent>();
-
-    // https://frc.nexus/api/v1/event/{eventKey}
-    const nexusEventStatusRequest = await fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
-        headers: {
-            "Nexus-Api-Key": NEXUS_API_KEY
-        }
-    });
-    const nexusEventStatus = await nexusEventStatusRequest.json<NexusEventStatus>();
+    const [teamYear, matches, rankings, nexusEventStatus] = await Promise.all([
+        fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
+        fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`).then(res => res.json<StatboticsTeamMatches>()),
+        fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`).then(res => res.json<StatboticsTeamEvent>()),
+        fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
+            headers: {
+                "Nexus-Api-Key": NEXUS_API_KEY
+            }
+        }).then(res => res.json<NexusEventStatus>())
+    ]);
 
 
     const timestampToDateTime = (timestamp: number) => {
