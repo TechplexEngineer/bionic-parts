@@ -7,7 +7,7 @@ import { StatboticsEvent, StatboticsTeamEvent, StatboticsTeamMatches, Statbotics
 export const load = (async () => {
     const eventKey = "2025ctwat";
     const year = 2025;
-    const team = 176; //4909;
+    const team = 7407; //4909;
 
     const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
     const event = await eventRequest.json<StatboticsEvent>();
