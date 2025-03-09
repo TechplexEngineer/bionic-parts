@@ -1,4 +1,4 @@
-import { log } from 'node:console';
+
 import type { PageServerLoad } from './$types';
 import { StatboticsEvent, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
 

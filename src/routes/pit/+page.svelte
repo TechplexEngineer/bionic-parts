@@ -31,7 +31,7 @@
 			) {
 				color = 'Blue';
 			}
-			const time = new Date(m.predicted_time * 1000).toLocaleDateString();
+
 			const now = new Date();
 			const duration = Math.round((new Date(m.time * 1000).getTime() - now.getTime()) / 60000);
 			const hours = Math.floor(duration / 60);
@@ -50,11 +50,6 @@
 		{ data: 'predictedTime', title: 'Predicted Time' },
 		{ data: 'color', title: 'Color' }
 	];
-	// [
-	// 	{ match: 1, time: '~5 mins', color: 'Blue' },
-	// 	{ match: 4, time: '~15 mins', color: 'Red' },
-	// 	{ match: 7, time: '~22 mins', color: 'Red' }
-	// ];
 </script>
 
 <div class="container-fluid mt-3">
@@ -76,17 +71,17 @@
 
 				<div class="row mb-3">
 					<div class="col text-center">
-						<span class="fs-4 text-danger">????</span><br />55
+						<span class="fs-4 text-danger">????</span><br />EPA
 					</div>
-					<div class="col text-center"><span class="fs-4 text-danger">????</span><br />55</div>
-					<div class="col text-center"><span class="fs-4 text-danger">????</span><br />55</div>
+					<div class="col text-center"><span class="fs-4 text-danger">????</span><br />EPA</div>
+					<div class="col text-center"><span class="fs-4 text-danger">????</span><br />EPA</div>
 				</div>
 				<div class="row mb-3">
 					<div class="col text-center">
-						<span class="fs-2 text-danger fw-bold">96</span> :
-						<span class="fs-3 text-primary">81</span>
+						<span class="fs-2 text-danger fw-bold">Score</span> :
+						<span class="fs-3 text-primary">Score</span>
 						<br />Projected Winner:
-						<span class="text-danger">RED</span>
+						<span class="text-danger">Color</span>
 					</div>
 					<div class="col text-center">
 						<span class="fs-2 text-danger">64%</span><br />Win Probability
