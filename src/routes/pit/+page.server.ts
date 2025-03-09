@@ -67,6 +67,7 @@ export const load = (async () => {
                 epa: JSON.stringify(t.epa.total_points.mean, null, 2)
             };
         }),
-        ourRanking: ourRanking[0]
+        ourRanking: ourRanking[0],
+        lastUpdated: new Date()
     };
 }) satisfies PageServerLoad;

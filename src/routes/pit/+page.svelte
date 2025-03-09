@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import TableForObjectArray, {
 		type TableColumns
 	} from '$lib/components/TableForObjectArray.svelte';
@@ -11,7 +12,14 @@
 		return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 	};
 
-	// let { data }: { data: PageData } = $props();
+	const intervalMs = 30 * 1000;
+
+	const updateData = async () => {
+		await invalidateAll();
+		setTimeout(updateData, intervalMs);
+	};
+
+	setTimeout(updateData, intervalMs);
 
 	const matchesColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
@@ -163,6 +171,27 @@
 	</div>
 </div>
 
+<div class="footer">
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<div class="btn btn-link" on:click={() => invalidateAll()}>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			fill="currentColor"
+			class="bi bi-arrow-clockwise"
+			viewBox="0 0 16 16"
+		>
+			<path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2z" />
+			<path
+				d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466"
+			/>
+		</svg>
+	</div>
+	<span>Last updated: {new Date(data.lastUpdated).toLocaleString()}</span>
+</div>
+
 <!-- <h1>Pit Display</h1> -->
 <!-- <div class="col">
 	<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
@@ -174,8 +203,10 @@
 	.col {
 		flex: 1;
 	} */
+	$bionic-green: #154733;
+
 	:global(body) {
-		background-color: #154733 !important;
+		background-color: $bionic-green !important;
 		background-image: none !important;
 	}
 	.bin {
@@ -233,5 +264,35 @@
 		background-color: transparent;
 		color: #fff;
 		border: 0;
+	}
+
+	:global(html) {
+		position: relative;
+		min-height: 100%;
+	}
+
+	$footerHeight: 40px;
+	:global(body) {
+		margin-bottom: $footerHeight; /* Margin bottom by footer height */
+	}
+	.footer {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		height: $footerHeight; /* Set the fixed height of the footer here */
+		line-height: $footerHeight; /* Vertically center the text there */
+		// background-color: #f5f5f5;
+		background-color: darken($bionic-green, 5%); //var(--bionic-green);
+		color: #666;
+		padding-left: 10px;
+		padding-right: 10px;
+		text-align: right;
+		font-size: smaller;
+	}
+	.footer .btn {
+		color: #666 !important;
+		:hover {
+			color: #fff !important;
+		}
 	}
 </style>
