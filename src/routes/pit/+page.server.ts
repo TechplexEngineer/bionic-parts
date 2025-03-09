@@ -19,21 +19,19 @@ export const load = (async ({ params, url }) => {
     }
     const teamNumber = parseInt(teamNumberStr);
 
-    const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
-    const event = await eventRequest.json<StatboticsEvent>();
+    // const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
+    // const event = await eventRequest.json<StatboticsEvent>();
+    // console.log('event', event);
+
 
     const teamYearRequest = await fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`);
     const teamYear = await teamYearRequest.json<StatboticsTeamYear>();
 
-    const matchesRequest = await fetch(`https://api.statbotics.io/v3/matches?&year=${year}&event=${eventKey}`); //team=${teamNumber}
+    const matchesRequest = await fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`); //team=${teamNumber}&
     const matches = await matchesRequest.json<StatboticsTeamMatches>();
 
-
-    const rankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true&limit=4`);
+    const rankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`);
     const rankings = await rankingsRequest.json<StatboticsTeamEvent>();
-
-    const ourRankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?team=${teamNumber}&year=${year}&event=${eventKey}&metric=rank&ascending=true&limit=5`);
-    const ourRankingArr = await ourRankingsRequest.json<StatboticsTeamEvent>();
 
     // https://frc.nexus/api/v1/event/{eventKey}
     const nexusEventStatusRequest = await fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
@@ -42,33 +40,7 @@ export const load = (async ({ params, url }) => {
         }
     });
     const nexusEventStatus = await nexusEventStatusRequest.json<NexusEventStatus>();
-    // console.log('nexusEventStatus', nexusEventStatus);
 
-
-    // console.log(nexusEventStatus.matches[nexusEventStatus.matches.length - 1]);
-    // console.log(nexusEventStatus.matches.map((m) => `${m.label} ${m.status}`));
-
-    // const upcommingMatchesOld = matches.filter((m) => m.result.winner == null)
-    //     .map((m) => {
-    //         let color = 'Unknown';
-    //         if (
-    //             m.alliances.red.team_keys.includes(parseInt(teamNumber)) ||
-    //             m.alliances.red.surrogate_team_keys.includes(teamNumber)
-    //         ) {
-    //             color = 'Red';
-    //         } else if (
-    //             m.alliances.blue.team_keys.includes(parseInt(teamNumber)) ||
-    //             m.alliances.blue.surrogate_team_keys.includes(teamNumber)
-    //         ) {
-    //             color = 'Blue';
-    //         }
-
-    //         return {
-    //             match: m.key.replace(`${eventKey}_`, '').toUpperCase(),
-    //             predictedTime: -1,
-    //             color: color
-    //         };
-    //     });
 
     const timestampToDateTime = (timestamp: number) => {
         const date = new Date(timestamp);
@@ -80,34 +52,13 @@ export const load = (async ({ params, url }) => {
     const upcommingMatches = nexusEventStatus.matches
         .filter((m) => m.status != 'On field');
 
-    // console.log("matches", matches)
-
-
-    // find the match where the label matches. But match_name is in the form Qual 15 and the equivalent label is Qualification 15, for playoffs match_name is Semis 13 Match 1 and the quivalent label Playoff 13 for finals the match_name is Final 1 Match 1 and the quivalent is Final 1
-    // const getMatchFromLabel = (label: string, matches: StatboticsTeamMatches) => {
-    //     const labelParts = label.split(' ');
-    //     let matchName = '';
-
-    //     if (label.startsWith('Qualification')) {
-    //         matchName = `Qual ${labelParts[1]}`;
-    //     } else if (label.startsWith('Playoff')) {
-    //         matchName = `Semis ${labelParts[1]} Match`;
-    //     } else if (label.startsWith('Final')) {
-    //         matchName = `Final ${labelParts[1]} Match}`;
-    //     }
-
-    //     return matches.find((m) => m.match_name.startsWith(matchName));
-    // };
-
-    // console.log("matchNumbers", matches.map((m) => m.key.replace(`${eventKey}_`, '')));
-    // console.log('nexus Matches', nexusEventStatus.matches.map((m) => m.label));
 
 
     const tbaMatch = nexusToTBA(upcommingMatches[0].label);
-    console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
+    // console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
 
     const nextMatch = matches.find(m => m.key == `${eventKey}_${tbaMatch}`);
-    console.log("nextMatch", nextMatch);
+    // console.log("nextMatch", nextMatch);
     const ourWinProb = nextMatch ?
         Math.round(
             nextMatch.alliances.red.team_keys.includes(teamNumber)
@@ -120,27 +71,27 @@ export const load = (async ({ params, url }) => {
         alliances: {
             red1: {
                 number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[0] : "",
-                epa: 55
+                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[0]))?.epa.total_points.mean || "??"
             },
             red2: {
                 number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[1] : "",
-                epa: 55
+                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[1]))?.epa.total_points.mean || "??"
             },
             red3: {
                 number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[2] : "",
-                epa: 55
+                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[2]))?.epa.total_points.mean || "??"
             },
             blue1: {
                 number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[0] : "",
-                epa: 55
+                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[0]))?.epa.total_points.mean || "??"
             },
             blue2: {
                 number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[1] : "",
-                epa: 55
+                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[1]))?.epa.total_points.mean || "??"
             },
             blue3: {
                 number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[2] : "",
-                epa: 55
+                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??"
             }
         },
         ourWinProb: ourWinProb
@@ -159,9 +110,9 @@ export const load = (async ({ params, url }) => {
                 : m.redTeams?.includes(`${teamNumber}`)
                     ? 'Red'
                     : '',
-            // blueTeams: m.blueTeams || '',
-            // redTeams: m.redTeams || ''
-        })),
+            blueTeams: m.blueTeams || '',
+            redTeams: m.redTeams || ''
+        })).filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)),
         nextmatch: ourNextMatch, //matches.filter((m) => m.result.winner == null)[0],
         rankings: rankings.map((t) => {
             return {
@@ -169,8 +120,8 @@ export const load = (async ({ params, url }) => {
                 team: `${t.team} - ${t.team_name}`,
                 epa: JSON.stringify(t.epa.total_points.mean, null, 2)
             };
-        }),
-        ourRanking: ourRankingArr[0],
+        }).slice(0, 4),
+        ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
         nexusEventStatus
     };
