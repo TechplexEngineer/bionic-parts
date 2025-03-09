@@ -22,17 +22,18 @@ import {
     Emoji,
     Enterprises, Labels, Lists, Members, Notifications, Organizations, Plugins, Search, Tokens, Webhooks
 } from "$lib/trelloAPI/api";
-import type {Client, RequestConfig} from "$lib/trelloAPI";
-import type {Config} from "$lib/trelloAPI/config";
-import {paramSerializer} from "$lib/trelloAPI";
+import type { Client, RequestConfig } from "$lib/trelloAPI";
+import type { Config } from "$lib/trelloAPI/config";
+import { paramSerializer } from "$lib/trelloAPI";
+import { TRELLO_KEY, TRELLO_SECRET } from "$env/static/private";
 
-const key = import.meta.env.VITE_TRELLO_KEY;
+const key = TRELLO_KEY;
 if (!key) {
-    throw new Error('Missing VITE_TRELLO_KEY');
+    throw new Error('Missing TRELLO_KEY');
 }
-const secret = import.meta.env.VITE_TRELLO_SECRET;
+const secret = TRELLO_SECRET;
 if (!secret) {
-    throw new Error('Missing VITE_TRELLO_SECRET');
+    throw new Error('Missing TRELLO_SECRET');
 }
 
 const client = new oauth.OAuthClient({

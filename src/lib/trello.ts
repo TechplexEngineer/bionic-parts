@@ -1,17 +1,18 @@
-import {TrelloClient} from "$lib/trelloAPI";
-import type {Cookies} from "@sveltejs/kit";
-import {buildRequestGetOAuthRequestToken, OauthTrelloClient} from "$lib/trelloClient";
-import {redirect} from "@sveltejs/kit";
+import { TrelloClient } from "$lib/trelloAPI";
+import type { Cookies } from "@sveltejs/kit";
+import { buildRequestGetOAuthRequestToken, OauthTrelloClient } from "$lib/trelloClient";
+import { redirect } from "@sveltejs/kit";
+import { TRELLO_KEY, TRELLO_OAUTH_REDIRECT_URI, TRELLO_TOKEN } from "$env/static/private";
 
 export const trelloCookieName = "trello_sessionid";
 
-const key = import.meta.env.VITE_TRELLO_KEY;
+const key = TRELLO_KEY;
 if (!key) {
-    throw new Error('Missing VITE_TRELLO_KEY');
+    throw new Error('Missing TRELLO_KEY');
 }
-const token = import.meta.env.VITE_TRELLO_TOKEN;
+const token = TRELLO_TOKEN;
 if (!token) {
-    throw new Error('Missing VITE_TRELLO_TOKEN');
+    throw new Error('Missing TRELLO_TOKEN');
 }
 
 const trelloClient = new TrelloClient({
@@ -123,9 +124,9 @@ const scope = 'read,write'; // Comma-separated list of one or more of read, writ
 
 export const doTrelloAuthFlow = async (cookies: Cookies, returnUrl: URL) => {
 
-    const oauthRedirectUrl = import.meta.env.VITE_TRELLO_OAUTH_REDIRECT_URI;
+    const oauthRedirectUrl = TRELLO_OAUTH_REDIRECT_URI;
     if (!oauthRedirectUrl) {
-        throw new Error('Missing VITE_TRELLO_OAUTH_REDIRECT_URI');
+        throw new Error('Missing TRELLO_OAUTH_REDIRECT_URI');
     }
 
     const callbackUrl = new URL(oauthRedirectUrl)

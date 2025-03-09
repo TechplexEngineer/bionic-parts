@@ -31,15 +31,15 @@ export interface OauthStateData {
 export const onshapeCookieName = "onshape_sessionid";
 
 const doTokenRefresh = async (refresh_token: string) => {
-    const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
+    const clientId = ONSHAPE_OAUTH_CLIENT_ID;
     if (!clientId) {
         throw new Error("No Onshape oauth client id set");
     }
-    const clientSecret = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_SECRET;
+    const clientSecret = ONSHAPE_OAUTH_CLIENT_SECRET;
     if (!clientSecret) {
         throw new Error("No Onshape oauth client secret set");
     }
-    const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI;
+    const redirectUrl = ONSHAPE_OAUTH_REDIRECT_URI;
     if (!redirectUrl) {
         throw new Error("No Onshape oauth redirect url set");
     }
