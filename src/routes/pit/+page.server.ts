@@ -36,6 +36,7 @@ export const load = (async ({ params, url }) => {
     const ourRankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?team=${teamNumber}&year=${year}&event=${eventKey}&metric=rank&ascending=true&limit=5`);
     const ourRankingArr = await ourRankingsRequest.json<StatboticsTeamEvent>();
 
+    console.log(teamNumber);
 
 
     return {
@@ -48,12 +49,12 @@ export const load = (async ({ params, url }) => {
             .map((m) => {
                 let color = 'Unknown';
                 if (
-                    m.alliances.red.team_keys.includes(teamNumber) ||
+                    m.alliances.red.team_keys.includes(parseInt(teamNumber)) ||
                     m.alliances.red.surrogate_team_keys.includes(teamNumber)
                 ) {
                     color = 'Red';
                 } else if (
-                    m.alliances.blue.team_keys.includes(teamNumber) ||
+                    m.alliances.blue.team_keys.includes(parseInt(teamNumber)) ||
                     m.alliances.blue.surrogate_team_keys.includes(teamNumber)
                 ) {
                     color = 'Blue';
