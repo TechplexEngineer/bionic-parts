@@ -46,8 +46,9 @@ export const load = (async ({ params, url }) => {
         .filter((m) => m.status != 'On field');
 
 
+    console.log('upcommingMatches', upcommingMatches);
 
-    const tbaMatch = nexusToTBA(upcommingMatches[0].label);
+    const tbaMatch = nexusToTBA(upcommingMatches[0]?.label);
     // console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
 
     const nextMatch = matches.find(m => m.key == `${eventKey}_${tbaMatch}`);
@@ -122,7 +123,3 @@ export const load = (async ({ params, url }) => {
         nexusEventStatus
     };
 }) satisfies PageServerLoad;
-
-function mapNexusToTBA(label: string) {
-    throw new Error('Function not implemented.');
-}

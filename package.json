@@ -15,7 +15,8 @@
     "generate": "drizzle-kit generate:sqlite",
     "up": "drizzle-kit up:sqlite",
     "db:list": "wrangler d1 migrations list bionic-parts",
-    "db:push": "wrangler d1 migrations apply bionic-parts"
+    "db:push": "wrangler d1 migrations apply bionic-parts",
+    "tail": "wrangler pages deployment tail --project-name bionic-parts"
   },
   "devDependencies": {
     "@iconify/json": "^2.2.116",
