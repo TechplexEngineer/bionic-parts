@@ -65,18 +65,18 @@ export const load = (async ({ params, url }) => {
                     color = 'Blue';
                 }
 
-                const now = new Date();
-                let duration = Math.round((new Date(m.time * 1000).getTime() - now.getTime()) / 60000);
-                if (duration < 0)
-                    duration = 0;
-                const hours = Math.floor(duration / 60);
-                const minutes = duration % 60;
-                const seconds = Math.round((duration - Math.floor(duration)) * 60);
-                const formattedDuration = `~${hours}h ${minutes}m ${seconds}s`;
+                // const now = new Date();
+                // let duration = Math.round((new Date(m.time * 1000).getTime() - now.getTime()) / 60000);
+                // if (duration < 0)
+                //     duration = 0;
+                // const hours = Math.floor(duration / 60);
+                // const minutes = duration % 60;
+                // const seconds = Math.round((duration - Math.floor(duration)) * 60);
+                // const formattedDuration = `~${hours}h ${minutes}m ${seconds}s`;
 
                 return {
                     match: m.key.replace(`${eventKey}_`, '').toUpperCase(),
-                    predictedTime: formattedDuration,
+                    predictedTime: -1,
                     color: color
                 };
             }),
