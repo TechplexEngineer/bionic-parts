@@ -3,36 +3,51 @@
 	import TableForObjectArray, {
 		type TableColumns
 	} from '$lib/components/TableForObjectArray.svelte';
+	import Modal from '$lib/Modal.svelte';
+	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import Badge from './Badge.svelte';
+	// import { preferences } from './store';
+	import { page } from '$app/stores';
+	import { redirect } from '@sveltejs/kit';
 
 	export let data: PageData;
 
-	const titleCase = (str: string) => {
-		return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-	};
+	let updateIntervalMs = 30 * 1000;
 
-	const intervalMs = 30 * 1000;
+	onMount(() => {
+		const updateData = async () => {
+			await invalidateAll();
+			setTimeout(updateData, updateIntervalMs);
+		};
 
-	const updateData = async () => {
-		await invalidateAll();
-		setTimeout(updateData, intervalMs);
-	};
-
-	setTimeout(updateData, intervalMs);
+		setTimeout(updateData, updateIntervalMs);
+	});
 
 	const matchesColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
 		{ data: 'predictedTime', title: 'Predicted Time' },
 		{ data: 'color', title: 'Color' }
 	];
+	let showConfigModal = false;
+
+	if (!$page.params.eventKey || !$page.params.teamNumber) {
+		// $page.params.eventKey = $preferences.eventKey;
+		showConfigModal = true;
+	}
+
+	// if (!$preferences.eventKey || !$preferences.teamNumber) {
+	// 	showConfigModal = true;
+	// }
 </script>
 
 <div class="container-fluid mt-3">
 	<!-- Logo Row -->
 	<div class="row">
 		<div class="col">
-			<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
+			<a href="/pit/config">
+				<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
+			</a>
 		</div>
 	</div>
 
@@ -46,19 +61,19 @@
 		</div>
 		<div class="col">
 			<div class="bin">
-				<h4>Next Match: {data.nextmatch.match_name}</h4>
+				<h4>Next Match: {data.nextmatch?.match_name}</h4>
 
 				<div class="row mb-3">
 					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch.alliances.red.team_keys[0]}</span><br
+						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red.team_keys[0]}</span><br
 						/>EPA
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch.alliances.red.team_keys[1]}</span><br
+						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red.team_keys[1]}</span><br
 						/>EPA
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch.alliances.red.team_keys[2]}</span><br
+						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red.team_keys[2]}</span><br
 						/>EPA
 					</div>
 				</div>
@@ -74,24 +89,24 @@
 					<div class="col text-center">
 						<span class="fs-2"
 							>{Math.round(
-								data.nextmatch.alliances.red.team_keys.includes(data.team)
+								data.nextmatch?.alliances.red.team_keys.includes(data.teamNumber)
 									? data.nextmatch.pred.red_win_prob * 100
-									: 100 - data.nextmatch.pred.red_win_prob * 100
+									: 100 - data.nextmatch?.pred.red_win_prob * 100
 							)}%</span
 						><br />Win Probability
 					</div>
 				</div>
 				<div class="row">
 					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch.alliances.blue.team_keys[0]}</span><br
+						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue.team_keys[0]}</span><br
 						/>EPA
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch.alliances.blue.team_keys[1]}</span><br
+						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue.team_keys[1]}</span><br
 						/>EPA
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch.alliances.blue.team_keys[2]}</span><br
+						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue.team_keys[2]}</span><br
 						/>EPA
 					</div>
 				</div>
@@ -110,11 +125,11 @@
 		<div class="col-6">
 			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
 				<h4>Rank by EPA</h4>
-				<Badge
+				<!-- <Badge
 					value={data.ourRanking.record.qual.rank}
 					prefix={'Event'}
 					desc={`out of ${data.ourRanking.record.qual.num_teams}`}
-				/>
+				/> -->
 				<Badge
 					value={data.teamYear.epa.ranks.state.rank}
 					prefix={'Massachusetts'}
@@ -150,8 +165,8 @@
 		<div class="col-4">
 			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
 				<h4>EPA Stats</h4>
-				<Badge value={Math.round(data.ourRanking.epa.breakdown.auto_points)} prefix={'Auto EPA'} />
-				<Badge
+				<!-- <Badge value={Math.round(data.ourRanking.epa.breakdown.auto_points)} prefix={'Auto EPA'} /> -->
+				<!-- <Badge
 					value={Math.round(data.ourRanking.epa.breakdown.teleop_points)}
 					prefix={'Teleop EPA'}
 					color={'rgb(255, 127, 14)'}
@@ -165,13 +180,29 @@
 					value={Math.round(data.ourRanking.epa.breakdown.total_points)}
 					prefix={'Total EPA'}
 					color={'rgb(214, 39, 40)'}
-				/>
+				/> -->
 			</div>
 		</div>
 	</div>
 </div>
 
 <div class="footer">
+	<!-- svelte-ignore a11y-click-events-have-key-events -->
+	<!-- svelte-ignore a11y-no-static-element-interactions -->
+	<a class="btn btn-link" href="/pit/config">
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			width="16"
+			height="16"
+			fill="currentColor"
+			class="bi bi-gear-fill"
+			viewBox="0 0 16 16"
+		>
+			<path
+				d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"
+			/>
+		</svg>
+	</a>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div class="btn btn-link" on:click={() => invalidateAll()}>
