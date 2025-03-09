@@ -28,54 +28,50 @@
 		{ data: 'predictedTime', title: 'Predicted Time' },
 		{ data: 'color', title: 'Color' }
 	];
-	let showConfigModal = false;
-
-	if (!$page.params.eventKey || !$page.params.teamNumber) {
-		// $page.params.eventKey = $preferences.eventKey;
-		showConfigModal = true;
-	}
-
-	// if (!$preferences.eventKey || !$preferences.teamNumber) {
-	// 	showConfigModal = true;
-	// }
 </script>
 
-<div class="container-fluid mt-3">
+<svelte:head>
+	<title>Bionics Pit Display</title>
+</svelte:head>
+
+<div class="container-fluid binrow">
 	<!-- Logo Row -->
-	<div class="row mb-3">
+	<div class="row">
 		<div class="col">
 			<a href="/pit/config">
 				<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
 			</a>
 		</div>
 		<div class="col-6">
-			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
-				<h4>Rank by EPA</h4>
-				<Badge
-					value={data.ourRanking ? data.ourRanking.record.qual.rank : '?'}
-					prefix={'Event'}
-					desc={`out of ${data.ourRanking ? data.ourRanking.record.qual.num_teams : '?'}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.state.rank}
-					prefix={'Massachusetts'}
-					desc={`out of ${data.teamYear.epa.ranks.state.team_count}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.district.rank}
-					prefix={'New England'}
-					desc={`out of ${data.teamYear.epa.ranks.district.team_count}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.country.rank}
-					prefix={'USA'}
-					desc={`out of ${data.teamYear.epa.ranks.country.team_count}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.total.rank}
-					prefix={'Worldwide'}
-					desc={`out of ${data.teamYear.epa.ranks.total.team_count}`}
-				/>
+			<div class="text-center bin">
+				<h4 class="binHeader">Rank by EPA</h4>
+				<div class="d-flex align-items-center justify-content-center gap-3">
+					<Badge
+						value={data.ourRanking ? data.ourRanking.record.qual.rank : '?'}
+						prefix={'Event'}
+						desc={`out of ${data.ourRanking ? data.ourRanking.record.qual.num_teams : '?'}`}
+					/>
+					<Badge
+						value={data.teamYear.epa.ranks.state.rank}
+						prefix={data.teamYear.state || 'State'}
+						desc={`out of ${data.teamYear.epa.ranks.state.team_count}`}
+					/>
+					<Badge
+						value={data.teamYear.epa.ranks.district.rank}
+						prefix={data.teamYear.district || 'District'}
+						desc={`out of ${data.teamYear.epa.ranks.district.team_count}`}
+					/>
+					<Badge
+						value={data.teamYear.epa.ranks.country.rank}
+						prefix={'USA'}
+						desc={`out of ${data.teamYear.epa.ranks.country.team_count}`}
+					/>
+					<Badge
+						value={data.teamYear.epa.ranks.total.rank}
+						prefix={'Worldwide'}
+						desc={`out of ${data.teamYear.epa.ranks.total.team_count}`}
+					/>
+				</div>
 			</div>
 		</div>
 		<!-- <div class="col-2">
@@ -89,55 +85,57 @@
 			</div>
 		</div> -->
 		<div class="col-4">
-			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
-				<h4>EPA Stats</h4>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
-					prefix={'Auto EPA'}
-				/>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
-					prefix={'Teleop EPA'}
-					color={'rgb(255, 127, 14)'}
-				/>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
-					prefix={'Endgame EPA'}
-					color={'rgb(44, 160, 44)'}
-				/>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
-					prefix={'Total EPA'}
-					color={'rgb(214, 39, 40)'}
-				/>
+			<div class="text-center bin">
+				<h4 class="binHeader">EPA Stats</h4>
+				<div class="d-flex align-items-center justify-content-center gap-3">
+					<Badge
+						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
+						prefix={'Auto EPA'}
+					/>
+					<Badge
+						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
+						prefix={'Teleop EPA'}
+						color={'rgb(255, 127, 14)'}
+					/>
+					<Badge
+						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
+						prefix={'Endgame EPA'}
+						color={'rgb(44, 160, 44)'}
+					/>
+					<Badge
+						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
+						prefix={'Total EPA'}
+						color={'rgb(214, 39, 40)'}
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- Rankings and Matches -->
-	<div class="row">
+	<div class="row binrow">
 		<div class="col">
 			<div class="bin">
-				<h4>Rankings</h4>
+				<h4 class="binHeader">Rankings</h4>
 				<TableForObjectArray data={data.rankings.sort((a, b) => a.rank - b.rank)} />
 			</div>
 		</div>
 		<div class="col">
 			<div class="bin">
-				<h4>Next Match: {data.nextmatch?.match_name}</h4>
+				<h4 class="binHeader">Next Match: {data.nextmatch?.match_name}</h4>
 
 				<div class="row mb-3">
 					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red.team_keys[0]}</span><br
-						/>EPA
+						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red1.number}</span><br />{data
+							.nextmatch?.alliances.red1.epa}
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red.team_keys[1]}</span><br
-						/>EPA
+						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red2.number}</span><br />{data
+							.nextmatch?.alliances.red2.epa}
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red.team_keys[2]}</span><br
-						/>EPA
+						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red3.number}</span><br />{data
+							.nextmatch?.alliances.red3.epa}
 					</div>
 				</div>
 				<div class="row mb-3">
@@ -150,48 +148,86 @@
 						>
 					</div> -->
 					<div class="col text-center">
-						<span class="fs-2"
-							>{Math.round(
-								data.nextmatch?.alliances.red.team_keys.includes(data.teamNumber)
-									? data.nextmatch.pred.red_win_prob * 100
-									: 100 - data.nextmatch?.pred.red_win_prob * 100
-							)}%</span
-						><br />Win Probability
+						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 					</div>
 				</div>
 				<div class="row">
 					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue.team_keys[0]}</span><br
-						/>EPA
+						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue1.number}</span><br
+						/>{data.nextmatch?.alliances.blue1.epa}
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue.team_keys[1]}</span><br
-						/>EPA
+						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue2.number}</span><br
+						/>{data.nextmatch?.alliances.blue2.epa}
 					</div>
 					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue.team_keys[2]}</span><br
-						/>EPA
+						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue3.number}</span><br
+						/>{data.nextmatch?.alliances.blue3.epa}
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="col">
 			<div class="bin">
-				<h4>Upcomming Matches</h4>
-				<small>Now Queueing: {data.nexusEventStatus.nowQueuing}</small>
-				<TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} />
+				<h4 class="binHeader">Upcomming Matches</h4>
+				<div class="d-flex justify-content-between mb-2">
+					<div class="text-center">
+						{#if data.nexusEventStatus.matches.find((m) => m.status == 'On deck')}
+							<div class="fw-bold">On Deck</div>
+							<div>{data.nexusEventStatus.matches.find((m) => m.status == 'On deck')?.label}</div>
+						{/if}
+					</div>
+					<div class="text-center">
+						{#if data.nexusEventStatus.nowQueuing}
+							<div class="fw-bold">Now Queueing</div>
+							<div>{data.nexusEventStatus.nowQueuing || ''}</div>
+						{/if}
+					</div>
+				</div>
+				<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->
+				<TableForObjectArray data={data.upcommingMatches} />
 			</div>
 		</div>
 	</div>
 
-	<!-- Our Stats -->
-	<div class="row mt-3" />
+	<div class="row binrow">
+		<div class="col">
+			<div class="bin sponsors text-center">
+				<h4 class="binHeader">Thank You to our generous sponsors</h4>
+				<img src="sponsors/KLA.svg" alt="KLA" />
+				<img src="sponsors/AnalogDevices.svg" alt="Analog Devices" />
+				<img src="sponsors/Boeing.svg" alt="Boeing" />
+				<img src="sponsors/BAE.svg" alt="BAE" />
+
+				<img src="sponsors/AmericanTower.svg" alt="American Tower" />
+
+				<img src="sponsors/ArgosyFoundation.svg" alt="Argosy" />
+				<img src="sponsors/RTX.svg" alt="RTX" />
+
+				<img src="sponsors/CRMachine.svg" alt="CRM" />
+
+				<img src="sponsors/GeneHaasFoundation.svg" alt="HAAS Foundation" />
+				<img src="sponsors/IntuitiveFoundation.svg" alt="Intuitive Foundation" />
+
+				<img src="sponsors/MassCulturalCouncil.svg" alt="Mass Cultural Council" />
+				<img src="sponsors/Mathnasium.svg" alt="Mathanasium" />
+				<img src="sponsors/PTC.svg" alt="PTC" />
+				<img src="sponsors/Polymershapes.svg" alt="PolymerShapes" />
+				<img src="sponsors/FabWorks.svg" alt="FabWorks" />
+				<img src="sponsors/StonehamBank.svg" alt="Stoenham Bank" />
+				<img src="sponsors/TownOfBillerica.png" alt="Town Of Billerica" />
+			</div>
+		</div>
+	</div>
 </div>
 
 <div class="footer">
+	<span>
+		{data.teamNumber} - {data.eventKey}
+	</span>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<a class="btn btn-link" href="/pit/config">
+	<a class="btn btn-link btnicon" href="/pit/config">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="16"
@@ -207,7 +243,7 @@
 	</a>
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="btn btn-link" on:click={() => invalidateAll()}>
+	<div class="btn btn-link btnicon" on:click={() => invalidateAll()}>
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="16"
@@ -237,6 +273,21 @@
 		flex: 1;
 	} */
 	$bionic-green: #154733;
+
+	.binHeader {
+		margin: -30px 10px 10px;
+		/* padding-bottom: 35px; */
+		background: #154733;
+		z-index: 5;
+		position: relative;
+		padding: 2px;
+		border: 1px solid white;
+		text-align: center;
+	}
+
+	.binrow {
+		margin-top: 35px !important;
+	}
 
 	:global(body) {
 		background-color: $bionic-green !important;
@@ -284,6 +335,10 @@
 		);
 	}
 
+	.btnicon {
+		margin-top: -5px;
+	}
+
 	.logo {
 		width: 200px;
 		/* height: 100px; */
@@ -327,5 +382,13 @@
 		:hover {
 			color: #fff !important;
 		}
+	}
+
+	.sponsors img {
+		height: 75px;
+		background-color: #fff;
+		border-radius: 10px;
+		padding: 8px 8px;
+		margin-bottom: 5px;
 	}
 </style>
