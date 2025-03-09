@@ -339,4 +339,33 @@ export type StatboticsTeamEvent = {
         }
     }
     district_points: any
-}[];  
+}[];
+
+export type NexusEventStatus = {
+    eventKey: string
+    dataAsOfTime: number
+    nowQueuing: string
+    announcements: Array<{ id: string, postedTime: number, announcement: string }>
+    partsRequests: Array<{
+        id: string
+        postedTime: number
+        parts: string
+        requestedByTeam: string
+    }>
+    matches: Array<{
+        label: string
+        status: string
+        redTeams: Array<string>
+        blueTeams: Array<string>
+        times: {
+            scheduledStartTime: number
+            estimatedQueueTime: number
+            estimatedOnDeckTime: number
+            estimatedOnFieldTime: number
+            estimatedStartTime: number
+            actualQueueTime: number
+            actualOnDeckTime: number
+            actualOnFieldTime: number
+        }
+    }>
+}

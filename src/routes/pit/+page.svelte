@@ -12,8 +12,6 @@
 
 	export let data: PageData;
 
-	console.log('data', data.ourRanking);
-
 	let updateIntervalMs = 30 * 1000;
 
 	onMount(() => {
@@ -44,11 +42,75 @@
 
 <div class="container-fluid mt-3">
 	<!-- Logo Row -->
-	<div class="row">
+	<div class="row mb-3">
 		<div class="col">
 			<a href="/pit/config">
 				<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
 			</a>
+		</div>
+		<div class="col-6">
+			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
+				<h4>Rank by EPA</h4>
+				<Badge
+					value={data.ourRanking ? data.ourRanking.record.qual.rank : '?'}
+					prefix={'Event'}
+					desc={`out of ${data.ourRanking ? data.ourRanking.record.qual.num_teams : '?'}`}
+				/>
+				<Badge
+					value={data.teamYear.epa.ranks.state.rank}
+					prefix={'Massachusetts'}
+					desc={`out of ${data.teamYear.epa.ranks.state.team_count}`}
+				/>
+				<Badge
+					value={data.teamYear.epa.ranks.district.rank}
+					prefix={'New England'}
+					desc={`out of ${data.teamYear.epa.ranks.district.team_count}`}
+				/>
+				<Badge
+					value={data.teamYear.epa.ranks.country.rank}
+					prefix={'USA'}
+					desc={`out of ${data.teamYear.epa.ranks.country.team_count}`}
+				/>
+				<Badge
+					value={data.teamYear.epa.ranks.total.rank}
+					prefix={'Worldwide'}
+					desc={`out of ${data.teamYear.epa.ranks.total.team_count}`}
+				/>
+			</div>
+		</div>
+		<!-- <div class="col-2">
+			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
+				<h4>District Stats</h4>
+				<Badge
+					value={data.teamYear.district_rank}
+					prefix={'District Rank'}
+					desc={`out of ${data.teamYear.epa.ranks.district.team_count}<br> with ${data.teamYear.district_points} points`}
+				/>
+			</div>
+		</div> -->
+		<div class="col-4">
+			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
+				<h4>EPA Stats</h4>
+				<Badge
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
+					prefix={'Auto EPA'}
+				/>
+				<Badge
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
+					prefix={'Teleop EPA'}
+					color={'rgb(255, 127, 14)'}
+				/>
+				<Badge
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
+					prefix={'Endgame EPA'}
+					color={'rgb(44, 160, 44)'}
+				/>
+				<Badge
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
+					prefix={'Total EPA'}
+					color={'rgb(214, 39, 40)'}
+				/>
+			</div>
 		</div>
 	</div>
 
@@ -116,78 +178,14 @@
 		<div class="col">
 			<div class="bin">
 				<h4>Upcomming Matches</h4>
+				<small>Now Queueing: {data.nexusEventStatus.nowQueuing}</small>
 				<TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} />
 			</div>
 		</div>
 	</div>
 
 	<!-- Our Stats -->
-	<div class="row mt-3">
-		<div class="col-6">
-			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
-				<h4>Rank by EPA</h4>
-				<Badge
-					value={data.ourRanking ? data.ourRanking.record.qual.rank : '?'}
-					prefix={'Event'}
-					desc={`out of ${data.ourRanking ? data.ourRanking.record.qual.num_teams : '?'}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.state.rank}
-					prefix={'Massachusetts'}
-					desc={`out of ${data.teamYear.epa.ranks.state.team_count}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.district.rank}
-					prefix={'New England'}
-					desc={`out of ${data.teamYear.epa.ranks.district.team_count}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.country.rank}
-					prefix={'USA'}
-					desc={`out of ${data.teamYear.epa.ranks.country.team_count}`}
-				/>
-				<Badge
-					value={data.teamYear.epa.ranks.total.rank}
-					prefix={'Worldwide'}
-					desc={`out of ${data.teamYear.epa.ranks.total.team_count}`}
-				/>
-			</div>
-		</div>
-		<div class="col-2">
-			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
-				<h4>District Stats</h4>
-				<Badge
-					value={data.teamYear.district_rank}
-					prefix={'District Rank'}
-					desc={`out of ${data.teamYear.epa.ranks.district.team_count}<br> with ${data.teamYear.district_points} points`}
-				/>
-			</div>
-		</div>
-		<div class="col-4">
-			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
-				<h4>EPA Stats</h4>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
-					prefix={'Auto EPA'}
-				/>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
-					prefix={'Teleop EPA'}
-					color={'rgb(255, 127, 14)'}
-				/>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
-					prefix={'Endgame EPA'}
-					color={'rgb(44, 160, 44)'}
-				/>
-				<Badge
-					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
-					prefix={'Total EPA'}
-					color={'rgb(214, 39, 40)'}
-				/>
-			</div>
-		</div>
-	</div>
+	<div class="row mt-3" />
 </div>
 
 <div class="footer">

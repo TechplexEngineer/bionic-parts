@@ -1,13 +1,12 @@
 
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { StatboticsEvent, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
+import { NexusEventStatus, StatboticsEvent, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
+import { NEXUS_API_KEY } from '$env/static/private';
 
 
 
 export const load = (async ({ params, url }) => {
-
-    console.log("url", url.searchParams);
 
     if (!url.searchParams.get("eventKey") || !url.searchParams.get("teamNumber")) {
         throw redirect(307, '/pit/config')
@@ -16,9 +15,6 @@ export const load = (async ({ params, url }) => {
     const eventKey = url.searchParams.get("eventKey");
     const year = new Date().getFullYear();
     const teamNumber = url.searchParams.get("teamNumber"); //4909;
-
-    console.log("eventKey", eventKey);
-    console.log("teamNumber", teamNumber);
 
     const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
     const event = await eventRequest.json<StatboticsEvent>();
@@ -36,7 +32,16 @@ export const load = (async ({ params, url }) => {
     const ourRankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?team=${teamNumber}&year=${year}&event=${eventKey}&metric=rank&ascending=true&limit=5`);
     const ourRankingArr = await ourRankingsRequest.json<StatboticsTeamEvent>();
 
-    console.log(teamNumber);
+    // https://frc.nexus/api/v1/event/{eventKey}
+    const nexusEventStatusRequest = await fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
+        headers: {
+            "Nexus-Api-Key": NEXUS_API_KEY
+        }
+    });
+    const nexusEventStatus = await nexusEventStatusRequest.json<NexusEventStatus>();
+
+    // console.log(nexusEventStatus.matches[nexusEventStatus.matches.length - 1]);
+    console.log(nexusEventStatus.matches.map((m) => `${m.label} ${m.status}`));
 
 
     return {
@@ -61,10 +66,12 @@ export const load = (async ({ params, url }) => {
                 }
 
                 const now = new Date();
-                const duration = Math.round((new Date(m.time * 1000).getTime() - now.getTime()) / 60000);
+                let duration = Math.round((new Date(m.time * 1000).getTime() - now.getTime()) / 60000);
+                if (duration < 0)
+                    duration = 0;
                 const hours = Math.floor(duration / 60);
                 const minutes = duration % 60;
-                const seconds = Math.floor((new Date(m.time * 1000).getTime() - now.getTime()) / 1000) % 60;
+                const seconds = Math.round((duration - Math.floor(duration)) * 60);
                 const formattedDuration = `~${hours}h ${minutes}m ${seconds}s`;
 
                 return {
@@ -82,6 +89,7 @@ export const load = (async ({ params, url }) => {
             };
         }),
         ourRanking: ourRankingArr[0],
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
+        nexusEventStatus
     };
 }) satisfies PageServerLoad;
