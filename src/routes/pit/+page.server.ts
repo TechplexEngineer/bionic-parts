@@ -59,32 +59,35 @@ export const load = (async ({ params, url }) => {
                 : 100 - nextMatch.pred.red_win_prob * 100
         ) : "??"
 
+    console.log('upcommingMatches', upcommingMatches);
+
+
     const ourNextMatch = {
         match_name: upcommingMatches[0].label,
         alliances: {
             red1: {
                 number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[0] : "",
-                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[0]))?.epa.total_points.mean || "??"
+                epa: upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[0]))?.epa.total_points.mean || "??" : "?"
             },
             red2: {
                 number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[1] : "",
-                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[1]))?.epa.total_points.mean || "??"
+                epa: upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[1]))?.epa.total_points.mean || "??" : "?"
             },
             red3: {
                 number: upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[2] : "",
-                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[2]))?.epa.total_points.mean || "??"
+                epa: upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[2]))?.epa.total_points.mean || "??" : "?"
             },
             blue1: {
                 number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[0] : "",
-                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[0]))?.epa.total_points.mean || "??"
+                epa: upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[0]))?.epa.total_points.mean || "??" : "?"
             },
             blue2: {
                 number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[1] : "",
-                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[1]))?.epa.total_points.mean || "??"
+                epa: upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[1]))?.epa.total_points.mean || "??" : "?"
             },
             blue3: {
                 number: upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[2] : "",
-                epa: rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??"
+                epa: upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??" : "?"
             }
         },
         ourWinProb: ourWinProb
@@ -103,8 +106,8 @@ export const load = (async ({ params, url }) => {
                 : m.redTeams?.includes(`${teamNumber}`)
                     ? 'Red'
                     : '',
-            blueTeams: m.blueTeams || '',
-            redTeams: m.redTeams || ''
+            // blueTeams: m.blueTeams || '',
+            // redTeams: m.redTeams || ''
         })).filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)),
         nextmatch: ourNextMatch, //matches.filter((m) => m.result.winner == null)[0],
         rankings: rankings.map((t) => {
