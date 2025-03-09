@@ -28,13 +28,13 @@ import { paramSerializer } from "$lib/trelloAPI";
 import { TRELLO_KEY, TRELLO_SECRET } from "$env/static/private";
 
 const key = TRELLO_KEY;
-if (!key) {
-    throw new Error('Missing TRELLO_KEY');
-}
+// if (!key) {
+//     throw new Error('Missing TRELLO_KEY');
+// }
 const secret = TRELLO_SECRET;
-if (!secret) {
-    throw new Error('Missing TRELLO_SECRET');
-}
+// if (!secret) {
+//     throw new Error('Missing TRELLO_SECRET');
+// }
 
 const client = new oauth.OAuthClient({
     consumer: {

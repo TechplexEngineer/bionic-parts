@@ -1,22 +1,23 @@
-import type {Handle, Redirect} from '@sveltejs/kit';
-import {redirect} from "@sveltejs/kit";
-import getdb, {DataLayer} from "$lib/getdb";
-import {sequence} from "@sveltejs/kit/hooks";
-import {getOnshapeClientFromCookies} from "$lib/onshape";
-import {doTrelloAuthFlow, getTrelloClientFromCookies} from "$lib/trello";
-import {type BuildAuthorizeUrlParams, Oauth} from "$lib/OnshapeAPI";
-import {base64} from "$lib/util";
+import type { Handle, Redirect } from '@sveltejs/kit';
+import { redirect } from "@sveltejs/kit";
+import getdb, { DataLayer } from "$lib/getdb";
+import { sequence } from "@sveltejs/kit/hooks";
+import { getOnshapeClientFromCookies } from "$lib/onshape";
+import { doTrelloAuthFlow, getTrelloClientFromCookies } from "$lib/trello";
+import { type BuildAuthorizeUrlParams, Oauth } from "$lib/OnshapeAPI";
+import { base64 } from "$lib/util";
+import { ONSHAPE_OAUTH_CLIENT_ID, ONSHAPE_OAUTH_REDIRECT_URI } from '$env/static/private';
 
-const redirectUrl = import.meta.env.VITE_ONSHAPE_OAUTH_REDIRECT_URI
+const redirectUrl = ONSHAPE_OAUTH_REDIRECT_URI
 if (!redirectUrl) {
-    throw new Error("No VITE_ONSHAPE_OAUTH_REDIRECT_URI set");
+    throw new Error("No ONSHAPE_OAUTH_REDIRECT_URI set");
 }
-const clientId = import.meta.env.VITE_ONSHAPE_OAUTH_CLIENT_ID;
+const clientId = ONSHAPE_OAUTH_CLIENT_ID;
 if (!clientId) {
-    throw new Error("No VITE_ONSHAPE_OAUTH_CLIENT_ID set");
+    throw new Error("No ONSHAPE_OAUTH_CLIENT_ID set");
 }
 
-const injectDb = (async ({event, resolve}) => {
+const injectDb = (async ({ event, resolve }) => {
     if (event.request.url === "http://sveltekit-prerender/[fallback]") {
         // Don't inject for fallback pre-rendering
         return resolve(event);
@@ -29,7 +30,7 @@ const injectDb = (async ({event, resolve}) => {
     return resolve(event);
 }) satisfies Handle;
 
-const injectOnshapeClient = (async ({event, resolve}) => {
+const injectOnshapeClient = (async ({ event, resolve }) => {
     if (event.request.url === "http://sveltekit-prerender/[fallback]") {
         // Don't inject for fallback pre-rendering
         return resolve(event);
@@ -43,7 +44,7 @@ const injectOnshapeClient = (async ({event, resolve}) => {
             if (state) {
                 stateStr = base64(JSON.stringify(state));
             } else {
-                const v = {type: "url", url: event.url.toString()};
+                const v = { type: "url", url: event.url.toString() };
                 stateStr = base64(JSON.stringify(v));
             }
 
@@ -64,7 +65,7 @@ const injectOnshapeClient = (async ({event, resolve}) => {
     return resolve(event);
 }) satisfies Handle;
 
-const injectTrelloClient = (async ({event, resolve}) => {
+const injectTrelloClient = (async ({ event, resolve }) => {
     if (event.request.url === "http://sveltekit-prerender/[fallback]") {
         // Don't inject for fallback pre-rendering
         return resolve(event);

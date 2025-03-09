@@ -1,9 +1,9 @@
-import type {DrizzleD1Database} from "drizzle-orm/d1";
-import type {DataLayer} from "$lib/getdb";
-import {OnshapeClient} from "$lib/OnshapeAPI";
-import type {Redirect} from "@sveltejs/kit";
-import {TrelloClient} from "$lib/trelloAPI";
-import type {OauthTrelloClient} from "$lib/trelloClient";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
+import type { DataLayer } from "$lib/getdb";
+import { OnshapeClient } from "$lib/OnshapeAPI";
+import type { Redirect } from "@sveltejs/kit";
+import { TrelloClient } from "$lib/trelloAPI";
+import type { OauthTrelloClient } from "$lib/trelloClient";
 
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
@@ -35,22 +35,6 @@ declare global {
         }
 
     }
-
-    interface ImportMetaEnv {
-        // VITE_ONSHAPE_OAUTH_CLIENT_ID?: string;
-        // VITE_ONSHAPE_OAUTH_SECRET?: string;
-
-        VITE_ONSHAPE_OAUTH_CLIENT_ID?: string;
-        VITE_ONSHAPE_OAUTH_CLIENT_SECRET?: string;
-        VITE_ONSHAPE_OAUTH_REDIRECT_URI?: string;
-
-        // VITE_TRELLO_KEY?: never;
-        VITE_TRELLO_TOKEN?: never;
-
-        VITE_TRELLO_KEY?: string;
-        VITE_TRELLO_SECRET?: string;
-        VITE_TRELLO_OAUTH_REDIRECT_URI?: string;
-    }
 }
 
-export {};
+export { };
