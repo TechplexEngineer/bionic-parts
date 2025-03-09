@@ -9,9 +9,10 @@
 	import Badge from './Badge.svelte';
 	// import { preferences } from './store';
 	import { page } from '$app/stores';
-	import { redirect } from '@sveltejs/kit';
 
 	export let data: PageData;
+
+	console.log('data', data.ourRanking);
 
 	let updateIntervalMs = 30 * 1000;
 
@@ -125,11 +126,11 @@
 		<div class="col-6">
 			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
 				<h4>Rank by EPA</h4>
-				<!-- <Badge
-					value={data.ourRanking.record.qual.rank}
+				<Badge
+					value={data.ourRanking ? data.ourRanking.record.qual.rank : '?'}
 					prefix={'Event'}
-					desc={`out of ${data.ourRanking.record.qual.num_teams}`}
-				/> -->
+					desc={`out of ${data.ourRanking ? data.ourRanking.record.qual.num_teams : '?'}`}
+				/>
 				<Badge
 					value={data.teamYear.epa.ranks.state.rank}
 					prefix={'Massachusetts'}
@@ -165,22 +166,25 @@
 		<div class="col-4">
 			<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
 				<h4>EPA Stats</h4>
-				<!-- <Badge value={Math.round(data.ourRanking.epa.breakdown.auto_points)} prefix={'Auto EPA'} /> -->
-				<!-- <Badge
-					value={Math.round(data.ourRanking.epa.breakdown.teleop_points)}
+				<Badge
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
+					prefix={'Auto EPA'}
+				/>
+				<Badge
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
 					prefix={'Teleop EPA'}
 					color={'rgb(255, 127, 14)'}
 				/>
 				<Badge
-					value={Math.round(data.ourRanking.epa.breakdown.endgame_points)}
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
 					prefix={'Endgame EPA'}
 					color={'rgb(44, 160, 44)'}
 				/>
 				<Badge
-					value={Math.round(data.ourRanking.epa.breakdown.total_points)}
+					value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
 					prefix={'Total EPA'}
 					color={'rgb(214, 39, 40)'}
-				/> -->
+				/>
 			</div>
 		</div>
 	</div>

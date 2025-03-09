@@ -35,28 +35,7 @@ export const load = (async ({ params, url }) => {
 
     const ourRankingsRequest = await fetch(`https://api.statbotics.io/v3/team_events?team=${teamNumber}&year=${year}&event=${eventKey}&metric=rank&ascending=true&limit=5`);
     const ourRankingArr = await ourRankingsRequest.json<StatboticsTeamEvent>();
-    let ourRanking = {};
-    if (ourRankingArr.length > 0) {
-        ourRanking = ourRankingArr[0];
-    } else {
-        ourRanking = {
-            record: {
-                qual: {
-                    rank: "UNKNOWN",
-                    num_teams: "UNKNOWN"
-                }
-            },
-            district_points: 0,
-            district_rank: 0,
-            competing: {
-                this_week: false,
-                next_event_key: "",
-                next_event_name: "",
-                next_event_week: 0
-            }
-        };
-    }
-    console.log('ourRanking', ourRanking);
+
 
 
     return {
@@ -101,7 +80,7 @@ export const load = (async ({ params, url }) => {
                 epa: JSON.stringify(t.epa.total_points.mean, null, 2)
             };
         }),
-        ourRanking: ourRanking[0],
+        ourRanking: ourRankingArr[0],
         lastUpdated: new Date()
     };
 }) satisfies PageServerLoad;
