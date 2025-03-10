@@ -15,7 +15,7 @@
 <style>
 	.badge {
 		width: 8rem;
-		height: auto;
+		height: 72px;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
