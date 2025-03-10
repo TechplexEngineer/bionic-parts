@@ -5,25 +5,13 @@ import { NexusEventStatus, StatboticsEvent, StatboticsTeamEvent, StatboticsTeamM
 import { NEXUS_API_KEY } from '$env/static/private';
 import { parse } from 'svelte/compiler';
 import { nexusToTBA } from './mapNexusToTBA';
+import { getSimData } from './simdata';
 
-
-
-export const load = (async ({ params, url }) => {
-
-    const teamNumberStr = url.searchParams.get("teamNumber");
-    const eventKey = url.searchParams.get("eventKey");
-    const year = new Date().getFullYear();
-
-    if (!eventKey || !teamNumberStr) {
-        throw redirect(307, '/pit/config')
+const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
+    if (eventKey == "SIM") {
+        return getSimData();
     }
-    const teamNumber = parseInt(teamNumberStr);
-
-    // const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
-    // const event = await eventRequest.json<StatboticsEvent>();
-    // console.log('event', event);
-
-    const [teamYear, matches, rankings, nexusEventStatus] = await Promise.all([
+    return await Promise.all([
         fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
         fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`).then(res => res.json<StatboticsTeamMatches>()),
         fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`).then(res => res.json<StatboticsTeamEvent>()),
@@ -31,8 +19,38 @@ export const load = (async ({ params, url }) => {
             headers: {
                 "Nexus-Api-Key": NEXUS_API_KEY
             }
-        }).then(res => res.json<NexusEventStatus>())
+        }).then(res => res.json<NexusEventStatus>()),
+        eventKey
     ]);
+}
+
+export const load = (async ({ params, url }) => {
+
+    const teamNumberStr = url.searchParams.get("teamNumber");
+    const eventKeyTmp = url.searchParams.get("eventKey");
+    const year = new Date().getFullYear();
+
+    if (!eventKeyTmp || !teamNumberStr) {
+        throw redirect(307, '/pit/config')
+    }
+    const teamNumber = parseInt(teamNumberStr);
+
+    const [teamYear, matches, rankings, nexusEventStatus, eventKey] = await getData(teamNumber, year, eventKeyTmp);
+
+    // const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
+    // const event = await eventRequest.json<StatboticsEvent>();
+    // console.log('event', event);
+
+    // const [teamYear, matches, rankings, nexusEventStatus] = await Promise.all([
+    //     fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
+    //     fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`).then(res => res.json<StatboticsTeamMatches>()),
+    //     fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`).then(res => res.json<StatboticsTeamEvent>()),
+    //     fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
+    //         headers: {
+    //             "Nexus-Api-Key": NEXUS_API_KEY
+    //         }
+    //     }).then(res => res.json<NexusEventStatus>())
+    // ]);
 
 
     const timestampToDateTime = (timestamp: number) => {
@@ -46,13 +64,16 @@ export const load = (async ({ params, url }) => {
         .filter((m) => m.status != 'On field');
 
 
-    console.log('upcommingMatches', upcommingMatches);
+    console.log('upcommingMatches', upcommingMatches[0]);
 
     const tbaMatch = nexusToTBA(upcommingMatches[0]?.label);
-    // console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
+    console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
 
-    const nextMatch = matches.find(m => m.key == `${eventKey}_${tbaMatch}`);
-    // console.log("nextMatch", nextMatch);
+    const nextMatch = matches.find(m => {
+        console.log("m.key", m.key);
+        return m.key == `${eventKey}_${tbaMatch}`
+    });
+    console.log("nextMatch", nextMatch);
     const ourWinProb = nextMatch ?
         Math.round(
             nextMatch.alliances.red.team_keys.includes(teamNumber)
@@ -60,7 +81,7 @@ export const load = (async ({ params, url }) => {
                 : 100 - nextMatch.pred.red_win_prob * 100
         ) : "??"
 
-    console.log('upcommingMatches', upcommingMatches);
+    // console.log('upcommingMatches', upcommingMatches);
 
 
     const ourNextMatch = {
@@ -94,6 +115,9 @@ export const load = (async ({ params, url }) => {
         ourWinProb: ourWinProb
     };
 
+    // console.log("ourRanking", teamNumber, rankings.find((t) => t.team == teamNumber));
+
+
     return {
         eventKey,
         teamNumber,
@@ -115,7 +139,7 @@ export const load = (async ({ params, url }) => {
             return {
                 rank: t.record.qual.rank,
                 team: `${t.team} - ${t.team_name}`,
-                epa: JSON.stringify(t.epa.total_points.mean, null, 2)
+                epa: Math.round(t.epa.total_points.mean * 10) / 10
             };
         }).slice(0, 4),
         ourRanking: rankings.find((t) => t.team == teamNumber),
