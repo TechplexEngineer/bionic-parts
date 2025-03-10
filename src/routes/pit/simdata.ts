@@ -15605,7 +15605,7 @@ const nexusStatus = {
     "partsRequests": []
 };
 
-export const getSimData = async (): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus]> => {
+export const getSimData = async (): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
     return [
         team, matches, rankings, nexusStatus, "2025nhsal"];
 }

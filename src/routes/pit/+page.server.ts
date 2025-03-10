@@ -64,16 +64,16 @@ export const load = (async ({ params, url }) => {
         .filter((m) => m.status != 'On field');
 
 
-    console.log('upcommingMatches', upcommingMatches[0]);
+    // console.log('upcommingMatches', upcommingMatches[0]);
 
     const tbaMatch = nexusToTBA(upcommingMatches[0]?.label);
-    console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
+    // console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
 
     const nextMatch = matches.find(m => {
-        console.log("m.key", m.key);
+        // console.log("m.key", m.key);
         return m.key == `${eventKey}_${tbaMatch}`
     });
-    console.log("nextMatch", nextMatch);
+    // console.log("nextMatch", nextMatch);
     const ourWinProb = nextMatch ?
         Math.round(
             nextMatch.alliances.red.team_keys.includes(teamNumber)
