@@ -193,7 +193,7 @@
 	<div class="row binrow sponsorRow" data-name="Sponsors">
 		<div class="col">
 			<div class="bin sponsors text-center">
-				<h4 class="binHeader">Thank You to our generous sponsors</h4>
+				<h4 class="binHeader">Thank You To Our Generous Sponsors</h4>
 				<img src="sponsors/KLA.svg" alt="KLA" />
 				<img src="sponsors/AnalogDevices.svg" alt="Analog Devices" />
 				<img src="sponsors/Boeing.svg" alt="Boeing" />
