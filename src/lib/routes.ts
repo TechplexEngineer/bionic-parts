@@ -24,5 +24,10 @@ export const routes = [
         title: 'Kanban Generator',
         description: 'Tool to generate Kanban Cards for inventory management.',
         link: '/kanban'
+    },
+    {
+        title: 'Pit Display',
+        description: 'Dashboard for the Superpit.',
+        link: '/pit'
     }
 ];
