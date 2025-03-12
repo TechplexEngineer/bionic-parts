@@ -283,6 +283,8 @@
 	.wrapper {
 		display: flex;
 		flex-direction: column;
+		overflow-x: hidden;
+		zoom: 1.25;
 	}
 	// #row1 {
 	// 	background-color: red;
