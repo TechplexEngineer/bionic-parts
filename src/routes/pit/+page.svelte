@@ -23,10 +23,10 @@
 		setTimeout(updateData, updateIntervalMs);
 	});
 
-	const matchesColumns: TableColumns = [
+	const upcommingMatchColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
 		{ data: 'predictedTime', title: 'Predicted Time' },
-		{ data: 'color', title: 'Color' }
+		{ data: 'color', title: 'Color', renderHTML: (data) => `<span class="badge badge-${data.toLowerCase()}">${data}</span>` },
 	];
 </script>
 
@@ -185,7 +185,7 @@
 					</div>
 				</div>
 				<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->
-				<TableForObjectArray data={data.upcommingMatches.slice(0, 6)} />
+				<TableForObjectArray data={data.upcommingMatches.slice(0, 6)} columns={upcommingMatchColumns}/>
 			</div>
 		</div>
 	</div>
@@ -274,12 +274,14 @@
 		margin-left: 20px;
 		margin-top: 10px;
 	}
-	// .wrapper,
-	// html,
-	// body {
-	// 	height: 100%;
-	// 	margin: 0;
-	// }
+	:global(.badge-blue) {
+		
+		background-color: rgb(13, 110, 253);
+	}
+	:global(.badge-red) {
+		background-color: rgb(214, 39, 40);
+	}
+	
 	.wrapper {
 		display: flex;
 		flex-direction: column;
