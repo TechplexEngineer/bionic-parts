@@ -8,7 +8,7 @@ import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
 
 const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
-    if (eventKey == "SIM") {
+    if (eventKey.toUpperCase() == "SIM") {
         return getSimData();
     }
     return await Promise.all([
