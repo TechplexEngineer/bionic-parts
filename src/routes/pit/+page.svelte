@@ -134,7 +134,7 @@
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Next Match: {data.nextmatch?.match_name}</h4>
-
+				<div class="mt-5"></div>
 				{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
 					<!-- Red alliance on top -->
 					<div class="row mb-3">
