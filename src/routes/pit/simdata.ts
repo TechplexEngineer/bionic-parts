@@ -13374,7 +13374,7 @@ const rankings = [
 const nexusStatus = {
     "eventKey": "2025nhsal",
     "dataAsOfTime": 1741571429097,
-    "nowQueuing": "Qualification 6",
+    "nowQueuing": "Qualification 12",
     "matches": [
         {
             "label": "Practice 1",
@@ -13642,7 +13642,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 6",
-            "status": "On deck",
+            "status": "On field",
             "redTeams": [
                 "1058",
                 "7314",
@@ -13666,7 +13666,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 7",
-            "status": "Now queuing",
+            "status": "On field",
             "redTeams": [
                 "10156",
                 "2877",
@@ -13690,7 +13690,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 8",
-            "status": "Queuing soon",
+            "status": "On field",
             "redTeams": [
                 "8013",
                 "1512",
@@ -13714,7 +13714,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 9",
-            "status": "Queuing soon",
+            "status": "On field",
             "redTeams": [
                 "5902",
                 "319",
@@ -13738,7 +13738,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 10",
-            "status": "Queuing soon",
+            "status": "On field",
             "redTeams": [
                 "8410",
                 "1058",
@@ -13763,7 +13763,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 11",
-            "status": "Queuing soon",
+            "status": "On field",
             "redTeams": [
                 "4925",
                 "6620",
@@ -13787,7 +13787,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 12",
-            "status": "Queuing soon",
+            "status": "Now queuing",
             "redTeams": [
                 "6690",
                 "3623",
@@ -13811,7 +13811,7 @@ const nexusStatus = {
         },
         {
             "label": "Qualification 13",
-            "status": "Queuing soon",
+            "status": "On deck",
             "redTeams": [
                 "811",
                 "1247",

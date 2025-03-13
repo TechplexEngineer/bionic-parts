@@ -9,6 +9,7 @@
 	import Badge from './Badge.svelte';
 	// import { preferences } from './store';
 	import { page } from '$app/stores';
+	import TeamAndEpa from './TeamAndEPA.svelte';
 
 	export let data: PageData;
 
@@ -134,7 +135,105 @@
 			<div class="bin h-100">
 				<h4 class="binHeader">Next Match: {data.nextmatch?.match_name}</h4>
 
-				<div class="row mb-3">
+				{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
+					<!-- Red alliance on top -->
+					<div class="row mb-3">
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.red1.number}
+							epa={data.nextmatch?.alliances.red1.epa}
+							color="text-danger"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.red2.number}
+							epa={data.nextmatch?.alliances.red2.epa}
+							color="text-danger"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.red3.number}
+							epa={data.nextmatch?.alliances.red3.epa}
+							color="text-danger"
+						/>
+					</div>
+					<div class="row mb-3">
+						<div class="col text-center">
+							<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
+						</div>
+					</div>
+						
+					<div class="row">
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.blue1.number}
+							epa={data.nextmatch?.alliances.blue1.epa}
+							color="text-primary"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.blue2.number}
+							epa={data.nextmatch?.alliances.blue2.epa}
+							color="text-primary"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.blue3.number}
+							epa={data.nextmatch?.alliances.blue3.epa}
+							color="text-primary"
+						/>
+					</div>
+				{:else}
+					<!-- Blue alliance on top -->
+					<div class="row mb-3">
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.blue1.number}
+							epa={data.nextmatch?.alliances.blue1.epa}
+							color="text-primary"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.blue2.number}
+							epa={data.nextmatch?.alliances.blue2.epa}
+							color="text-primary"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.blue3.number}
+							epa={data.nextmatch?.alliances.blue3.epa}
+							color="text-primary"
+						/>
+					</div>
+					<div class="row mb-3">
+					
+						<div class="col text-center">
+							<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
+						</div>
+					</div>
+					<div class="row mb-3">
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.red1.number}
+							epa={data.nextmatch?.alliances.red1.epa}
+							color="text-danger"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.red2.number}
+							epa={data.nextmatch?.alliances.red2.epa}
+							color="text-danger"
+						/>
+						<TeamAndEpa
+							outTeamNumber={data.teamNumber}
+							number={data.nextmatch?.alliances.red3.number}
+							epa={data.nextmatch?.alliances.red3.epa}
+							color="text-danger"
+						/>
+					</div>
+				{/if}
+
+				<!-- <div class="row mb-3">
 					<div class="col text-center">
 						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red1.number}</span><br />{data
 							.nextmatch?.alliances.red1.epa}
@@ -149,19 +248,25 @@
 					</div>
 				</div>
 				<div class="row mb-3">
-					<!-- <div class="col text-center">
+					
+					<div class="col text-center">
+						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
+					</div>
+				</div> -->
+				<!-- <div class="row mb-3">
+					<div class="col text-center">
 					<span class="fs-2 text-danger fw-bold">Score</span> :
 					<span class="fs-3 text-primary">Score</span>
 					<br />Projected Winner:
 					<span class={data.nextmatch.pred.winner == 'red' ? 'text-danger' : 'text-primary'}
 						>{titleCase(data.nextmatch.pred.winner)}</span
 					>
-				</div> -->
+				</div>
 					<div class="col text-center">
 						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 					</div>
-				</div>
-				<div class="row">
+				</div> -->
+				<!-- <div class="row">
 					<div class="col text-center">
 						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue1.number}</span><br
 						/>{data.nextmatch?.alliances.blue1.epa}
@@ -174,13 +279,19 @@
 						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue3.number}</span><br
 						/>{data.nextmatch?.alliances.blue3.epa}
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Upcomming Matches</h4>
 				<div class="d-flex justify-content-between mb-2">
+					<div class="text-center">
+						{#if data.nexusEventStatus.nowQueuing}
+							<div class="fw-bold">Now Queueing</div>
+							<div>{data.nexusEventStatus.nowQueuing || ''}</div>
+						{/if}
+					</div>
 					<div class="text-center">
 						{#if data.nexusEventStatus.matches.find((m) => m.status == 'On deck')}
 							<div class="fw-bold">On Deck</div>
@@ -189,12 +300,7 @@
 							</div>
 						{/if}
 					</div>
-					<div class="text-center">
-						{#if data.nexusEventStatus.nowQueuing}
-							<div class="fw-bold">Now Queueing</div>
-							<div>{data.nexusEventStatus.nowQueuing || ''}</div>
-						{/if}
-					</div>
+					
 				</div>
 				<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->
 				<TableForObjectArray data={data.upcommingMatches.slice(0, 6)} columns={upcommingMatchColumns}/>
