@@ -117,6 +117,30 @@ export const load = (async ({ params, url }) => {
 
     // console.log("ourRanking", teamNumber, rankings.find((t) => t.team == teamNumber));
 
+    const rankingsDisplay = rankings.map((t) => {
+        return {
+            rank: t.record.qual.rank,
+            team: `${t.team} - ${t.team_name}`,
+            epa: Math.round(t.epa.total_points.mean * 10) / 10
+        };
+    }).slice(0, 6).sort((a, b) => a.rank - b.rank);
+    if (!rankingsDisplay.find((t) => t.team.includes(`${teamNumber}`))) {
+        const ourRanking = rankings.find((t) => t.team == teamNumber);
+        if (ourRanking) {
+            rankingsDisplay.push({
+                rank: "..." as any,
+                team: `...`,
+                epa: "..." as any
+            });
+            rankingsDisplay.push({
+                rank: ourRanking.record.qual.rank,
+                team: `${teamNumber} - ${ourRanking.team_name}`,
+                epa: Math.round(ourRanking.epa.total_points.mean * 10) / 10
+            });
+        }
+        
+    }
+
 
     return {
         eventKey,
@@ -135,13 +159,7 @@ export const load = (async ({ params, url }) => {
             // redTeams: m.redTeams || ''
         })),
         nextmatch: ourNextMatch, //matches.filter((m) => m.result.winner == null)[0],
-        rankings: rankings.map((t) => {
-            return {
-                rank: t.record.qual.rank,
-                team: `${t.team} - ${t.team_name}`,
-                epa: Math.round(t.epa.total_points.mean * 10) / 10
-            };
-        }).slice(0, 4),
+        rankings: rankingsDisplay,
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
         nexusEventStatus

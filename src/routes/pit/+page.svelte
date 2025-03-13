@@ -28,6 +28,8 @@
 		{ data: 'predictedTime', title: 'Predicted Time' },
 		{ data: 'color', title: 'Color', renderHTML: (data) => `<span class="badge badge-${data.toLowerCase()}">${data}</span>` },
 	];
+
+	const rankingsDisplay = data.rankings
 </script>
 
 <svelte:head>
@@ -115,7 +117,7 @@
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Rankings</h4>
-				<TableForObjectArray data={data.rankings.sort((a, b) => a.rank - b.rank)} />
+				<TableForObjectArray data={rankingsDisplay} />
 			</div>
 		</div>
 		<div class="col">
@@ -376,6 +378,7 @@
 		/* height: 100px; */
 	}
 
+
 	:global(
 			.pit-table,
 			.table-striped > tbody > tr:nth-of-type(odd) > *,
@@ -384,11 +387,13 @@
 		background-color: transparent;
 		color: #fff;
 		border: 0;
+		margin-bottom: -10px;
 	}
 
 	:global(html) {
 		position: relative;
 		min-height: 100%;
+		font-size: 1rem; // change this to increase whole page font size
 	}
 
 	$footerHeight: 40px;
