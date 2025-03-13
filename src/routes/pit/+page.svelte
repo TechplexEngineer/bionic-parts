@@ -205,6 +205,22 @@
 							color="text-primary"
 						/>
 					</div>
+					<div class="row mb-3 text-center text-white-50">
+						{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
+							<div class="col">
+								{rp.name}: {Math.round(rp.pred*1000)/10}%
+							</div>
+						{/each}
+						<!-- <div class="col">
+							RP1: 5
+						</div>
+						<div class="col">
+							RP1: 5
+						</div>
+						<div class="col">
+							RP1: 5
+						</div> -->
+					</div>
 					<div class="row mb-3">
 					
 						<div class="col text-center">

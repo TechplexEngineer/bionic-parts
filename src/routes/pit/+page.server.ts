@@ -82,6 +82,17 @@ export const load = (async ({ params, url }) => {
         ) : "??"
 
     // console.log('upcommingMatches', upcommingMatches);
+    const rankingPoints = nextMatch ? 
+        nextMatch.alliances.red.team_keys.includes(teamNumber) ? [
+            {name: "Auto RP", pred: nextMatch.pred.red_auto_rp},
+            {name: "Coral RP", pred: nextMatch.pred.red_coral_rp},
+            {name: "Barge RP", pred: nextMatch.pred.red_barge_rp},
+        ] : [
+            {name: "Auto", pred: nextMatch.pred.blue_auto_rp},
+            {name: "Coral", pred: nextMatch.pred.blue_coral_rp},
+            {name: "Barge", pred: nextMatch.pred.blue_barge_rp},
+        ]
+     : [];
 
 
     const ourNextMatch = {
@@ -112,7 +123,9 @@ export const load = (async ({ params, url }) => {
                 epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??" : "?"
             }
         },
-        ourWinProb: ourWinProb
+        ourWinProb: ourWinProb,
+        rankingPoints
+
     };
 
     // console.log("ourRanking", teamNumber, rankings.find((t) => t.team == teamNumber));
