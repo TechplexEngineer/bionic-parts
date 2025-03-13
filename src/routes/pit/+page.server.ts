@@ -1,7 +1,7 @@
 
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { NexusEventStatus, StatboticsEvent, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
+import { NexusEventStatus, StatboticsEvent, StatboticsTeam, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
 import { NEXUS_API_KEY } from '$env/static/private';
 import { parse } from 'svelte/compiler';
 import { nexusToTBA } from './mapNexusToTBA';
@@ -117,28 +117,31 @@ export const load = (async ({ params, url }) => {
 
     // console.log("ourRanking", teamNumber, rankings.find((t) => t.team == teamNumber));
 
-    const rankingsDisplay = rankings.map((t) => {
+    const mapFn = (t: StatboticsTeam) => {
         return {
             rank: t.record.qual.rank,
-            team: `${t.team} - ${t.team_name}`,
+            teamNumber: t.team,
+            teamName: t.team_name,
             epa: Math.round(t.epa.total_points.mean * 10) / 10
         };
-    }).slice(0, 6).sort((a, b) => a.rank - b.rank);
-    if (!rankingsDisplay.find((t) => t.team.includes(`${teamNumber}`))) {
+    }
+
+    const lastItem = 6;
+    const rankingsDisplay = rankings.map(mapFn).sort((a, b) => a.rank - b.rank).slice(0, lastItem);
+    if (!rankingsDisplay.find((t) => t.teamNumber == teamNumber)) {
         const ourRanking = rankings.find((t) => t.team == teamNumber);
         if (ourRanking) {
             rankingsDisplay.push({
                 rank: "..." as any,
-                team: `...`,
+                teamNumber: `...` as any,
+                teamName: "..." as any,
                 epa: "..." as any
             });
-            rankingsDisplay.push({
-                rank: ourRanking.record.qual.rank,
-                team: `${teamNumber} - ${ourRanking.team_name}`,
-                epa: Math.round(ourRanking.epa.total_points.mean * 10) / 10
-            });
+            rankingsDisplay.push(mapFn(ourRanking));
         }
-        
+    } else {
+        rankingsDisplay.push(mapFn(rankings[lastItem]));
+        rankingsDisplay.push(mapFn(rankings[lastItem + 1]));
     }
 
 

@@ -250,7 +250,7 @@ export type StatboticsTeamMatches = {
     }
 }[];
 
-export type StatboticsTeamEvent = {
+export type StatboticsTeam = {
     team: number
     year: number
     event: string
@@ -339,7 +339,9 @@ export type StatboticsTeamEvent = {
         }
     }
     district_points: any
-}[];
+};
+
+export type StatboticsTeamEvent = StatboticsTeam[];
 
 export type NexusEventStatus = {
     eventKey: string

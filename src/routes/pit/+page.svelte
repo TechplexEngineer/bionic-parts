@@ -29,7 +29,17 @@
 		{ data: 'color', title: 'Color', renderHTML: (data) => `<span class="badge badge-${data.toLowerCase()}">${data}</span>` },
 	];
 
-	const rankingsDisplay = data.rankings
+	const rankingsColumns: TableColumns = [
+		{ data: 'rank', title: 'Rank' },
+		{ data: 'teamNumber', title: 'Team', renderHTML: (val, _, row) => {
+			const formatted = `${row.teamNumber} - ${row.teamName}`;
+			if (val == data.teamNumber) {
+				return `<span class="fw-bold border-bottom">${formatted}</span>`
+			}
+			return formatted;
+		} },
+		{ data: 'epa', title: 'EPA' },
+	];
 </script>
 
 <svelte:head>
@@ -117,7 +127,7 @@
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Rankings</h4>
-				<TableForObjectArray data={rankingsDisplay} />
+				<TableForObjectArray data={data.rankings} columns={rankingsColumns}/>
 			</div>
 		</div>
 		<div class="col">
@@ -273,9 +283,16 @@
 <style lang="scss">
 	.logocol {
 		text-align: center;
-		margin-left: 20px;
-		margin-top: 10px;
+		margin-left: 0px;
+		margin-top: -5px;
+		margin-right: -40px;
+		margin-bottom: -10px;
 	}
+	.logo {
+		width: 250px;
+		/* height: 100px; */
+	}
+
 	:global(.badge-blue) {
 		
 		background-color: rgb(13, 110, 253);
@@ -373,10 +390,7 @@
 		margin-top: -5px;
 	}
 
-	.logo {
-		width: 200px;
-		/* height: 100px; */
-	}
+	
 
 
 	:global(
