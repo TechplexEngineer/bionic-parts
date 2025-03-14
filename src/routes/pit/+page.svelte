@@ -142,9 +142,14 @@
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
-				<div class="mt-5" />
+				<!-- <div class="mt-5" /> -->
 				{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
 					<!-- Red alliance on top -->
+					<div class="row">
+						<div class="col text-center">
+							<div class="badge badge-red fs-2 mt-1 mb-2">{data.nextmatch.score.red}</div>
+						</div>
+					</div>
 					<div class="row mb-3">
 						<TeamAndEpa
 							outTeamNumber={data.teamNumber}
@@ -191,8 +196,18 @@
 							color="text-primary"
 						/>
 					</div>
+					<div class="row">
+						<div class="col text-center">
+							<div class="badge badge-blue fs-2 mt-2">{data.nextmatch.score.blue}</div>
+						</div>
+					</div>
 				{:else}
 					<!-- Blue alliance on top -->
+					<div class="row">
+						<div class="col text-center">
+							<div class="badge badge-blue fs-2 mt-2">{data.nextmatch.score.blue}</div>
+						</div>
+					</div>
 					<div class="row mb-3">
 						<TeamAndEpa
 							outTeamNumber={data.teamNumber}
@@ -253,6 +268,11 @@
 							epa={data.nextmatch?.alliances.red3.epa}
 							color="text-danger"
 						/>
+					</div>
+					<div class="row">
+						<div class="col text-center">
+							<div class="badge badge-red fs-2 mt-2">{data.nextmatch.score.red}</div>
+						</div>
 					</div>
 				{/if}
 

@@ -37,21 +37,6 @@ export const load = (async ({ params, url }) => {
 
     const [teamYear, matches, rankings, nexusEventStatus, eventKey] = await getData(teamNumber, year, eventKeyTmp);
 
-    // const eventRequest = await fetch(`https://api.statbotics.io/v3/event/${eventKey}`);
-    // const event = await eventRequest.json<StatboticsEvent>();
-    // console.log('event', event);
-
-    // const [teamYear, matches, rankings, nexusEventStatus] = await Promise.all([
-    //     fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
-    //     fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`).then(res => res.json<StatboticsTeamMatches>()),
-    //     fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`).then(res => res.json<StatboticsTeamEvent>()),
-    //     fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
-    //         headers: {
-    //             "Nexus-Api-Key": NEXUS_API_KEY
-    //         }
-    //     }).then(res => res.json<NexusEventStatus>())
-    // ]);
-
 
     const timestampToDateTime = (timestamp: number) => {
         const date = new Date(timestamp);
@@ -96,9 +81,15 @@ export const load = (async ({ params, url }) => {
         ]
         : [];
 
+    nextMatch?.pred.blue_score
+
 
     const ourNextMatch = {
         match_name: ourNextMatchNexus?.label || "",
+        score: {
+            red: nextMatch?.pred.red_score,
+            blue: nextMatch?.pred.blue_score
+        },
         alliances: {
             red1: {
                 number: ourNextMatchNexus && ourNextMatchNexus.redTeams ? ourNextMatchNexus.redTeams[0] : "",
