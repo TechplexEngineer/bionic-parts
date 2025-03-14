@@ -27,19 +27,27 @@
 	const upcommingMatchColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
 		{ data: 'predictedTime', title: 'Predicted Time' },
-		{ data: 'color', title: 'Color', renderHTML: (data) => `<span class="badge badge-${data.toLowerCase()}">${data}</span>` },
+		{
+			data: 'color',
+			title: 'Color',
+			renderHTML: (data) => `<span class="badge badge-${data.toLowerCase()}">${data}</span>`
+		}
 	];
 
 	const rankingsColumns: TableColumns = [
 		{ data: 'rank', title: 'Rank' },
-		{ data: 'teamNumber', title: 'Team', renderHTML: (val, _, row) => {
-			const formatted = `${row.teamNumber} - ${row.teamName}`;
-			if (val == data.teamNumber) {
-				return `<span class="fw-bold border-bottom">${formatted}</span>`
+		{
+			data: 'teamNumber',
+			title: 'Team',
+			renderHTML: (val, _, row) => {
+				const formatted = `${row.teamNumber} - ${row.teamName}`;
+				if (val == data.teamNumber) {
+					return `<span class="fw-bold border-bottom">${formatted}</span>`;
+				}
+				return formatted;
 			}
-			return formatted;
-		} },
-		{ data: 'epa', title: 'EPA' },
+		},
+		{ data: 'epa', title: 'EPA' }
 	];
 </script>
 
@@ -128,13 +136,13 @@
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Rankings</h4>
-				<TableForObjectArray data={data.rankings} columns={rankingsColumns}/>
+				<TableForObjectArray data={data.rankings} columns={rankingsColumns} />
 			</div>
 		</div>
 		<div class="col">
 			<div class="bin h-100">
-				<h4 class="binHeader">Next Match: {data.nextmatch?.match_name}</h4>
-				<div class="mt-5"></div>
+				<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
+				<div class="mt-5" />
 				{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
 					<!-- Red alliance on top -->
 					<div class="row mb-3">
@@ -162,7 +170,7 @@
 							<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 						</div>
 					</div>
-						
+
 					<div class="row">
 						<TeamAndEpa
 							outTeamNumber={data.teamNumber}
@@ -208,7 +216,7 @@
 					<div class="row mb-3 text-center text-white-50">
 						{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
 							<div class="col">
-								{rp.name}: {Math.round(rp.pred*1000)/10}%
+								{rp.name}: {Math.round(rp.pred * 1000) / 10}%
 							</div>
 						{/each}
 						<!-- <div class="col">
@@ -222,7 +230,6 @@
 						</div> -->
 					</div>
 					<div class="row mb-3">
-					
 						<div class="col text-center">
 							<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 						</div>
@@ -316,10 +323,12 @@
 							</div>
 						{/if}
 					</div>
-					
 				</div>
 				<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->
-				<TableForObjectArray data={data.upcommingMatches.slice(0, 6)} columns={upcommingMatchColumns}/>
+				<TableForObjectArray
+					data={data.upcommingMatches.slice(0, 6)}
+					columns={upcommingMatchColumns}
+				/>
 			</div>
 		</div>
 	</div>
@@ -416,13 +425,12 @@
 	}
 
 	:global(.badge-blue) {
-		
 		background-color: rgb(13, 110, 253);
 	}
 	:global(.badge-red) {
 		background-color: rgb(214, 39, 40);
 	}
-	
+
 	.wrapper {
 		display: flex;
 		flex-direction: column;
@@ -511,9 +519,6 @@
 	.btnicon {
 		margin-top: -5px;
 	}
-
-	
-
 
 	:global(
 			.pit-table,
