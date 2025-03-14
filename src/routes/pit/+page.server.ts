@@ -63,10 +63,12 @@ export const load = (async ({ params, url }) => {
     const upcommingMatches = nexusEventStatus.matches
         .filter((m) => m.status != 'On field');
 
+    const ourNextMatchNexus = upcommingMatches.find((m) => m.redTeams?.includes(`${teamNumber}`) || m.blueTeams?.includes(`${teamNumber}`));
+
 
     // console.log('upcommingMatches', upcommingMatches[0]);
 
-    const tbaMatch = nexusToTBA(upcommingMatches[0]?.label);
+    const tbaMatch = nexusToTBA(ourNextMatchNexus?.label || "");
     // console.log('tbaMatch', tbaMatch, upcommingMatches[0].label);
 
     const nextMatch = matches.find(m => {
@@ -82,45 +84,45 @@ export const load = (async ({ params, url }) => {
         ) : "??"
 
     // console.log('upcommingMatches', upcommingMatches);
-    const rankingPoints = nextMatch ? 
+    const rankingPoints = nextMatch ?
         nextMatch.alliances.red.team_keys.includes(teamNumber) ? [
-            {name: "Auto RP", pred: nextMatch.pred.red_auto_rp},
-            {name: "Coral RP", pred: nextMatch.pred.red_coral_rp},
-            {name: "Barge RP", pred: nextMatch.pred.red_barge_rp},
+            { name: "Auto RP", pred: nextMatch.pred.red_auto_rp },
+            { name: "Coral RP", pred: nextMatch.pred.red_coral_rp },
+            { name: "Barge RP", pred: nextMatch.pred.red_barge_rp },
         ] : [
-            {name: "Auto", pred: nextMatch.pred.blue_auto_rp},
-            {name: "Coral", pred: nextMatch.pred.blue_coral_rp},
-            {name: "Barge", pred: nextMatch.pred.blue_barge_rp},
+            { name: "Auto", pred: nextMatch.pred.blue_auto_rp },
+            { name: "Coral", pred: nextMatch.pred.blue_coral_rp },
+            { name: "Barge", pred: nextMatch.pred.blue_barge_rp },
         ]
-     : [];
+        : [];
 
 
     const ourNextMatch = {
-        match_name: upcommingMatches[0]?.label || "",
+        match_name: ourNextMatchNexus?.label || "",
         alliances: {
             red1: {
-                number: upcommingMatches.length && upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[0] : "",
-                epa: upcommingMatches.length && upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[0]))?.epa.total_points.mean || "??" : "?"
+                number: ourNextMatchNexus && ourNextMatchNexus.redTeams ? ourNextMatchNexus.redTeams[0] : "",
+                epa: ourNextMatchNexus && ourNextMatchNexus.redTeams ? rankings.find((t) => t.team == parseInt(ourNextMatchNexus.redTeams[0]))?.epa.total_points.mean || "??" : "?"
             },
             red2: {
-                number: upcommingMatches.length && upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[1] : "",
-                epa: upcommingMatches.length && upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[1]))?.epa.total_points.mean || "??" : "?"
+                number: ourNextMatchNexus && ourNextMatchNexus.redTeams ? ourNextMatchNexus.redTeams[1] : "",
+                epa: ourNextMatchNexus && ourNextMatchNexus.redTeams ? rankings.find((t) => t.team == parseInt(ourNextMatchNexus.redTeams[1]))?.epa.total_points.mean || "??" : "?"
             },
             red3: {
-                number: upcommingMatches.length && upcommingMatches[0].redTeams ? upcommingMatches[0].redTeams[2] : "",
-                epa: upcommingMatches.length && upcommingMatches[0].redTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].redTeams[2]))?.epa.total_points.mean || "??" : "?"
+                number: ourNextMatchNexus && ourNextMatchNexus.redTeams ? ourNextMatchNexus.redTeams[2] : "",
+                epa: ourNextMatchNexus && ourNextMatchNexus.redTeams ? rankings.find((t) => t.team == parseInt(ourNextMatchNexus.redTeams[2]))?.epa.total_points.mean || "??" : "?"
             },
             blue1: {
-                number: upcommingMatches.length && upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[0] : "",
-                epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[0]))?.epa.total_points.mean || "??" : "?"
+                number: ourNextMatchNexus && ourNextMatchNexus.blueTeams ? ourNextMatchNexus.blueTeams[0] : "",
+                epa: ourNextMatchNexus && ourNextMatchNexus.blueTeams ? rankings.find((t) => t.team == parseInt(ourNextMatchNexus.blueTeams[0]))?.epa.total_points.mean || "??" : "?"
             },
             blue2: {
-                number: upcommingMatches.length && upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[1] : "",
-                epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[1]))?.epa.total_points.mean || "??" : "?"
+                number: ourNextMatchNexus && ourNextMatchNexus.blueTeams ? ourNextMatchNexus.blueTeams[1] : "",
+                epa: ourNextMatchNexus && ourNextMatchNexus.blueTeams ? rankings.find((t) => t.team == parseInt(ourNextMatchNexus.blueTeams[1]))?.epa.total_points.mean || "??" : "?"
             },
             blue3: {
-                number: upcommingMatches.length && upcommingMatches[0].blueTeams ? upcommingMatches[0].blueTeams[2] : "",
-                epa: upcommingMatches.length && upcommingMatches[0].blueTeams ? rankings.find((t) => t.team == parseInt(upcommingMatches[0].blueTeams[2]))?.epa.total_points.mean || "??" : "?"
+                number: ourNextMatchNexus && ourNextMatchNexus.blueTeams ? ourNextMatchNexus.blueTeams[2] : "",
+                epa: ourNextMatchNexus && ourNextMatchNexus.blueTeams ? rankings.find((t) => t.team == parseInt(ourNextMatchNexus.blueTeams[2]))?.epa.total_points.mean || "??" : "?"
             }
         },
         ourWinProb: ourWinProb,
