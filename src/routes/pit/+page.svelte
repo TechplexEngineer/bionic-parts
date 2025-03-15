@@ -26,7 +26,8 @@
 
 	const upcommingMatchColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
-		{ data: 'predictedTime', title: 'Predicted Time' },
+		{ data: 'predictedTime', title: 'Predicted' },
+		{ data: 'scheduledTime', title: 'Scheduled' },
 		{
 			data: 'color',
 			title: 'Color',
@@ -125,7 +126,7 @@
 					<!-- Red alliance on top -->
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-red fs-2 mt-1 mb-2">{data.nextmatch.score.red}</div>
+							<div class="badge badge-red fs-3 mt-1 mb-2">{data.nextmatch.score.red}</div>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -150,7 +151,7 @@
 					</div>
 					<div class="row mb-3">
 						<div class="col text-center">
-							<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
+							<span class="fs-3">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 						</div>
 					</div>
 
@@ -176,14 +177,14 @@
 					</div>
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-blue fs-2 mt-2">{data.nextmatch.score.blue}</div>
+							<div class="badge badge-blue fs-3 mt-2">{data.nextmatch.score.blue}</div>
 						</div>
 					</div>
 				{:else}
 					<!-- Blue alliance on top -->
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-blue fs-2 mt-2">{data.nextmatch.score.blue}</div>
+							<div class="badge badge-blue fs-3 mt-2">{data.nextmatch.score.blue}</div>
 						</div>
 					</div>
 					<div class="row mb-3">
