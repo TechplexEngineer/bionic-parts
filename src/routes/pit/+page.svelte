@@ -126,7 +126,7 @@
 					<!-- Red alliance on top -->
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-red fs-3 mt-1 mb-2">{data.nextmatch.score.red}</div>
+							<div class="badge badge-red fs-4 mt-1 mb-2">{data.nextmatch.score.red}</div>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -177,14 +177,14 @@
 					</div>
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-blue fs-3 mt-2">{data.nextmatch.score.blue}</div>
+							<div class="badge badge-blue fs-4">{data.nextmatch.score.blue}</div>
 						</div>
 					</div>
 				{:else}
 					<!-- Blue alliance on top -->
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-blue fs-3 mt-2">{data.nextmatch.score.blue}</div>
+							<div class="badge badge-blue fs-4 mt-2">{data.nextmatch.score.blue}</div>
 						</div>
 					</div>
 					<div class="row mb-3">
@@ -250,7 +250,7 @@
 					</div>
 					<div class="row">
 						<div class="col text-center">
-							<div class="badge badge-red fs-2 mt-2">{data.nextmatch.score.red}</div>
+							<div class="badge badge-red fs-4 mt-2">{data.nextmatch.score.red}</div>
 						</div>
 					</div>
 				{/if}
