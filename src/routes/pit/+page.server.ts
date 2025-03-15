@@ -3,10 +3,8 @@ import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { NexusEventStatus, StatboticsEvent, StatboticsTeam, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
 import { NEXUS_API_KEY } from '$env/static/private';
-import { parse } from 'svelte/compiler';
 import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
-import { titleCase } from '@miniflare/shared';
 
 const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
     if (eventKey.toUpperCase() == "SIM") {
@@ -23,6 +21,10 @@ const getData = async (teamNumber: number, year: number, eventKey: string): Prom
         }).then(res => res.json<NexusEventStatus>()),
         eventKey
     ]);
+}
+
+const titleCase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export const load = (async ({ params, url }) => {
