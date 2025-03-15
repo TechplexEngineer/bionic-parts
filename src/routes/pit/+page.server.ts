@@ -150,12 +150,43 @@ export const load = (async ({ params, url }) => {
         rankingsDisplay.push(mapFn(rankings[lastItem + 1]));
     }
 
+    const ourEventRankEPA = rankings.map(mapFn).sort((a, b) => b.epa - a.epa).map((r, idx) => { r.rank = idx + 1; return r }).find(r => r.teamNumber == teamNumber)
+
+    const epaRanks = [
+        {
+            label: "Event",
+            rank: ourEventRankEPA?.rank,
+            total: rankings.length,
+        }, {
+            label: "State",
+            rank: teamYear.epa.ranks.state.rank,
+            total: teamYear.epa.ranks.state.team_count,
+        },
+        {
+            label: "District",
+            rank: teamYear.epa.ranks.district.rank,
+            total: teamYear.epa.ranks.district.team_count,
+        },
+        {
+            label: "Country",
+            rank: teamYear.epa.ranks.country.rank,
+            total: teamYear.epa.ranks.country.team_count,
+        },
+        {
+            label: "World",
+            rank: teamYear.epa.ranks.total.rank,
+            total: teamYear.epa.ranks.total.team_count,
+        },
+
+    ]
+
 
     return {
         eventKey,
         teamNumber,
         year,
         teamYear,
+        epaRanks,
         upcommingMatches: upcommingMatches.filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)).map((m) => ({
             match: m.label,
             predictedTime: timestampToDateTime(m.times.estimatedQueueTime),

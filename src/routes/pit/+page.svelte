@@ -66,31 +66,9 @@
 			<div class="text-center bin h-100">
 				<h4 class="binHeader">Rank by EPA</h4>
 				<div class="d-flex align-items-center justify-content-center gap-3">
-					<Badge
-						value={data.ourRanking ? data.ourRanking.record.qual.rank : '?'}
-						prefix={'Event'}
-						desc={`out of ${data.ourRanking ? data.ourRanking.record.qual.num_teams : '?'}`}
-					/>
-					<Badge
-						value={data.teamYear.epa.ranks.state.rank}
-						prefix={data.teamYear.state || 'State'}
-						desc={`out of ${data.teamYear.epa.ranks.state.team_count}`}
-					/>
-					<Badge
-						value={data.teamYear.epa.ranks.district.rank}
-						prefix={data.teamYear.district.toUpperCase() || 'District'}
-						desc={`out of ${data.teamYear.epa.ranks.district.team_count}`}
-					/>
-					<Badge
-						value={data.teamYear.epa.ranks.country.rank}
-						prefix={'USA'}
-						desc={`out of ${data.teamYear.epa.ranks.country.team_count}`}
-					/>
-					<Badge
-						value={data.teamYear.epa.ranks.total.rank}
-						prefix={'Worldwide'}
-						desc={`out of ${data.teamYear.epa.ranks.total.team_count}`}
-					/>
+					{#each data.epaRanks as rank}
+						<Badge value={rank.rank} prefix={rank.label} desc={`out of ${rank.total}`} />
+					{/each}
 				</div>
 			</div>
 		</div>
@@ -115,12 +93,12 @@
 					<Badge
 						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
 						prefix={'Teleop EPA'}
-						color={'rgb(255, 127, 14)'}
+						color={'rgb(228, 114, 13)'}
 					/>
 					<Badge
 						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
 						prefix={'Endgame EPA'}
-						color={'rgb(44, 160, 44)'}
+						color={'#278E31'}
 					/>
 					<Badge
 						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
