@@ -41,17 +41,7 @@ export const load = (async ({ params, url }) => {
     const [teamYear, matches, rankings, nexusEventStatus, eventKey] = await getData(teamNumber, year, eventKeyTmp);
 
 
-    const timestampToDateTime = (timestamp: number) => {
-        const date = new Date(timestamp);
-        const today = new Date();
-        const isSameDay = date.toDateString() === today.toDateString();
-        const options: Intl.DateTimeFormatOptions = {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        };
-        return isSameDay ? date.toLocaleTimeString(undefined, options) : date.toLocaleString(undefined, options);
-    };
+
 
     const upcommingMatches = nexusEventStatus.matches
         .filter((m) => m.status != 'On field');
@@ -197,8 +187,8 @@ export const load = (async ({ params, url }) => {
         epaRanks,
         upcommingMatches: upcommingMatches.filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)).map((m) => ({
             match: titleCase(nexusToTBA(m.label)),
-            predictedTime: timestampToDateTime(m.times.estimatedQueueTime),
-            scheduledTime: timestampToDateTime(m.times.scheduledStartTime),
+            predictedTime: (m.times.estimatedQueueTime),
+            scheduledTime: (m.times.scheduledStartTime),
             color: m.blueTeams?.includes(`${teamNumber}`)
                 ? 'Blue'
                 : m.redTeams?.includes(`${teamNumber}`)

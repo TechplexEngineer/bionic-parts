@@ -26,8 +26,8 @@
 
 	const upcommingMatchColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
-		{ data: 'predictedTime', title: 'Predicted' },
-		{ data: 'scheduledTime', title: 'Scheduled' },
+		{ data: 'predictedTime', title: 'Predicted', render: (val) => timestampToDateTime(val) },
+		{ data: 'scheduledTime', title: 'Scheduled', render: (val) => timestampToDateTime(val) },
 		{
 			data: 'color',
 			title: 'Color',
@@ -50,6 +50,20 @@
 		},
 		{ data: 'epa', title: 'EPA' }
 	];
+
+	const timestampToDateTime = (timestamp: number) => {
+		const date = new Date(timestamp);
+		const today = new Date();
+		const isSameDay = date.toDateString() === today.toDateString();
+		const options: Intl.DateTimeFormatOptions = {
+			hour: 'numeric',
+			minute: 'numeric',
+			hour12: true
+		};
+		return isSameDay
+			? date.toLocaleTimeString(undefined, options)
+			: date.toLocaleString(undefined, options);
+	};
 </script>
 
 <svelte:head>
