@@ -1,14 +1,14 @@
 
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { NexusEventStatus, StatboticsEvent, StatboticsTeam, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
+import { NexusEventStatus, StatboticsTeam, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from './restTypes';
 import { NEXUS_API_KEY } from '$env/static/private';
 import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
 
 const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
-    if (eventKey.toUpperCase() == "SIM") {
-        return getSimData();
+    if (eventKey.toUpperCase().startsWith("SIM")) {
+        return getSimData(eventKey);
     }
     return await Promise.all([
         fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
@@ -80,7 +80,7 @@ export const load = (async ({ params, url }) => {
         ]
         : [];
 
-    nextMatch?.pred.blue_score
+    // nextMatch?.pred.blue_score
 
 
     const ourNextMatch = {
@@ -179,7 +179,7 @@ export const load = (async ({ params, url }) => {
 
     ]
 
-    console.log('matches', matches);
+    // console.log('matches', matches);
 
 
 
