@@ -46,6 +46,7 @@ export const load = (async ({ params, url }) => {
     const upcommingMatches = nexusEventStatus.matches
         .filter((m) => m.status != 'On field');
 
+
     const ourNextMatchNexus = upcommingMatches.find((m) => m.redTeams?.includes(`${teamNumber}`) || m.blueTeams?.includes(`${teamNumber}`));
 
 
@@ -178,6 +179,9 @@ export const load = (async ({ params, url }) => {
 
     ]
 
+    console.log('matches', matches);
+
+
 
     return {
         eventKey,
@@ -185,18 +189,23 @@ export const load = (async ({ params, url }) => {
         year,
         teamYear,
         epaRanks,
-        upcommingMatches: upcommingMatches.filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)).map((m) => ({
-            match: titleCase(nexusToTBA(m.label)),
-            predictedTime: (m.times.estimatedQueueTime),
-            scheduledTime: (m.times.scheduledStartTime),
-            color: m.blueTeams?.includes(`${teamNumber}`)
-                ? 'Blue'
-                : m.redTeams?.includes(`${teamNumber}`)
-                    ? 'Red'
-                    : '',
-            // blueTeams: m.blueTeams || '',
-            // redTeams: m.redTeams || ''
-        })),
+        upcommingMatches: upcommingMatches.filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`))
+            .map((m) => {
+                const color = m.blueTeams?.includes(`${teamNumber}`)
+                    ? 'Blue'
+                    : m.redTeams?.includes(`${teamNumber}`)
+                        ? 'Red'
+                        : '';
+
+                const redWinProb = matches.find(i => `${i.comp_level}${i.match_number}` == nexusToTBA(m.label))?.pred.red_win_prob || -1;
+                return {
+                    match: titleCase(nexusToTBA(m.label)),
+                    predictedTime: (m.times.estimatedQueueTime),
+                    scheduledTime: (m.times.scheduledStartTime),
+                    color: color,
+                    winPercentage: m.blueTeams?.includes(`${teamNumber}`) ? 1 - redWinProb : redWinProb
+                }
+            }),
         nextmatch: ourNextMatch, //matches.filter((m) => m.result.winner == null)[0],
         rankings: rankingsDisplay,
         ourRanking: rankings.find((t) => t.team == teamNumber),

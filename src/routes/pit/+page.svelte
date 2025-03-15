@@ -32,6 +32,13 @@
 			data: 'color',
 			title: 'Color',
 			renderHTML: (data) => `<span class="badge badge-${data.toLowerCase()}">${data}</span>`
+		},
+		{
+			data: 'winPercentage',
+			title: 'Win',
+			render: (val) => {
+				return `${Math.round(val * 100)}%`;
+			}
 		}
 	];
 
@@ -320,7 +327,7 @@
 		</div>
 		<div class="col">
 			<div class="bin h-100">
-				<h4 class="binHeader">Upcomming Matches</h4>
+				<h4 class="binHeader">Upcoming Matches</h4>
 				<div class="d-flex justify-content-between mb-2">
 					<div class="text-center">
 						{#if data.nexusEventStatus.nowQueuing}
