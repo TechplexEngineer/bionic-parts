@@ -6,6 +6,7 @@ import { NEXUS_API_KEY } from '$env/static/private';
 import { parse } from 'svelte/compiler';
 import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
+import { titleCase } from '@miniflare/shared';
 
 const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
     if (eventKey.toUpperCase() == "SIM") {
@@ -193,7 +194,7 @@ export const load = (async ({ params, url }) => {
         teamYear,
         epaRanks,
         upcommingMatches: upcommingMatches.filter(m => m.blueTeams == null || m.redTeams == null || m.blueTeams.includes(`${teamNumber}`) || m.redTeams.includes(`${teamNumber}`)).map((m) => ({
-            match: m.label,
+            match: titleCase(nexusToTBA(m.label)),
             predictedTime: timestampToDateTime(m.times.estimatedQueueTime),
             scheduledTime: timestampToDateTime(m.times.scheduledStartTime),
             color: m.blueTeams?.includes(`${teamNumber}`)
