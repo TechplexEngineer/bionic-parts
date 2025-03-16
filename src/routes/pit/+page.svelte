@@ -55,7 +55,14 @@
 				return formatted;
 			}
 		},
-		{ data: 'epa', title: 'EPA' }
+		{ data: 'epa', title: 'EPA' },
+		{
+			data: 'rp',
+			title: 'RP / Match',
+			render: (val, _, row) => {
+				return `${row.rp} / ${row.matches}`; // ${row.rpPerMatch}
+			}
+		}
 	];
 
 	const timestampToDateTime = (timestamp: number) => {

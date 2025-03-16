@@ -127,9 +127,14 @@ export const load = (async ({ params, url }) => {
             rank: t.record.qual.rank,
             teamNumber: t.team,
             teamName: t.team_name,
-            epa: Math.round(t.epa.total_points.mean * 10) / 10
+            epa: Math.round(t.epa.total_points.mean * 10) / 10,
+            rp: t.record.qual.rps,
+            matches: Math.round(1 / (1 / t.record.qual.rps * t.record.qual.rps_per_match)),
+            rpPerMatch: t.record.qual.rps_per_match
         };
     }
+
+    // 1/rp * rp/match
 
     const lastItem = 6;
     const rankingsDisplay = rankings.map(mapFn).sort((a, b) => a.rank - b.rank).slice(0, lastItem);
@@ -140,7 +145,10 @@ export const load = (async ({ params, url }) => {
                 rank: "..." as any,
                 teamNumber: `...` as any,
                 teamName: "..." as any,
-                epa: "..." as any
+                epa: "..." as any,
+                rp: "..." as any,
+                matches: "..." as any,
+                rpPerMatch: "..." as any,
             });
             rankingsDisplay.push(mapFn(ourRanking));
         }
