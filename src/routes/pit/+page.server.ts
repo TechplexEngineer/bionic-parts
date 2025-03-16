@@ -129,7 +129,7 @@ export const load = (async ({ params, url }) => {
             teamName: t.team_name,
             epa: Math.round(t.epa.total_points.mean * 10) / 10,
             rp: t.record.qual.rps,
-            matches: Math.round(1 / (1 / t.record.qual.rps * t.record.qual.rps_per_match)),
+            matches: t.record.qual.count,
             rpPerMatch: t.record.qual.rps_per_match
         };
     }
