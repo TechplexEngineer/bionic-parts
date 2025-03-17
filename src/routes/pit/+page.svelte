@@ -139,7 +139,7 @@
 		</div>
 	</div>
 
-	<div class="row binrow row-fill-height mb-2" id="row2" data-name="Rankings and Matches">
+	<div class="row binrow row-fill-height mb-1" id="row2" data-name="Rankings and Matches">
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Rankings</h4>
