@@ -27,6 +27,8 @@ const titleCase = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
+import retry from 'async-retry';
+
 export const load = (async ({ params, url }) => {
 
     const teamNumberStr = url.searchParams.get("teamNumber");
@@ -38,7 +40,11 @@ export const load = (async ({ params, url }) => {
     }
     const teamNumber = parseInt(teamNumberStr);
 
-    const [teamYear, matches, rankings, nexusEventStatus, eventKey] = await getData(teamNumber, year, eventKeyTmp);
+    const [teamYear, matches, rankings, nexusEventStatus, eventKey] =
+        await retry(async (bail) => {
+            return await getData(teamNumber, year, eventKeyTmp);
+        }, { retries: 5 })
+
 
 
 
