@@ -10,6 +10,7 @@
 	// import { preferences } from './store';
 	import { page } from '$app/stores';
 	import TeamAndEpa from './TeamAndEPA.svelte';
+	import PlayoffBracket from './PlayoffBracket.svelte';
 
 	export let data: PageData;
 
@@ -140,7 +141,7 @@
 	</div>
 
 	<div class="row binrow row-fill-height mb-1" id="row2" data-name="Rankings and Matches">
-		<div class="col">
+		<div class="col-4">
 			<div class="bin h-100">
 				<h4 class="binHeader">Rankings</h4>
 				<TableForObjectArray data={data.rankings} columns={rankingsColumns} />
@@ -149,7 +150,7 @@
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
-				<!-- <div class="mt-5" /> -->
+				{#if !data.isPlayoffs}
 				{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
 					<!-- Red alliance on top -->
 					<div class="row">
@@ -177,7 +178,7 @@
 							color="text-danger"
 						/>
 					</div>
-					<div class="row mb-3 text-center text-white-50">
+					<div class="row mb-2 text-center text-white-50">
 						{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
 							<div class="col">
 								{rp.name}: {Math.round(rp.pred * 1000) / 10}%
@@ -280,56 +281,14 @@
 						</div>
 					</div>
 				{/if}
+				{:else}
+					<PlayoffBracket/>
+				{/if}
 
-				<!-- <div class="row mb-3">
-					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red1.number}</span><br />{data
-							.nextmatch?.alliances.red1.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red2.number}</span><br />{data
-							.nextmatch?.alliances.red2.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red3.number}</span><br />{data
-							.nextmatch?.alliances.red3.epa}
-					</div>
-				</div>
-				<div class="row mb-3">
-					
-					<div class="col text-center">
-						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
-					</div>
-				</div> -->
-				<!-- <div class="row mb-3">
-					<div class="col text-center">
-					<span class="fs-2 text-danger fw-bold">Score</span> :
-					<span class="fs-3 text-primary">Score</span>
-					<br />Projected Winner:
-					<span class={data.nextmatch.pred.winner == 'red' ? 'text-danger' : 'text-primary'}
-						>{titleCase(data.nextmatch.pred.winner)}</span
-					>
-				</div>
-					<div class="col text-center">
-						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
-					</div>
-				</div> -->
-				<!-- <div class="row">
-					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue1.number}</span><br
-						/>{data.nextmatch?.alliances.blue1.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue2.number}</span><br
-						/>{data.nextmatch?.alliances.blue2.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue3.number}</span><br
-						/>{data.nextmatch?.alliances.blue3.epa}
-					</div>
-				</div> -->
+				
 			</div>
 		</div>
+		{#if !data.isPlayoffs}
 		<div class="col">
 			<div class="bin h-100">
 				<h4 class="binHeader">Upcoming Matches</h4>
@@ -356,6 +315,7 @@
 				/>
 			</div>
 		</div>
+		{/if}
 	</div>
 
 	<div class="row binrow sponsorRow" data-name="Sponsors">

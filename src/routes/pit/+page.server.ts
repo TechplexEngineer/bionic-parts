@@ -47,9 +47,7 @@ export const load = (async ({ params, url }) => {
 
 
 
-
-
-    const upcommingMatches = nexusEventStatus.matches
+    const upcommingMatches = (nexusEventStatus.matches || [])
         .filter((m) => m.status != 'On field');
 
 
@@ -195,7 +193,8 @@ export const load = (async ({ params, url }) => {
 
     // console.log('matches', matches);
 
-
+    // console.log(nexusEventStatus);
+    
 
     return {
         eventKey,
@@ -224,6 +223,7 @@ export const load = (async ({ params, url }) => {
         rankings: rankingsDisplay,
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
-        nexusEventStatus
+        nexusEventStatus,
+        isPlayoffs: true //todo
     };
 }) satisfies PageServerLoad;

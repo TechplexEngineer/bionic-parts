@@ -360,14 +360,15 @@ export type NexusEventStatus = {
         redTeams: Array<string>
         blueTeams: Array<string>
         times: {
-            scheduledStartTime: number
+            scheduledStartTime?: number
             estimatedQueueTime: number
             estimatedOnDeckTime: number
             estimatedOnFieldTime: number
             estimatedStartTime: number
             actualQueueTime: number
-            actualOnDeckTime: number
+            actualOnDeckTime?: number
             actualOnFieldTime: number
-        }
+        },
+        breakAfter?: string
     }>
 }

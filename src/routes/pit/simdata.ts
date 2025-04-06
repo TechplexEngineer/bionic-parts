@@ -15605,7 +15605,7 @@ const nexusStatus = {
     "partsRequests": []
 };
 
-const nexusStatusRed = {
+const nexusStatusRed: NexusEventStatus = {
     "eventKey": "2025nhsal",
     "dataAsOfTime": 1741571429097,
     "nowQueuing": "Qualification 27",
@@ -17840,14 +17840,73 @@ const nexusStatusRed = {
 };
 
 export const getSimData = async (event: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
-    console.log("event", event);
 
     if (event == "SIM-RED") {
         return [
             team, matches, rankings, nexusStatusRed, "2025nhsal"
         ];
     }
+    if (event.toUpperCase() == "SIM-PLAYOFF") {
+        return [
+            team, matches, rankings, getNexusWithNextMatch(nexusStatus, "Playoff 1"), "2025nhsal"
+        ];
+    }
     return [
         team, matches, rankings, nexusStatus, "2025nhsal"
     ];
+}
+
+export enum LabelEquality {
+    LESS,
+    EQUAL,
+    GREATER,
+}
+
+const matchLevel = ["Practice", "Qualification", "Playoff", "Final"];
+
+export const labelCompare = (a: string, b: string): LabelEquality => {
+    const aLevel = matchLevel.findIndex(l => l == a.split(" ")[0]);
+    const aNum = parseInt(a.split(" ")[1]);
+
+    const bLevel = matchLevel.findIndex(l => l == b.split(" ")[0]);
+    const bNum = parseInt(b.split(" ")[1]);
+
+    if (aLevel < bLevel) {
+        return LabelEquality.LESS;
+    } else if (aLevel > bLevel) {
+        return LabelEquality.GREATER;
+    }
+    // Match Level is Equal, check number
+    return aNum < bNum ? LabelEquality.LESS : aNum > bNum ? LabelEquality.GREATER : LabelEquality.EQUAL;
+
+}
+
+// where set to is like "Practice 1" or "Playoff 3" from match label
+const getNexusWithNextMatch = (status: NexusEventStatus, nextMatch: string): NexusEventStatus => {
+    // Find the match with the given label, set it to be on deck, set the previos to be 
+    // status.matches.map(m => {
+    //     // if m is before setTo, set it to be "On field"
+    //     // if m is equal to setTo, set it to be "Now queueing"
+    //     // if m is immediatley follwoing setTo set it to be "On deck"
+    //     // set all after to be "Queuing soon"
+
+
+    status.nowQueuing = nextMatch;
+    
+    for (let [id, match] of Object.entries(status.matches)) {
+        
+        if (labelCompare(match.label, nextMatch) == LabelEquality.LESS) {
+            match.status = "On field";
+        } else if (labelCompare(match.label, nextMatch) == LabelEquality.EQUAL) {
+            match.status = "Now queueing";
+        } else if (labelCompare(match.label, nextMatch) == LabelEquality.GREATER) {
+            match.status = "Queuing soon"; //@todo handle on deck
+        }
+    }
+    
+    // this will break for last match
+    status.matches[status.matches.findIndex(m => m.label == nextMatch)+1].status = "On deck";
+
+    return status
+
 }
