@@ -341,12 +341,12 @@
 						{/if}
 					</div>
 					<div class="text-center">
-						<!-- {#if data.nexusEventStatus.matches.find((m) => m.status == 'On deck')}
+						{#if data.nexusEventStatus?.matches?.find((m) => m.status == 'On deck')}
 							<div class="fw-bold">On Deck</div>
 							<div>
 								{data.nexusEventStatus.matches.find((m) => m.status == 'On deck')?.label}
 							</div>
-						{/if} -->
+						{/if}
 					</div>
 				</div>
 				<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->

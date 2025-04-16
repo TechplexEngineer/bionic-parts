@@ -10,11 +10,17 @@ const getData = async (teamNumber: number, year: number, eventKey: string): Prom
     if (eventKey.toUpperCase().startsWith("SIM")) {
         return getSimData(eventKey);
     }
+    let tbaEventKey = eventKey;
+    let nexusEventKey = eventKey;
+    if (eventKey == "2025newton") {
+        tbaEventKey = "2025new";
+    }
+
     return await Promise.all([
         fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
-        fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${eventKey}`).then(res => res.json<StatboticsTeamMatches>()),
-        fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${eventKey}&metric=rank&ascending=true`).then(res => res.json<StatboticsTeamEvent>()),
-        fetch(`https://frc.nexus/api/v1/event/${eventKey}`, {
+        fetch(`https://api.statbotics.io/v3/matches?year=${year}&event=${tbaEventKey}`).then(res => res.json<StatboticsTeamMatches>()),
+        fetch(`https://api.statbotics.io/v3/team_events?year=${year}&event=${tbaEventKey}&metric=rank&ascending=true`).then(res => res.json<StatboticsTeamEvent>()),
+        fetch(`https://frc.nexus/api/v1/event/${nexusEventKey}`, {
             headers: {
                 "Nexus-Api-Key": NEXUS_API_KEY
             }
@@ -43,7 +49,8 @@ export const load = (async ({ params, url }) => {
     const [teamYear, matches, rankings, nexusEventStatus, eventKey] =
         await retry(async (bail) => {
             return await getData(teamNumber, year, eventKeyTmp);
-        }, { retries: 5 })
+        }, { retries: 5 });
+
 
 
 
@@ -195,7 +202,7 @@ export const load = (async ({ params, url }) => {
 
     ]
 
-    console.log('nexusEventStatus', nexusEventStatus);
+    // console.log('nexusEventStatus', nexusEventStatus);
 
 
 
