@@ -6,7 +6,13 @@ import { NEXUS_API_KEY } from '$env/static/private';
 import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
 
-const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
+const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[
+    teamYear: StatboticsTeamYear,
+    matches: StatboticsTeamMatches,
+    ranking: StatboticsTeamEvent,
+    nexusEventStatus: NexusEventStatus,
+    eventKey: string
+]> => {
     if (eventKey.toUpperCase().startsWith("SIM")) {
         return getSimData(eventKey);
     }
@@ -194,7 +200,7 @@ export const load = (async ({ params, url }) => {
     // console.log('matches', matches);
 
     // console.log(nexusEventStatus);
-    
+
 
     return {
         eventKey,
@@ -224,6 +230,7 @@ export const load = (async ({ params, url }) => {
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
         nexusEventStatus,
-        isPlayoffs: true //todo
+        isPlayoffs: ourNextMatch.match_name.toLowerCase().includes("final") || ourNextMatch.match_name.toLowerCase().includes("playoff"),
+        sfMatches: matches.filter((m) => m.comp_level == "sf"),
     };
 }) satisfies PageServerLoad;

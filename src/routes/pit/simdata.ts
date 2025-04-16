@@ -17892,9 +17892,9 @@ const getNexusWithNextMatch = (status: NexusEventStatus, nextMatch: string): Nex
 
 
     status.nowQueuing = nextMatch;
-    
+
     for (let [id, match] of Object.entries(status.matches)) {
-        
+
         if (labelCompare(match.label, nextMatch) == LabelEquality.LESS) {
             match.status = "On field";
         } else if (labelCompare(match.label, nextMatch) == LabelEquality.EQUAL) {
@@ -17903,9 +17903,9 @@ const getNexusWithNextMatch = (status: NexusEventStatus, nextMatch: string): Nex
             match.status = "Queuing soon"; //@todo handle on deck
         }
     }
-    
+
     // this will break for last match
-    status.matches[status.matches.findIndex(m => m.label == nextMatch)+1].status = "On deck";
+    status.matches[status.matches.findIndex(m => m.label == nextMatch) + 1].status = "On deck";
 
     return status
 

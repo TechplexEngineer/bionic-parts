@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="bracket" class="bracket" width="1300" height="570" enable-background="new 0 0 1280 810" version="1.1" viewBox="0 0 1300 570" xml:space="preserve" xmlns="http://www.w3.org/2000/svg">
+	
+	
+	
+	
+	<path id="polygon46" d="m22 1e-5h160.11l14.893 18-14.893 18h-160.11z" fill="#f00" stroke-width="1.0725"/><path id="polygon47" d="m22 74v-36h160.11l14.893 17.995-14.893 18.005z" fill="#00f" stroke-width="1.0727"/><path id="rect47" d="m0 3.2861e-6h22v74h-22z" stroke-width="1.0005"/><text id="text47" transform="matrix(0 -1.0029 .99706 0 0 0)" x="-67.592903" y="15.822872" fill="#ffffff" font-size="12.112px" stroke-width="1.003">MATCH 11</text><text id="text50-9" transform="scale(.99705 1.003)" x="45.592243" y="51.136726" font-size="11.964px" stroke-width=".99705"><tspan id="tspan49-3" x="45.592243" y="51.136726" font-size="12.111px" stroke-width=".99705">Winner of M8</tspan></text><text id="text50-9-39" transform="scale(.99705 1.003)" x="45.592243" y="13.248993" font-size="11.964px" stroke-width=".99705"><tspan id="tspan49-3-9" x="45.592243" y="13.248993" font-size="12.111px" stroke-width=".99705">Winner of M7</tspan></text><g id="g2" font-size="11.964px" stroke-width=".99705"><text id="text50-9-3-9-0" transform="scale(.99705 1.003)" x="115.34509" y="67.415962"><tspan id="tspan49-3-7-7-3" x="115.34509" y="67.415962" font-size="12.111px" stroke-width=".99705">88888</tspan></text><text id="text50-9-3-9" transform="scale(.99705 1.003)" x="73.158104" y="67.415962"><tspan id="tspan49-3-7-7" x="73.158104" y="67.415962" font-size="12.111px" stroke-width=".99705">88888</tspan></text><text id="text50-9-3" transform="scale(.99705 1.003)" x="30.971111" y="67.415962"><tspan id="tspan49-3-7" x="30.971111" y="67.415962" font-size="12.111px" stroke-width=".99705">88888</tspan></text></g><g id="g1" transform="translate(-1.8574)" font-size="11.964px" stroke-width=".99705"><text id="text50-9-3-9-0-6" transform="scale(.99705 1.003)" x="117.20802" y="30.233957"><tspan id="tspan49-3-7-7-3-2" x="117.20802" y="30.233957" font-size="12.111px" stroke-width=".99705">88888</tspan></text><text id="text50-9-3-9-5" transform="scale(.99705 1.003)" x="75.021019" y="30.233957"><tspan id="tspan49-3-7-7-7" x="75.021019" y="30.233957" font-size="12.111px" stroke-width=".99705">88888</tspan></text><text id="text50-9-3-98" transform="scale(.99705 1.003)" x="32.83403" y="30.233957"><tspan id="tspan49-3-7-6" x="32.83403" y="30.233957" font-size="12.111px" stroke-width=".99705">88888</tspan></text></g><circle id="match11BueDot" class="winnerdot" cx="196" cy="18" r="8" fill="#ffca10"/><circle id="match11RedDot" class="winnerdot" cx="196" cy="56" r="8" fill="#ffca10"/><text id="M11BlueScore" x="155.3965" y="61.456543" font-size="15px">999</text><text id="M11RedScore" x="155.3965" y="23.456553" font-size="15px">999</text>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<rect id="rect111" x="22" y="36" width="160" height="2" fill="#fff" stroke-width="3.7028"/></svg>
