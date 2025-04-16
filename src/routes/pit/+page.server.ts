@@ -49,8 +49,10 @@ export const load = (async ({ params, url }) => {
 
 
 
-    const upcommingMatches = nexusEventStatus.matches
+    const upcommingMatches = (nexusEventStatus.matches || [])
         .filter((m) => m.status != 'On field');
+
+    // console.log("upcommingMatches", upcommingMatches);
 
 
     const ourNextMatchNexus = upcommingMatches.find((m) => m.redTeams?.includes(`${teamNumber}`) || m.blueTeams?.includes(`${teamNumber}`));
@@ -193,7 +195,7 @@ export const load = (async ({ params, url }) => {
 
     ]
 
-    // console.log('matches', matches);
+    console.log('nexusEventStatus', nexusEventStatus);
 
 
 
@@ -224,6 +226,6 @@ export const load = (async ({ params, url }) => {
         rankings: rankingsDisplay,
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
-        nexusEventStatus
+        nexusEventStatus: nexusEventStatus || { matches: [] },
     };
 }) satisfies PageServerLoad;

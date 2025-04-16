@@ -17840,7 +17840,7 @@ const nexusStatusRed = {
 };
 
 export const getSimData = async (event: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
-    console.log("event", event);
+    // console.log("event", event);
 
     if (event == "SIM-RED") {
         return [
