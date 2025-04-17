@@ -74,9 +74,9 @@ export const load = (async ({ params, url }) => {
 
     const nextMatch = matches.find(m => {
         // console.log("m.key", m.key);
-        return m.key == `${eventKey}_${tbaMatch}`
+        return m.key == `${eventKey.replace("ton", "")}_${tbaMatch}` //@todo this is a dirty hack
     });
-    // console.log("nextMatch", nextMatch);
+    console.log("nextMatch", nextMatch);
     const ourWinProb = nextMatch ?
         Math.round(
             nextMatch.alliances.red.team_keys.includes(teamNumber)
