@@ -143,7 +143,7 @@ export type StatboticsTeamYear = {
     }
 };
 
-export type StatboticsTeamMatches = {
+export type StatboticsTeamMatch = {
     key: string
     year: number
     event: string
@@ -248,7 +248,9 @@ export type StatboticsTeamMatches = {
         red_rp_3: boolean
         blue_rp_3: boolean
     }
-}[];
+};
+
+export type StatboticsTeamMatches = StatboticsTeamMatch[];
 
 export type StatboticsTeam = {
     team: number

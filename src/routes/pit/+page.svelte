@@ -325,52 +325,51 @@
 				<div class="col-8 text-center">
 					<div class="bin h-100">
 						<h4 class="binHeader">Playoff Bracket</h4>
-						<PlayoffBracket data={data.sfMatches} />
+						<PlayoffBracket data={data.playoffMatches} />
 					</div>
 				</div>
 			{/if}
-		</div>
-
-		<div class="row binrow sponsorRow" data-name="Sponsors">
-			<div class="col">
-				<div class="bin sponsors text-center">
-					<h4 class="binHeader">Thank You To Our Generous Sponsors</h4>
-
-					<img src="sponsors/KLA.svg" alt="KLA" />
-					<img src="sponsors/AnalogDevices.svg" alt="Analog Devices" />
-					<img src="sponsors/Boeing.svg" alt="Boeing" />
-					<img src="sponsors/BAE.svg" alt="BAE" />
-
-					<img src="sponsors/AmericanTower.svg" alt="American Tower" />
-
-					<img src="sponsors/ArgosyFoundation.svg" alt="Argosy" />
-					<img src="sponsors/RTX.svg" alt="RTX" />
-
-					<img src="sponsors/CRMachine.svg" alt="CRM" />
-
-					<img src="sponsors/GeneHaasFoundation.svg" alt="HAAS Foundation" />
-					<img src="sponsors/IntuitiveFoundation.svg" alt="Intuitive Foundation" />
-
-					<img src="sponsors/MassCulturalCouncil.svg" alt="Mass Cultural Council" />
-					<img src="sponsors/Mathnasium.svg" alt="Mathanasium" />
-					<img src="sponsors/PTC.svg" alt="PTC" />
-					<img src="sponsors/Polymershapes.svg" alt="PolymerShapes" />
-					<img src="sponsors/FabWorks.svg" alt="FabWorks" />
-					<img src="sponsors/StonehamBank.svg" alt="Stoenham Bank" />
-					<img src="sponsors/TownOfBillerica.png" alt="Town Of Billerica" />
-				</div>
-			</div>
 		</div>
 	{:else}
 		<div class="row mt-4">
 			<div class="col">
 				<div class="text-center bin h-100">
-					<h4 class="binHeader">Rank by EPA</h4>
-					<PlayoffBracket data={data.sfMatches} />
+					<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
+					<PlayoffBracket data={data.playoffMatches} />
 				</div>
 			</div>
 		</div>
 	{/if}
+	<div class="row binrow sponsorRow" data-name="Sponsors">
+		<div class="col">
+			<div class="bin sponsors text-center">
+				<h4 class="binHeader">Thank You To Our Generous Sponsors</h4>
+
+				<img src="sponsors/KLA.svg" alt="KLA" />
+				<img src="sponsors/AnalogDevices.svg" alt="Analog Devices" />
+				<img src="sponsors/Boeing.svg" alt="Boeing" />
+				<img src="sponsors/BAE.svg" alt="BAE" />
+
+				<img src="sponsors/AmericanTower.svg" alt="American Tower" />
+
+				<img src="sponsors/ArgosyFoundation.svg" alt="Argosy" />
+				<img src="sponsors/RTX.svg" alt="RTX" />
+
+				<img src="sponsors/CRMachine.svg" alt="CRM" />
+
+				<img src="sponsors/GeneHaasFoundation.svg" alt="HAAS Foundation" />
+				<img src="sponsors/IntuitiveFoundation.svg" alt="Intuitive Foundation" />
+
+				<img src="sponsors/MassCulturalCouncil.svg" alt="Mass Cultural Council" />
+				<img src="sponsors/Mathnasium.svg" alt="Mathanasium" />
+				<img src="sponsors/PTC.svg" alt="PTC" />
+				<img src="sponsors/Polymershapes.svg" alt="PolymerShapes" />
+				<img src="sponsors/FabWorks.svg" alt="FabWorks" />
+				<img src="sponsors/StonehamBank.svg" alt="Stoenham Bank" />
+				<img src="sponsors/TownOfBillerica.png" alt="Town Of Billerica" />
+			</div>
+		</div>
+	</div>
 
 	<div class="footer">
 		<span>

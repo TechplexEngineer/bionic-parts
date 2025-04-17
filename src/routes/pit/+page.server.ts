@@ -231,6 +231,6 @@ export const load = (async ({ params, url }) => {
         lastUpdated: new Date(),
         nexusEventStatus,
         isPlayoffs: ourNextMatch.match_name.toLowerCase().includes("final") || ourNextMatch.match_name.toLowerCase().includes("playoff"),
-        sfMatches: matches.filter((m) => m.comp_level == "sf"),
+        playoffMatches: matches.filter((m) => m.comp_level == "sf" || m.comp_level == "f")
     };
 }) satisfies PageServerLoad;

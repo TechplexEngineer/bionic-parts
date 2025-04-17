@@ -1,17 +1,22 @@
 <script lang="ts">
-	export let matchNumber = 1;
+	import type { StatboticsTeamMatch } from '../restTypes';
+
+	export let matchHeader = 'Match 1';
 	export let redTitle = 'Alliance 1';
 	export let blueTitle = 'Alliance 8';
 
-	export let red1Team = '12345';
-	export let red2Team = '12345';
-	export let red3Team = '12345';
-	export let blue1Team = '54321';
-	export let blue2Team = '54321';
-	export let blue3Team = '54321';
+	export let match: StatboticsTeamMatch | undefined;
+	// console.log('match', match);
 
-	export let redScore = '111';
-	export let blueScore = '999';
+	let red1Team = match?.alliances?.red.team_keys[0] || '';
+	let red2Team = match?.alliances?.red.team_keys[1] || '';
+	let red3Team = match?.alliances?.red.team_keys[2] || '';
+	let blue1Team = match?.alliances?.blue.team_keys[0] || '';
+	let blue2Team = match?.alliances?.blue.team_keys[1] || '';
+	let blue3Team = match?.alliances?.blue.team_keys[2] || '';
+
+	export let redScore = match?.result?.red_score || '';
+	export let blueScore = match?.result?.blue_score || '';
 
 	export let pos: { x: number; y: number } = { x: 0, y: 0 };
 </script>
@@ -30,7 +35,7 @@
 		font-size="12"
 		text-anchor="middle"
 		fill="#fff"
-		transform="matrix(0 -1 1 0 0 0)">MATCH {matchNumber}</text
+		transform="matrix(0 -1 1 0 0 0)">{matchHeader}</text
 	>
 
 	<g name="title" text-anchor="middle">
