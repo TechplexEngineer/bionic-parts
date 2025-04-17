@@ -143,7 +143,7 @@ export type StatboticsTeamYear = {
     }
 };
 
-export type StatboticsTeamMatches = {
+export type StatboticsTeamMatch = {
     key: string
     year: number
     event: string
@@ -248,7 +248,9 @@ export type StatboticsTeamMatches = {
         red_rp_3: boolean
         blue_rp_3: boolean
     }
-}[];
+};
+
+export type StatboticsTeamMatches = StatboticsTeamMatch[];
 
 export type StatboticsTeam = {
     team: number
@@ -360,14 +362,15 @@ export type NexusEventStatus = {
         redTeams: Array<string>
         blueTeams: Array<string>
         times: {
-            scheduledStartTime: number
+            scheduledStartTime?: number
             estimatedQueueTime: number
             estimatedOnDeckTime: number
             estimatedOnFieldTime: number
             estimatedStartTime: number
             actualQueueTime: number
-            actualOnDeckTime: number
+            actualOnDeckTime?: number
             actualOnFieldTime: number
-        }
+        },
+        breakAfter?: string
     }>
 }

@@ -10,6 +10,7 @@
 	// import { preferences } from './store';
 	import { page } from '$app/stores';
 	import TeamAndEpa from './TeamAndEPA.svelte';
+	import PlayoffBracket from './bracket/PlayoffBracket.svelte';
 
 	export let data: PageData;
 
@@ -23,6 +24,8 @@
 
 		setTimeout(updateData, updateIntervalMs);
 	});
+
+	// console.log(data);
 
 	const upcommingMatchColumns: TableColumns = [
 		{ data: 'match', title: 'Match' },
@@ -85,23 +88,26 @@
 </svelte:head>
 
 <div class="wrapper">
-	<div class="row mt-4" data-name="Logo and Stats">
-		<div class="col logocol">
-			<a href="/pit/config">
-				<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
-			</a>
-		</div>
-		<div class="col-6">
-			<div class="text-center bin h-100">
-				<h4 class="binHeader">Rank by EPA</h4>
-				<div class="d-flex align-items-center justify-content-center gap-3">
-					{#each data.epaRanks as rank}
-						<Badge value={rank.rank} prefix={rank.label} desc={`out of ${rank.total}`} />
-					{/each}
+	{#if !data.isPlayoffs}
+		<div class="row mt-4" data-name="Logo and Stats">
+			<!-- {#if !data.isPlayoff} -->
+
+			<div class="col logocol">
+				<a href="/pit/config">
+					<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
+				</a>
+			</div>
+			<div class="col-6">
+				<div class="text-center bin h-100">
+					<h4 class="binHeader">Rank by EPA</h4>
+					<div class="d-flex align-items-center justify-content-center gap-3">
+						{#each data.epaRanks as rank}
+							<Badge value={rank.rank} prefix={rank.label} desc={`out of ${rank.total}`} />
+						{/each}
+					</div>
 				</div>
 			</div>
-		</div>
-		<!-- <div class="col-2">
+			<!-- <div class="col-2">
 	<div class="text-center bin d-flex align-items-center justify-content-center gap-3">
 		<h4>District Stats</h4>
 		<Badge
@@ -111,257 +117,234 @@
 		/>
 	</div>
 </div> -->
-		<div class="col-4">
-			<div class="text-center bin h-100">
-				<h4 class="binHeader">EPA Stats</h4>
-				<div class="d-flex align-items-center justify-content-center gap-3">
-					<Badge
-						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
-						prefix={'Auto EPA'}
-					/>
-					<Badge
-						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.teleop_points) : '?'}
-						prefix={'Teleop EPA'}
-						color={'rgb(228, 114, 13)'}
-					/>
-					<Badge
-						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.endgame_points) : '?'}
-						prefix={'Endgame EPA'}
-						color={'#278E31'}
-					/>
-					<Badge
-						value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
-						prefix={'Total EPA'}
-						color={'rgb(214, 39, 40)'}
-					/>
+			<div class="col-4">
+				<div class="text-center bin h-100">
+					<h4 class="binHeader">EPA Stats</h4>
+					<div class="d-flex align-items-center justify-content-center gap-3">
+						<Badge
+							value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.auto_points) : '?'}
+							prefix={'Auto EPA'}
+						/>
+						<Badge
+							value={data.ourRanking
+								? Math.round(data.ourRanking.epa.breakdown.teleop_points)
+								: '?'}
+							prefix={'Teleop EPA'}
+							color={'rgb(228, 114, 13)'}
+						/>
+						<Badge
+							value={data.ourRanking
+								? Math.round(data.ourRanking.epa.breakdown.endgame_points)
+								: '?'}
+							prefix={'Endgame EPA'}
+							color={'#278E31'}
+						/>
+						<Badge
+							value={data.ourRanking ? Math.round(data.ourRanking.epa.breakdown.total_points) : '?'}
+							prefix={'Total EPA'}
+							color={'rgb(214, 39, 40)'}
+						/>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="row binrow row-fill-height mb-1" id="row2" data-name="Rankings and Matches">
-		<div class="col">
-			<div class="bin h-100">
-				<h4 class="binHeader">Rankings</h4>
-				<TableForObjectArray data={data.rankings} columns={rankingsColumns} />
-			</div>
-		</div>
-		<div class="col">
-			<div class="bin h-100">
-				<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
-				<!-- <div class="mt-5" /> -->
-				{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
-					<!-- Red alliance on top -->
-					<div class="row">
-						<div class="col text-center">
-							<div class="badge badge-red fs-4 mt-1 mb-2">{data.nextmatch.score.red}</div>
-						</div>
+		<div class="row binrow row-fill-height mb-1" id="row2" data-name="Rankings and Matches">
+			{#if !data.isPlayoffs}
+				<div class="col-4">
+					<div class="bin h-100">
+						<h4 class="binHeader">Rankings</h4>
+						<TableForObjectArray data={data.rankings} columns={rankingsColumns} />
 					</div>
-					<div class="row mb-3">
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.red1.number}
-							epa={data.nextmatch?.alliances.red1.epa}
-							color="text-danger"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.red2.number}
-							epa={data.nextmatch?.alliances.red2.epa}
-							color="text-danger"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.red3.number}
-							epa={data.nextmatch?.alliances.red3.epa}
-							color="text-danger"
-						/>
-					</div>
-					<div class="row mb-3 text-center text-white-50">
-						{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
-							<div class="col">
-								{rp.name}: {Math.round(rp.pred * 1000) / 10}%
+				</div>
+			{/if}
+			<div class="col">
+				<div class="bin h-100">
+					<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
+					{#if data.nextmatch?.alliances.red1.number == data.teamNumber || data.nextmatch?.alliances.red2.number == data.teamNumber || data.nextmatch?.alliances.red3.number == data.teamNumber}
+						<!-- Red alliance on top -->
+						<div class="row">
+							<div class="col text-center">
+								<div class="badge badge-red fs-4 mt-1 mb-2">{data.nextmatch.score.red}</div>
 							</div>
-						{/each}
-					</div>
-					<div class="row mb-3">
-						<div class="col text-center">
-							<span class="fs-3">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 						</div>
-					</div>
-
-					<div class="row">
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.blue1.number}
-							epa={data.nextmatch?.alliances.blue1.epa}
-							color="text-primary"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.blue2.number}
-							epa={data.nextmatch?.alliances.blue2.epa}
-							color="text-primary"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.blue3.number}
-							epa={data.nextmatch?.alliances.blue3.epa}
-							color="text-primary"
-						/>
-					</div>
-					<div class="row">
-						<div class="col text-center">
-							<div class="badge badge-blue fs-4">{data.nextmatch.score.blue}</div>
+						<div class="row mb-3">
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.red1.number}
+								epa={data.nextmatch?.alliances.red1.epa}
+								color="text-danger"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.red2.number}
+								epa={data.nextmatch?.alliances.red2.epa}
+								color="text-danger"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.red3.number}
+								epa={data.nextmatch?.alliances.red3.epa}
+								color="text-danger"
+							/>
 						</div>
-					</div>
-				{:else}
-					<!-- Blue alliance on top -->
-					<div class="row">
-						<div class="col text-center">
-							<div class="badge badge-blue fs-4 mt-2">{data.nextmatch.score.blue}</div>
+						<div class="row mb-2 text-center text-white-50">
+							{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
+								<div class="col">
+									{rp.name}: {Math.round(rp.pred * 1000) / 10}%
+								</div>
+							{/each}
 						</div>
-					</div>
-					<div class="row mb-3">
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.blue1.number}
-							epa={data.nextmatch?.alliances.blue1.epa}
-							color="text-primary"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.blue2.number}
-							epa={data.nextmatch?.alliances.blue2.epa}
-							color="text-primary"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.blue3.number}
-							epa={data.nextmatch?.alliances.blue3.epa}
-							color="text-primary"
-						/>
-					</div>
-					<div class="row mb-3 text-center text-white-50">
-						{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
-							<div class="col">
-								{rp.name}: {Math.round(rp.pred * 1000) / 10}%
+						<div class="row mb-3">
+							<div class="col text-center">
+								<span class="fs-3">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 							</div>
-						{/each}
-					</div>
-					<div class="row mb-3">
-						<div class="col text-center">
-							<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
 						</div>
-					</div>
-					<div class="row mb-3">
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.red1.number}
-							epa={data.nextmatch?.alliances.red1.epa}
-							color="text-danger"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.red2.number}
-							epa={data.nextmatch?.alliances.red2.epa}
-							color="text-danger"
-						/>
-						<TeamAndEpa
-							outTeamNumber={data.teamNumber}
-							number={data.nextmatch?.alliances.red3.number}
-							epa={data.nextmatch?.alliances.red3.epa}
-							color="text-danger"
-						/>
-					</div>
-					<div class="row">
-						<div class="col text-center">
-							<div class="badge badge-red fs-4 mt-2">{data.nextmatch.score.red}</div>
-						</div>
-					</div>
-				{/if}
 
-				<!-- <div class="row mb-3">
-					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red1.number}</span><br />{data
-							.nextmatch?.alliances.red1.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red2.number}</span><br />{data
-							.nextmatch?.alliances.red2.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-danger">{data.nextmatch?.alliances.red3.number}</span><br />{data
-							.nextmatch?.alliances.red3.epa}
+						<div class="row">
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.blue1.number}
+								epa={data.nextmatch?.alliances.blue1.epa}
+								color="text-primary"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.blue2.number}
+								epa={data.nextmatch?.alliances.blue2.epa}
+								color="text-primary"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.blue3.number}
+								epa={data.nextmatch?.alliances.blue3.epa}
+								color="text-primary"
+							/>
+						</div>
+						<div class="row">
+							<div class="col text-center">
+								<div class="badge badge-blue fs-4">{data.nextmatch.score.blue}</div>
+							</div>
+						</div>
+					{:else}
+						<!-- Blue alliance on top -->
+						<div class="row">
+							<div class="col text-center">
+								<div class="badge badge-blue fs-4 mt-2">{data.nextmatch.score.blue}</div>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.blue1.number}
+								epa={data.nextmatch?.alliances.blue1.epa}
+								color="text-primary"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.blue2.number}
+								epa={data.nextmatch?.alliances.blue2.epa}
+								color="text-primary"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.blue3.number}
+								epa={data.nextmatch?.alliances.blue3.epa}
+								color="text-primary"
+							/>
+						</div>
+						<div class="row mb-3 text-center text-white-50">
+							{#each Object.entries(data.nextmatch?.rankingPoints) as [idx, rp]}
+								<div class="col">
+									{rp.name}: {Math.round(rp.pred * 1000) / 10}%
+								</div>
+							{/each}
+						</div>
+						<div class="row mb-3">
+							<div class="col text-center">
+								<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
+							</div>
+						</div>
+						<div class="row mb-3">
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.red1.number}
+								epa={data.nextmatch?.alliances.red1.epa}
+								color="text-danger"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.red2.number}
+								epa={data.nextmatch?.alliances.red2.epa}
+								color="text-danger"
+							/>
+							<TeamAndEpa
+								outTeamNumber={data.teamNumber}
+								number={data.nextmatch?.alliances.red3.number}
+								epa={data.nextmatch?.alliances.red3.epa}
+								color="text-danger"
+							/>
+						</div>
+						<div class="row">
+							<div class="col text-center">
+								<div class="badge badge-red fs-4 mt-2">{data.nextmatch.score.red}</div>
+							</div>
+						</div>
+					{/if}
+				</div>
+			</div>
+
+			{#if !data.isPlayoffs}
+				<div class="col">
+					<div class="bin h-100">
+						<h4 class="binHeader">Upcoming Matches</h4>
+						<div class="d-flex justify-content-between mb-2">
+							<div class="text-center">
+								{#if data.nexusEventStatus.nowQueuing}
+									<div class="fw-bold">Now Queueing</div>
+									<div>{data.nexusEventStatus.nowQueuing || ''}</div>
+								{/if}
+							</div>
+							<div class="text-center">
+								{#if data.nexusEventStatus.matches.find((m) => m.status == 'On deck')}
+									<div class="fw-bold">On Deck</div>
+									<div>
+										{data.nexusEventStatus.matches.find((m) => m.status == 'On deck')?.label}
+									</div>
+								{/if}
+							</div>
+						</div>
+						<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->
+						<TableForObjectArray
+							data={data.upcommingMatches.slice(0, 6)}
+							columns={upcommingMatchColumns}
+						/>
 					</div>
 				</div>
-				<div class="row mb-3">
-					
-					<div class="col text-center">
-						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
+			{:else}
+				<div class="col-8 text-center">
+					<div class="bin h-100">
+						<h4 class="binHeader">Playoff Bracket</h4>
+						<PlayoffBracket data={data.playoffMatches} />
 					</div>
-				</div> -->
-				<!-- <div class="row mb-3">
-					<div class="col text-center">
-					<span class="fs-2 text-danger fw-bold">Score</span> :
-					<span class="fs-3 text-primary">Score</span>
-					<br />Projected Winner:
-					<span class={data.nextmatch.pred.winner == 'red' ? 'text-danger' : 'text-primary'}
-						>{titleCase(data.nextmatch.pred.winner)}</span
-					>
 				</div>
-					<div class="col text-center">
-						<span class="fs-2">{data.nextmatch.ourWinProb}%</span><br />Win Probability
-					</div>
-				</div> -->
-				<!-- <div class="row">
-					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue1.number}</span><br
-						/>{data.nextmatch?.alliances.blue1.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue2.number}</span><br
-						/>{data.nextmatch?.alliances.blue2.epa}
-					</div>
-					<div class="col text-center">
-						<span class="fs-4 text-primary">{data.nextmatch?.alliances.blue3.number}</span><br
-						/>{data.nextmatch?.alliances.blue3.epa}
-					</div>
-				</div> -->
+			{/if}
+		</div>
+	{:else}
+		<div class="row mt-4">
+			<div class="col">
+				<div class="text-center bin h-100">
+					<h4 class="binHeader">Our Next Match: {data.nextmatch?.match_name}</h4>
+					<PlayoffBracket data={data.playoffMatches} />
+				</div>
 			</div>
 		</div>
-		<div class="col">
-			<div class="bin h-100">
-				<h4 class="binHeader">Upcoming Matches</h4>
-				<div class="d-flex justify-content-between mb-2">
-					<div class="text-center">
-						{#if data.nexusEventStatus.nowQueuing}
-							<div class="fw-bold">Now Queueing</div>
-							<div>{data.nexusEventStatus.nowQueuing || ''}</div>
-						{/if}
-					</div>
-					<div class="text-center">
-						{#if data.nexusEventStatus?.matches?.find((m) => m.status == 'On deck')}
-							<div class="fw-bold">On Deck</div>
-							<div>
-								{data.nexusEventStatus.matches.find((m) => m.status == 'On deck')?.label}
-							</div>
-						{/if}
-					</div>
-				</div>
-				<!-- <TableForObjectArray data={data.upcommingMatches} columns={matchesColumns} /> -->
-				<TableForObjectArray
-					data={data.upcommingMatches.slice(0, 6)}
-					columns={upcommingMatchColumns}
-				/>
-			</div>
-		</div>
-	</div>
-
+	{/if}
 	<div class="row binrow sponsorRow" data-name="Sponsors">
 		<div class="col">
 			<div class="bin sponsors text-center">
 				<h4 class="binHeader">Thank You To Our Generous Sponsors</h4>
+
 				<img src="sponsors/KLA.svg" alt="KLA" />
 				<img src="sponsors/AnalogDevices.svg" alt="Analog Devices" />
 				<img src="sponsors/Boeing.svg" alt="Boeing" />

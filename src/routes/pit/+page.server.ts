@@ -6,7 +6,13 @@ import { NEXUS_API_KEY } from '$env/static/private';
 import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
 
-const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
+const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[
+    teamYear: StatboticsTeamYear,
+    matches: StatboticsTeamMatches,
+    ranking: StatboticsTeamEvent,
+    nexusEventStatus: NexusEventStatus,
+    eventKey: string
+]> => {
     if (eventKey.toUpperCase().startsWith("SIM")) {
         return getSimData(eventKey);
     }
@@ -50,10 +56,6 @@ export const load = (async ({ params, url }) => {
         await retry(async (bail) => {
             return await getData(teamNumber, year, eventKeyTmp);
         }, { retries: 5 });
-
-
-
-
 
 
     const upcommingMatches = (nexusEventStatus.matches || [])
@@ -204,6 +206,7 @@ export const load = (async ({ params, url }) => {
 
     // console.log('nexusEventStatus', nexusEventStatus);
 
+    // console.log(nexusEventStatus);
 
 
     return {
@@ -234,5 +237,7 @@ export const load = (async ({ params, url }) => {
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
         nexusEventStatus: nexusEventStatus || { matches: [] },
+        isPlayoffs: ourNextMatch.match_name.toLowerCase().includes("final") || ourNextMatch.match_name.toLowerCase().includes("playoff"),
+        playoffMatches: matches.filter((m) => m.comp_level == "sf" || m.comp_level == "f")
     };
 }) satisfies PageServerLoad;
