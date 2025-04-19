@@ -76,7 +76,7 @@ export const load = (async ({ params, url }) => {
         // console.log("m.key", m.key);
         return m.key == `${eventKey.replace("ton", "")}_${tbaMatch}` //@todo this is a dirty hack
     });
-    console.log("nextMatch", nextMatch);
+    // console.log("nextMatch", nextMatch);
     const ourWinProb = nextMatch ?
         Math.round(
             nextMatch.alliances.red.team_keys.includes(teamNumber)
@@ -237,7 +237,7 @@ export const load = (async ({ params, url }) => {
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
         nexusEventStatus: nexusEventStatus || { matches: [] },
-        isPlayoffs: ourNextMatch.match_name.toLowerCase().includes("final") || ourNextMatch.match_name.toLowerCase().includes("playoff"),
+        isPlayoffs: upcommingMatches[0].label.toLowerCase().includes("final") || upcommingMatches[0].label.toLowerCase().includes("playoff"),
         playoffMatches: matches.filter((m) => m.comp_level == "sf" || m.comp_level == "f")
     };
 }) satisfies PageServerLoad;
