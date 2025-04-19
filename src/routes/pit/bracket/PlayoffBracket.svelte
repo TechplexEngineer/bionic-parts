@@ -175,10 +175,7 @@
 		font-family: 'MyriadPro-Bold';
 		font-style: normal;
 		font-weight: normal;
-		src: local('MyriadPro-Bold'), url('fonts/myriad-pro/MYRIADPRO-BOLD.woff') format('woff');
-	}
-	.winnerdot {
-		display: none;
+		src: url('fonts/myriad-pro/MYRIADPRO-BOLD.woff') format('woff');
 	}
 
 	.bracket {
