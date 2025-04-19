@@ -123,14 +123,14 @@
 		pos={{ x: 50 + 220 * 2, y: 40 + 85 * 5 }}
 		matchHeader="MATCH 9"
 		redTitle="Loser M7"
-		blueTitle="Loser M6"
+		blueTitle="Winner M6"
 		match={data.find((m) => m.comp_level == 'sf' && m.set_number == 9)}
 	/>
 	<Match
 		pos={{ x: 50 + 220 * 2, y: 40 + 85 * 4 }}
 		matchHeader="MATCH 10"
 		redTitle="Loser M8"
-		blueTitle="Loser M5"
+		blueTitle="Winner M5"
 		match={data.find((m) => m.comp_level == 'sf' && m.set_number == 10)}
 	/>
 
