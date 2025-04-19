@@ -43,8 +43,8 @@
 		<text x="100" y="53">{blueTitle}</text>
 	</g>
 	<g name="score" font-size="15">
-		<text x="155.397" y="23.457">{redScore}</text>
-		<text x="155.397" y="61.457">{blueScore}</text>
+		<text x="155.397" y="23.457">{parseInt(redScore) < 0 ? '' : redScore}</text>
+		<text x="155.397" y="61.457">{parseInt(blueScore) < 0 ? '' : blueScore}</text>
 	</g>
 	<g name="teams" font-size="12">
 		<text x="32.834" y="30.234">{red1Team}</text>
