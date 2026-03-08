@@ -28,11 +28,11 @@ declare global {
         }
 
         // interface PageData {}
-        interface Platform {
-            env?: {
-                BIONIC_PARTS_DB?: D1Database;
-            }
-        }
+        // interface Platform {
+        //     env?: {
+        //         BIONIC_PARTS_DB?: D1Database;
+        //     }
+        // }
 
     }
 }

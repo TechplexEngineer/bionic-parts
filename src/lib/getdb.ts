@@ -1,11 +1,11 @@
 // Inspired by https://github.com/BuilderIO/qwik/issues/3345#issuecomment-1475385715
-import type {D1Database} from "@miniflare/d1";
-import {drizzle} from "drizzle-orm/d1";
-import type {DrizzleD1Database} from "drizzle-orm/d1";
-import {migrate} from "drizzle-orm/d1/migrator";
-import {eq, getTableColumns, sql} from "drizzle-orm";
-import type {PartData, PartModel, ProjectModel} from "$lib/schema";
-import {partsSchema, projectSchema} from "$lib/schema";
+import type { D1Database } from "@miniflare/d1";
+import { drizzle } from "drizzle-orm/d1";
+import type { DrizzleD1Database } from "drizzle-orm/d1";
+import { migrate } from "drizzle-orm/d1/migrator";
+import { eq, getTableColumns, sql } from "drizzle-orm";
+import type { PartData, PartModel, ProjectModel } from "$lib/schema";
+import { partsSchema, projectSchema } from "$lib/schema";
 
 
 let getDevDb = async (): Promise<any> => {
@@ -16,15 +16,15 @@ let getDevDb = async (): Promise<any> => {
 
 if (import.meta.env.DEV) {
     const fs = await import("fs/promises");
-    const {D1Database: D1D, D1DatabaseAPI} = await import("@miniflare/d1");
-    const {createSQLiteDB} = await import("@miniflare/shared");
+    const { D1Database: D1D, D1DatabaseAPI } = await import("@miniflare/d1");
+    const { createSQLiteDB } = await import("@miniflare/shared");
 
     let devDb: D1Database;
 
     getDevDb = async (): Promise<D1Database> => {
         if (!devDb) {
             const basePath = ".wrangler/state/d1";
-            await fs.mkdir(basePath, {recursive: true});
+            await fs.mkdir(basePath, { recursive: true });
             const sqlLite = await createSQLiteDB(
                 `${basePath}/BIONIC_PARTS_DB.sqlite3`
             );
@@ -114,7 +114,7 @@ export class DataLayer {
         }
         project.data.onshape.docIds.push(onshapeDocId);
 
-        await this.db.update(projectSchema).set({[projectSchema.data.name]: project.data}).where(eq(projectSchema.id, projectId)).run();
+        await this.db.update(projectSchema).set({ [projectSchema.data.name]: project.data }).where(eq(projectSchema.id, projectId)).run();
 
         return project;
     }
@@ -147,7 +147,7 @@ export class DataLayer {
         });
     }
 
-    async addReleasedPart(args: {projectId: number, data: PartData}) {
+    async addReleasedPart(args: { projectId: number, data: PartData }) {
         return await this.db.insert(partsSchema).values({
             projectId: args.projectId,
             data: args.data
