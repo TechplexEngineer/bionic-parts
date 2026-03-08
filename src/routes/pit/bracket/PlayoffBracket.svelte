@@ -72,22 +72,22 @@
 		pos={{ x: 50, y: 30 + 85 }}
 		matchHeader="MATCH 2"
 		match={data.find((m) => m.comp_level == 'sf' && m.set_number == 2)}
-		redTitle="Alliance 2"
-		blueTitle="Alliance 7"
+		redTitle="Alliance 4"
+		blueTitle="Alliance 5"
 	/>
 	<Match
 		pos={{ x: 50, y: 30 + 85 * 2 }}
 		matchHeader="MATCH 3"
 		match={data.find((m) => m.comp_level == 'sf' && m.set_number == 3)}
-		redTitle="Alliance 3"
-		blueTitle="Alliance 6"
+		redTitle="Alliance 2"
+		blueTitle="Alliance 7"
 	/>
 	<Match
 		pos={{ x: 50, y: 30 + 85 * 3 }}
 		matchHeader="MATCH 4"
 		match={data.find((m) => m.comp_level == 'sf' && m.set_number == 4)}
-		redTitle="Alliance 4"
-		blueTitle="Alliance 5"
+		redTitle="Alliance 3"
+		blueTitle="Alliance 6"
 	/>
 
 	<Match
