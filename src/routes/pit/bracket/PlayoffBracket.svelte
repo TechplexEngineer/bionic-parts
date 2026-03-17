@@ -175,7 +175,7 @@
 		font-family: 'MyriadPro-Bold';
 		font-style: normal;
 		font-weight: normal;
-		src: url('fonts/myriad-pro/MYRIADPRO-BOLD.woff') format('woff');
+		src: url('/fonts/myriad-pro/MYRIADPRO-BOLD.woff') format('woff');
 	}
 
 	.bracket {
