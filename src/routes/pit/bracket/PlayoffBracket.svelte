@@ -19,7 +19,7 @@
 	xmlns="http://www.w3.org/2000/svg"
 >
 	<g id="background" transform="translate(0, -20)">
-		<g fill="#dbdad9" name="matchLevelBars">
+		<g fill="#9C9C9C" name="matchLevelBars">
 			{#each [0, 1, 2, 3, 4, 5] as i}
 				<rect x={50 + 220 * i + 62} y="41" width="75" height="512" />
 			{/each}

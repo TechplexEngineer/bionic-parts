@@ -6,21 +6,21 @@ import { NEXUS_API_KEY } from '$env/static/private';
 import { nexusToTBA } from './mapNexusToTBA';
 import { getSimData } from './simdata';
 
-const getData = async (teamNumber: number, year: number, eventKey: string): Promise<[
+const getData = async (teamNumber: number, year: number, statboticsEventKey: string, nexusEventKey: string): Promise<[
     teamYear: StatboticsTeamYear,
     matches: StatboticsTeamMatches,
     ranking: StatboticsTeamEvent,
     nexusEventStatus: NexusEventStatus,
     eventKey: string
 ]> => {
-    if (eventKey.toUpperCase().startsWith("SIM")) {
-        return getSimData(eventKey);
+    if (statboticsEventKey.toUpperCase().startsWith("SIM")) {
+        return getSimData(statboticsEventKey);
     }
-    let tbaEventKey = eventKey;
-    let nexusEventKey = eventKey;
-    if (eventKey == "2025newton") {
-        tbaEventKey = "2025new";
-    }
+    let tbaEventKey = statboticsEventKey;
+    // let nexusEventKey = nexusEventKey;
+    // if (eventKey == "2025newton") {
+    //     tbaEventKey = "2025new";
+    // }
 
     return await Promise.all([
         fetch(`https://api.statbotics.io/v3/team_year/${teamNumber}/${year}`).then(res => res.json<StatboticsTeamYear>()),
@@ -31,7 +31,7 @@ const getData = async (teamNumber: number, year: number, eventKey: string): Prom
                 "Nexus-Api-Key": NEXUS_API_KEY
             }
         }).then(res => res.json<NexusEventStatus>()),
-        eventKey
+        statboticsEventKey
     ]);
 }
 
@@ -44,17 +44,18 @@ import retry from 'async-retry';
 export const load = (async ({ params, url }) => {
 
     const teamNumberStr = url.searchParams.get("teamNumber");
-    const eventKeyTmp = url.searchParams.get("eventKey");
+    const statboticsEventKey = url.searchParams.get("statboticsEventKey");
+    const nexusEventKey = url.searchParams.get("nexusEventKey");
     const year = new Date().getFullYear();
 
-    if (!eventKeyTmp || !teamNumberStr) {
+    if (!statboticsEventKey || !nexusEventKey || !teamNumberStr) {
         throw redirect(307, '/pit/config')
     }
     const teamNumber = parseInt(teamNumberStr);
 
     const [teamYear, matches, rankings, nexusEventStatus, eventKey] =
         await retry(async (bail) => {
-            return await getData(teamNumber, year, eventKeyTmp);
+            return await getData(teamNumber, year, statboticsEventKey, nexusEventKey);
         }, { retries: 5 });
 
 

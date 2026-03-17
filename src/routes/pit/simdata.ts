@@ -17853,7 +17853,7 @@ export const getSimData = async (event: string): Promise<[teamYear: StatboticsTe
         ];
     }
     return [
-        team, matches, rankings, nexusStatus, "2025nhsal"
+        team, matches, rankings, getNexusWithNextMatch(nexusStatus, "Qualification 66"), "2025nhsal"
     ];
 }
 

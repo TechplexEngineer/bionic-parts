@@ -45,7 +45,7 @@
 	$: cols2Render = generateListOfCols(columns, data);
 </script>
 
-<table class="table table-striped pit-table">
+<table class="table table-striped">
 	<thead>
 		<tr>
 			{#each cols2Render as obj}

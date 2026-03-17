@@ -477,11 +477,11 @@
 	.binrow {
 		margin-top: 35px !important;
 	}
-	:global(html) {
-		height: 100%;
-	}
+	// :global(html) {
+	// 	height: 100%;
+	// }
 
-	:global(body) {
+	.wrapper {
 		background-color: $bionic-green !important;
 		background-image: none !important;
 		height: 100%;
