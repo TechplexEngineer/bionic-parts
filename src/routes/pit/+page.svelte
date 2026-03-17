@@ -83,10 +83,6 @@
 	};
 </script>
 
-<svelte:head>
-	<title>Bionics Pit Display</title>
-</svelte:head>
-
 <div class="wrapper">
 	{#if !data.isPlayoffs}
 		<div class="row mt-4" data-name="Logo and Stats">

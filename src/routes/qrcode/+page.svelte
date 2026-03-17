@@ -20,40 +20,37 @@
 	];
 	let activeItem = QRCodeTypes[0];
 
-    
-	
-
 	$: valueToEncode = encoder({
-        activeItem,
-        rawText,
-        urlLink,
-        telPhoneNumber,
-        smsPhoneNumber,
-        smsMessage,
-        wifiAuth,
-        wifiNetworkName,
-        wifiPassword,
-        wifiIsHidden,
-        emailAddress,
-        eventTitle,
-        eventDescription,
-        eventLocation,
-        eventStartDate,
-        eventStartTime,
-        eventEndDate,
-        eventEndTime,
-        vcardPrefix,
-        vcardFirstName,
-        vcardLastName,
-        vcardPhoneNumber,
-        vcardEmail,
-        vcardBirthday,
-        vcardAddress,
-        vcardWebsite,
-        vcardOrg,
-        vcardJobTitle,
-        vcardWorkPhone
-    });
+		activeItem,
+		rawText,
+		urlLink,
+		telPhoneNumber,
+		smsPhoneNumber,
+		smsMessage,
+		wifiAuth,
+		wifiNetworkName,
+		wifiPassword,
+		wifiIsHidden,
+		emailAddress,
+		eventTitle,
+		eventDescription,
+		eventLocation,
+		eventStartDate,
+		eventStartTime,
+		eventEndDate,
+		eventEndTime,
+		vcardPrefix,
+		vcardFirstName,
+		vcardLastName,
+		vcardPhoneNumber,
+		vcardEmail,
+		vcardBirthday,
+		vcardAddress,
+		vcardWebsite,
+		vcardOrg,
+		vcardJobTitle,
+		vcardWorkPhone
+	});
 
 	let rawText = 'Test Raw Value';
 	let urlLink = 'https://';
@@ -76,17 +73,17 @@
 	let eventEndDate = new Date().toISOString().split('T')[0];
 	let eventEndTime = '';
 
-    let vcardPrefix = '';
-    let vcardFirstName = 'John';
-    let vcardLastName = 'Doe';
-    let vcardPhoneNumber = '+1-555-555-5555';
-    let vcardEmail = 'hello@example.com';
-    let vcardBirthday = new Date().toISOString().split('T')[0];
-    let vcardAddress = '';
-    let vcardWebsite = 'https://example.com';
-    let vcardOrg = 'Example Inc.';
-    let vcardJobTitle = 'CEO';
-    let vcardWorkPhone = '+1-666-666-6666';
+	let vcardPrefix = '';
+	let vcardFirstName = 'John';
+	let vcardLastName = 'Doe';
+	let vcardPhoneNumber = '+1-555-555-5555';
+	let vcardEmail = 'hello@example.com';
+	let vcardBirthday = new Date().toISOString().split('T')[0];
+	let vcardAddress = '';
+	let vcardWebsite = 'https://example.com';
+	let vcardOrg = 'Example Inc.';
+	let vcardJobTitle = 'CEO';
+	let vcardWorkPhone = '+1-666-666-6666';
 
 	export const snapshot: Snapshot<{ storedActiveItem: string }> = {
 		capture: () => {
@@ -103,11 +100,14 @@
 </script>
 
 <svelte:head>
-    <title>{routes.find(r => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
-    <meta name="description" content={routes.find(r => r.link == $page.url.pathname)?.description}/>
+	<title>{routes.find((r) => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
+	<meta
+		name="description"
+		content={routes.find((r) => $page.url.pathname.startsWith(r.link))?.description}
+	/>
 </svelte:head>
 
-<Navbar/>
+<Navbar />
 
 <div class="container mt-4">
 	<h1>QR Code Generator</h1>
@@ -305,7 +305,7 @@
 									/>
 								</div>
 							</div>
-                            <div class="col">
+							<div class="col">
 								<div class="mb-3">
 									<label class="form-label" for="vcardLastName">Last Name</label>
 									<input
@@ -317,78 +317,63 @@
 								</div>
 							</div>
 						</div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardPhoneNumber">Phone Number</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="vcardPhoneNumber"
-                                bind:value={vcardPhoneNumber}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardEmail">Email</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="vcardEmail"
-                                bind:value={vcardEmail}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardBirthday">Birthday</label>
-                            <input
-                                type="date"
-                                class="form-control"
-                                id="vcardBirthday"
-                                bind:value={vcardBirthday}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardAddress">Address</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="vcardAddress"
-                                bind:value={vcardAddress}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardWebsite">Website</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="vcardWebsite"
-                                bind:value={vcardWebsite}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardOrganization">Organization</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="vcardOrganization"
-                                bind:value={vcardOrg}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardTvcardJobTitleitle">Job Title</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="vcardJobTitle"
-                                bind:value={vcardJobTitle}
-                            />
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label" for="vcardWorkPhone">Work Phone Number</label>
-                            <input
-                                type="tel"
-                                class="form-control"
-                                id="vcardWorkPhone"
-                                bind:value={vcardWorkPhone}
-                            />
-                        </div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardPhoneNumber">Phone Number</label>
+							<input
+								type="text"
+								class="form-control"
+								id="vcardPhoneNumber"
+								bind:value={vcardPhoneNumber}
+							/>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardEmail">Email</label>
+							<input type="text" class="form-control" id="vcardEmail" bind:value={vcardEmail} />
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardBirthday">Birthday</label>
+							<input
+								type="date"
+								class="form-control"
+								id="vcardBirthday"
+								bind:value={vcardBirthday}
+							/>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardAddress">Address</label>
+							<input type="text" class="form-control" id="vcardAddress" bind:value={vcardAddress} />
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardWebsite">Website</label>
+							<input type="text" class="form-control" id="vcardWebsite" bind:value={vcardWebsite} />
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardOrganization">Organization</label>
+							<input
+								type="text"
+								class="form-control"
+								id="vcardOrganization"
+								bind:value={vcardOrg}
+							/>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardTvcardJobTitleitle">Job Title</label>
+							<input
+								type="text"
+								class="form-control"
+								id="vcardJobTitle"
+								bind:value={vcardJobTitle}
+							/>
+						</div>
+						<div class="mb-3">
+							<label class="form-label" for="vcardWorkPhone">Work Phone Number</label>
+							<input
+								type="tel"
+								class="form-control"
+								id="vcardWorkPhone"
+								bind:value={vcardWorkPhone}
+							/>
+						</div>
 					{/if}
 				</div>
 			</div>
@@ -401,9 +386,9 @@
 					<QrCode value={valueToEncode} />
 					<br />
 					Raw:
-                    <code>
-					<pre>{valueToEncode}</pre>
-                    </code>
+					<code>
+						<pre>{valueToEncode}</pre>
+					</code>
 				</div>
 			</div>
 		</div>
