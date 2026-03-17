@@ -94,7 +94,7 @@
 
 			<div class="col logocol">
 				<a href="/pit/config">
-					<img src="bionics-logo.svg" alt="Bionics Logo" class="logo" />
+					<img src="/bionics-logo.svg" alt="Bionics Logo" class="logo" />
 				</a>
 			</div>
 			<div class="col-6">
@@ -345,28 +345,28 @@
 			<div class="bin sponsors text-center">
 				<h4 class="binHeader">Thank You To Our Generous Sponsors</h4>
 
-				<img src="sponsors/KLA.svg" alt="KLA" />
-				<img src="sponsors/AnalogDevices.svg" alt="Analog Devices" />
-				<img src="sponsors/Boeing.svg" alt="Boeing" />
-				<img src="sponsors/BAE.svg" alt="BAE" />
+				<!-- <img src="/sponsors/KLA.svg" alt="KLA" /> -->
+				<img src="/sponsors/AnalogDevices.svg" alt="Analog Devices" />
+				<img src="/sponsors/Boeing.svg" alt="Boeing" />
+				<img src="/sponsors/BAE.svg" alt="BAE" />
 
-				<img src="sponsors/AmericanTower.svg" alt="American Tower" />
+				<img src="/sponsors/AmericanTower.svg" alt="American Tower" />
 
-				<img src="sponsors/ArgosyFoundation.svg" alt="Argosy" />
-				<img src="sponsors/RTX.svg" alt="RTX" />
+				<img src="/sponsors/ArgosyFoundation.svg" alt="Argosy" />
+				<img src="/sponsors/RTX.svg" alt="RTX" />
 
-				<img src="sponsors/CRMachine.svg" alt="CRM" />
+				<img src="/sponsors/CRMachine.svg" alt="CRM" />
 
-				<img src="sponsors/GeneHaasFoundation.svg" alt="HAAS Foundation" />
-				<img src="sponsors/IntuitiveFoundation.svg" alt="Intuitive Foundation" />
+				<img src="/sponsors/GeneHaasFoundation.svg" alt="HAAS Foundation" />
+				<img src="/sponsors/IntuitiveFoundation.svg" alt="Intuitive Foundation" />
 
-				<img src="sponsors/MassCulturalCouncil.svg" alt="Mass Cultural Council" />
-				<img src="sponsors/Mathnasium.svg" alt="Mathanasium" />
-				<img src="sponsors/PTC.svg" alt="PTC" />
-				<img src="sponsors/Polymershapes.svg" alt="PolymerShapes" />
-				<img src="sponsors/FabWorks.svg" alt="FabWorks" />
-				<img src="sponsors/StonehamBank.svg" alt="Stoenham Bank" />
-				<img src="sponsors/TownOfBillerica.png" alt="Town Of Billerica" />
+				<img src="/sponsors/MassCulturalCouncil.svg" alt="Mass Cultural Council" />
+				<!-- <img src="/sponsors/Mathnasium.svg" alt="Mathanasium" /> -->
+				<img src="/sponsors/PTC.svg" alt="PTC" />
+				<img src="/sponsors/Polymershapes.svg" alt="PolymerShapes" />
+				<img src="/sponsors/FabWorks.svg" alt="FabWorks" />
+				<img src="/sponsors/StonehamBank.svg" alt="Stoenham Bank" />
+				<img src="/sponsors/TownOfBillerica.png" alt="Town Of Billerica" />
 			</div>
 		</div>
 	</div>
@@ -469,6 +469,10 @@
 		border: 1px solid white;
 		text-align: center;
 	}
+	.row {
+		margin-left: 7px;
+		margin-right: 7px;
+	}
 
 	.binrow {
 		margin-top: 35px !important;
@@ -485,7 +489,7 @@
 	.bin {
 		position: relative;
 		min-height: 100px;
-		margin: 5px;
+		// margin: 5px;
 		color: #fff;
 		// overflow: hidden;
 		padding: 10px;
@@ -562,6 +566,7 @@
 		padding-right: 10px;
 		text-align: right;
 		font-size: smaller;
+		z-index: 10;
 	}
 	.footer .btn {
 		color: #666 !important;

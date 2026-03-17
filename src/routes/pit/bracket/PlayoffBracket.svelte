@@ -12,8 +12,8 @@
 <svg
 	id="bracket"
 	class="bracket"
-	width="1300"
-	height="550"
+	viewBox="0 0 1355 550"
+	width="100%"
 	version="1.1"
 	xml:space="preserve"
 	xmlns="http://www.w3.org/2000/svg"
