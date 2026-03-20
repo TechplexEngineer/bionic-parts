@@ -55,7 +55,9 @@ export const load = (async ({ params, url }) => {
 
     const [teamYear, matches, rankings, nexusEventStatus, eventKey] =
         await retry(async (bail) => {
-            return await getData(teamNumber, year, statboticsEventKey, nexusEventKey);
+            const d = await getData(teamNumber, year, statboticsEventKey, nexusEventKey);
+            console.log("d", d);
+            return d
         }, { retries: 5 });
 
 
@@ -89,12 +91,12 @@ export const load = (async ({ params, url }) => {
     const rankingPoints = nextMatch ?
         nextMatch.alliances.red.team_keys.includes(teamNumber) ? [
             { name: "Auto RP", pred: nextMatch.pred.red_auto_rp },
-            { name: "Coral RP", pred: nextMatch.pred.red_coral_rp },
-            { name: "Barge RP", pred: nextMatch.pred.red_barge_rp },
+            { name: "RP 1", pred: nextMatch.pred.red_coral_rp },
+            { name: "RP 2", pred: nextMatch.pred.red_barge_rp },
         ] : [
             { name: "Auto", pred: nextMatch.pred.blue_auto_rp },
-            { name: "Coral", pred: nextMatch.pred.blue_coral_rp },
-            { name: "Barge", pred: nextMatch.pred.blue_barge_rp },
+            { name: "RP 1", pred: nextMatch.pred.blue_coral_rp },
+            { name: "RP 2", pred: nextMatch.pred.blue_barge_rp },
         ]
         : [];
 
@@ -238,7 +240,7 @@ export const load = (async ({ params, url }) => {
         ourRanking: rankings.find((t) => t.team == teamNumber),
         lastUpdated: new Date(),
         nexusEventStatus: nexusEventStatus || { matches: [] },
-        isPlayoffs: upcommingMatches[0].label.toLowerCase().includes("final") || upcommingMatches[0].label.toLowerCase().includes("playoff"),
+        isPlayoffs: upcommingMatches[0]?.label?.toLowerCase().includes("final") || upcommingMatches[0]?.label?.toLowerCase().includes("playoff"),
         playoffMatches: matches.filter((m) => m.comp_level == "sf" || m.comp_level == "f")
     };
 }) satisfies PageServerLoad;
