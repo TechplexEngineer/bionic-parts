@@ -43,18 +43,23 @@
 		<text x="100" y="12">{redTitle}</text>
 		<text x="100" y="50">{blueTitle}</text>
 	</g>
-	<g name="score" font-size="14">
-		<text x="155" y="23.457">{parseInt(redScore) < 0 ? '' : redScore}</text>
-		<text x="155" y="61.457">{parseInt(blueScore) < 0 ? '' : blueScore}</text>
+	<!--  transform="translate(100,100) rotate(90)" -->
+	<g name="score" font-size="14" text-anchor="middle">
+		<g transform="translate(173,17)">
+			<text transform="rotate(90)">{parseInt(redScore) < 0 ? '' : redScore}</text>
+		</g>
+		<g transform="translate(173,55)">
+			<text transform="rotate(90)">{parseInt(blueScore) < 0 ? '' : blueScore}</text>
+		</g>
 	</g>
 	<g name="teams" font-size="17">
-		<text x="32.834" y="30.234">{red1Team}</text>
-		<text x="75.021" y="30.234">{red2Team}</text>
-		<text x="117.208" y="30.234">{red3Team}</text>
+		<text x="23" y="30">{red1Team}</text>
+		<text x="73" y="30">{red2Team}</text>
+		<text x="122" y="30">{red3Team}</text>
 
-		<text x="30.971" y="67.416">{blue1Team}</text>
-		<text x="73.158" y="67.416">{blue2Team}</text>
-		<text x="115.345" y="67.416">{blue3Team}</text>
+		<text x="23" y="67">{blue1Team}</text>
+		<text x="73" y="67">{blue2Team}</text>
+		<text x="122" y="67">{blue3Team}</text>
 	</g>
 
 	<g name="dots">

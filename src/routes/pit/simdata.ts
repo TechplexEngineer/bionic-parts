@@ -120,9 +120,9 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -234,9 +234,9 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -693,7 +693,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     4909,
-                    6328,
+                    16328,
                     1768
                 ],
                 "surrogate_team_keys": [],
@@ -806,7 +806,7 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    3467,
+                    13467,
                     319,
                     2342
                 ],
@@ -911,7 +911,7 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    9443,
+                    19443,
                     663,
                     8013
                 ],
@@ -1367,7 +1367,7 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    6328,
+                    16328,
                     5491,
                     4925
                 ],
@@ -1718,8 +1718,8 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    9443,
-                    3467,
+                    19443,
+                    13467,
                     1058
                 ],
                 "surrogate_team_keys": [],
@@ -1938,7 +1938,7 @@ const matches = [
             "red": {
                 "team_keys": [
                     9729,
-                    6328,
+                    16328,
                     6201
                 ],
                 "surrogate_team_keys": [],
@@ -2517,7 +2517,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     5902,
-                    3467,
+                    13467,
                     9644
                 ],
                 "surrogate_team_keys": [],
@@ -2630,8 +2630,8 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    6328,
-                    9443,
+                    16328,
+                    19443,
                     138
                 ],
                 "surrogate_team_keys": [],
@@ -2851,14 +2851,14 @@ const matches = [
                 "team_keys": [
                     4987,
                     2877,
-                    9443
+                    19443
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
             },
             "blue": {
                 "team_keys": [
-                    3467,
+                    13467,
                     97,
                     1512
                 ],
@@ -3191,8 +3191,8 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    6328,
-                    3467,
+                    16328,
+                    13467,
                     8708
                 ],
                 "surrogate_team_keys": [],
@@ -3315,7 +3315,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     501,
-                    9443,
+                    19443,
                     7314
                 ],
                 "surrogate_team_keys": [],
@@ -3526,7 +3526,7 @@ const matches = [
         "set_number": 1,
         "match_number": 35,
         "match_name": "Qual 35",
-        "time": 1740863280,
+        "time": 17408163280,
         "predicted_time": 1740866704,
         "status": "Completed",
         "video": "vnpCbS0ih14",
@@ -3763,7 +3763,7 @@ const matches = [
                 "team_keys": [
                     9729,
                     97,
-                    9443
+                    19443
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -3772,7 +3772,7 @@ const matches = [
                 "team_keys": [
                     1721,
                     9644,
-                    6328
+                    16328
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -3991,7 +3991,7 @@ const matches = [
                 "team_keys": [
                     4925,
                     501,
-                    3467
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -4559,7 +4559,7 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    9443,
+                    19443,
                     8410,
                     10156
                 ],
@@ -4903,7 +4903,7 @@ const matches = [
                 "team_keys": [
                     1277,
                     1761,
-                    3467
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -4912,7 +4912,7 @@ const matches = [
                 "team_keys": [
                     3566,
                     5962,
-                    6328
+                    16328
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -5368,7 +5368,7 @@ const matches = [
                 "team_keys": [
                     1247,
                     501,
-                    6328
+                    16328
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -5473,7 +5473,7 @@ const matches = [
                 "team_keys": [
                     1721,
                     5491,
-                    3467
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -5594,7 +5594,7 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    9443,
+                    19443,
                     1512,
                     3623
                 ],
@@ -5709,7 +5709,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     8013,
-                    6328,
+                    16328,
                     4987
                 ],
                 "surrogate_team_keys": [],
@@ -6051,7 +6051,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     1761,
-                    9443,
+                    19443,
                     1247
                 ],
                 "surrogate_team_keys": [],
@@ -6269,7 +6269,7 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    6328,
+                    16328,
                     3623,
                     5902
                 ],
@@ -6394,7 +6394,7 @@ const matches = [
                 "team_keys": [
                     4909,
                     6201,
-                    3467
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -6840,7 +6840,7 @@ const matches = [
             "red": {
                 "team_keys": [
                     1512,
-                    6328,
+                    16328,
                     8410
                 ],
                 "surrogate_team_keys": [],
@@ -7079,7 +7079,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     1721,
-                    9443,
+                    19443,
                     6620
                 ],
                 "surrogate_team_keys": [],
@@ -7192,7 +7192,7 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    3467,
+                    13467,
                     6690,
                     2877
                 ],
@@ -7536,7 +7536,7 @@ const matches = [
                 "team_keys": [
                     663,
                     7314,
-                    6328
+                    16328
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -7641,7 +7641,7 @@ const matches = [
                 "team_keys": [
                     1768,
                     1277,
-                    9443
+                    19443
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -7753,7 +7753,7 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    3467,
+                    13467,
                     9729,
                     10156
                 ],
@@ -7877,7 +7877,7 @@ const matches = [
             "blue": {
                 "team_keys": [
                     4987,
-                    3467,
+                    13467,
                     3566
                 ],
                 "surrogate_team_keys": [],
@@ -8441,7 +8441,7 @@ const matches = [
                 "team_keys": [
                     5902,
                     319,
-                    9443
+                    19443
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -8790,9 +8790,9 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -8904,9 +8904,9 @@ const matches = [
             },
             "blue": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -9009,9 +9009,9 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -9693,9 +9693,9 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -9921,9 +9921,9 @@ const matches = [
         "alliances": {
             "red": {
                 "team_keys": [
-                    9443,
-                    6328,
-                    3467
+                    19443,
+                    16328,
+                    13467
                 ],
                 "surrogate_team_keys": [],
                 "dq_team_keys": []
@@ -10022,7 +10022,7 @@ const matches = [
 
 const rankings = [
     {
-        "team": 3467,
+        "team": 13467,
         "year": 2025,
         "event": "2025nhsal",
         "time": 1740700800,
@@ -10208,7 +10208,7 @@ const rankings = [
         "district_points": 56
     },
     {
-        "team": 6328,
+        "team": 16328,
         "year": 2025,
         "event": "2025nhsal",
         "time": 1740700800,
@@ -12440,7 +12440,7 @@ const rankings = [
         "district_points": 10
     },
     {
-        "team": 9443,
+        "team": 19443,
         "year": 2025,
         "event": "2025nhsal",
         "time": 1740700800,
@@ -13386,7 +13386,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "1768",
-                "6328",
+                "16328",
                 "3623"
             ],
             "times": {
@@ -13430,7 +13430,7 @@ const nexusStatus = {
             "redTeams": [
                 "138",
                 "6201",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "501",
@@ -13476,9 +13476,9 @@ const nexusStatus = {
             "label": "Practice 5",
             "status": "On field",
             "redTeams": [
-                "9443",
-                "6328",
-                "3467"
+                "19443",
+                "16328",
+                "13467"
             ],
             "blueTeams": [
                 "4909",
@@ -13501,11 +13501,11 @@ const nexusStatus = {
             "status": "On field",
             "redTeams": [
                 "1721",
-                "6328",
+                "16328",
                 "4909"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "7314",
                 "5962"
             ],
@@ -13574,10 +13574,10 @@ const nexusStatus = {
             "redTeams": [
                 "4987",
                 "2877",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "97",
                 "1512"
             ],
@@ -13627,7 +13627,7 @@ const nexusStatus = {
             "blueTeams": [
                 "1247",
                 "501",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740846960000,
@@ -13674,7 +13674,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "4987",
-                "3467",
+                "13467",
                 "3566"
             ],
             "times": {
@@ -13718,7 +13718,7 @@ const nexusStatus = {
             "redTeams": [
                 "5902",
                 "319",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
                 "2342",
@@ -13795,7 +13795,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "4909",
-                "6328",
+                "16328",
                 "1768"
             ],
             "times": {
@@ -13818,7 +13818,7 @@ const nexusStatus = {
                 "2877"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "319",
                 "2342"
             ],
@@ -13837,7 +13837,7 @@ const nexusStatus = {
             "label": "Qualification 14",
             "status": "Queuing soon",
             "redTeams": [
-                "9443",
+                "19443",
                 "663",
                 "8013"
             ],
@@ -13933,7 +13933,7 @@ const nexusStatus = {
             "label": "Qualification 18",
             "status": "Queuing soon",
             "redTeams": [
-                "6328",
+                "16328",
                 "5491",
                 "4925"
             ],
@@ -13986,8 +13986,8 @@ const nexusStatus = {
                 "6620"
             ],
             "blueTeams": [
-                "9443",
-                "3467",
+                "19443",
+                "13467",
                 "1058"
             ],
             "times": {
@@ -14030,7 +14030,7 @@ const nexusStatus = {
             "status": "Queuing soon",
             "redTeams": [
                 "9729",
-                "6328",
+                "16328",
                 "6201"
             ],
             "blueTeams": [
@@ -14155,7 +14155,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "5902",
-                "3467",
+                "13467",
                 "9644"
             ],
             "times": {
@@ -14178,8 +14178,8 @@ const nexusStatus = {
                 "2877"
             ],
             "blueTeams": [
-                "6328",
-                "9443",
+                "16328",
+                "19443",
                 "138"
             ],
             "times": {
@@ -14269,8 +14269,8 @@ const nexusStatus = {
             "label": "Qualification 32",
             "status": "Queuing soon",
             "redTeams": [
-                "6328",
-                "3467",
+                "16328",
+                "13467",
                 "8708"
             ],
             "blueTeams": [
@@ -14299,7 +14299,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "501",
-                "9443",
+                "19443",
                 "7314"
             ],
             "times": {
@@ -14351,7 +14351,7 @@ const nexusStatus = {
                 "6620"
             ],
             "times": {
-                "scheduledStartTime": 1740863280000,
+                "scheduledStartTime": 17408163280000,
                 "estimatedQueueTime": 1740865365037,
                 "estimatedOnDeckTime": 1740865772420,
                 "estimatedOnFieldTime": 1740866089548,
@@ -14391,12 +14391,12 @@ const nexusStatus = {
             "redTeams": [
                 "9729",
                 "97",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
                 "1721",
                 "9644",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740864240000,
@@ -14439,7 +14439,7 @@ const nexusStatus = {
             "redTeams": [
                 "4925",
                 "501",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "5491",
@@ -14497,11 +14497,11 @@ const nexusStatus = {
             "times": {
                 "scheduledStartTime": 1740866160000,
                 "estimatedQueueTime": 1740868573693,
-                "estimatedOnDeckTime": 1740869149443,
+                "estimatedOnDeckTime": 17408691419443,
                 "estimatedOnFieldTime": 1740869592980,
                 "estimatedStartTime": 1740869897980,
                 "actualQueueTime": 1740868573693,
-                "actualOnDeckTime": 1740869149443,
+                "actualOnDeckTime": 17408691419443,
                 "actualOnFieldTime": 1740869592980
             }
         },
@@ -14533,7 +14533,7 @@ const nexusStatus = {
             "label": "Qualification 43",
             "status": "Queuing soon",
             "redTeams": [
-                "9443",
+                "19443",
                 "8410",
                 "10156"
             ],
@@ -14607,12 +14607,12 @@ const nexusStatus = {
             "redTeams": [
                 "1277",
                 "1761",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "3566",
                 "5962",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740868560000,
@@ -14703,7 +14703,7 @@ const nexusStatus = {
             "redTeams": [
                 "1721",
                 "5491",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "2342",
@@ -14730,7 +14730,7 @@ const nexusStatus = {
                 "501"
             ],
             "blueTeams": [
-                "9443",
+                "19443",
                 "1512",
                 "3623"
             ],
@@ -14755,7 +14755,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "8013",
-                "6328",
+                "16328",
                 "4987"
             ],
             "times": {
@@ -14827,7 +14827,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "1761",
-                "9443",
+                "19443",
                 "1247"
             ],
             "times": {
@@ -14870,7 +14870,7 @@ const nexusStatus = {
             "label": "Qualification 57",
             "status": "Queuing soon",
             "redTeams": [
-                "6328",
+                "16328",
                 "3623",
                 "5902"
             ],
@@ -14884,7 +14884,7 @@ const nexusStatus = {
                 "estimatedQueueTime": 1740925043775,
                 "estimatedOnDeckTime": 1740925512110,
                 "estimatedOnFieldTime": 1740926023722,
-                "estimatedStartTime": 1740926328722,
+                "estimatedStartTime": 17409216328722,
                 "actualQueueTime": 1740925043775,
                 "actualOnDeckTime": 1740925512110,
                 "actualOnFieldTime": 1740926023722
@@ -14901,7 +14901,7 @@ const nexusStatus = {
             "blueTeams": [
                 "4909",
                 "6201",
-                "3467"
+                "13467"
             ],
             "times": {
                 "scheduledStartTime": 1740926160000,
@@ -14967,7 +14967,7 @@ const nexusStatus = {
             "status": "Queuing soon",
             "redTeams": [
                 "1512",
-                "6328",
+                "16328",
                 "8410"
             ],
             "blueTeams": [
@@ -15020,7 +15020,7 @@ const nexusStatus = {
             ],
             "blueTeams": [
                 "1721",
-                "9443",
+                "19443",
                 "6620"
             ],
             "times": {
@@ -15043,7 +15043,7 @@ const nexusStatus = {
                 "1277"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "6690",
                 "2877"
             ],
@@ -15117,7 +15117,7 @@ const nexusStatus = {
             "blueTeams": [
                 "663",
                 "7314",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740930480000,
@@ -15136,7 +15136,7 @@ const nexusStatus = {
             "redTeams": [
                 "1768",
                 "1277",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
                 "6620",
@@ -15158,7 +15158,7 @@ const nexusStatus = {
             "label": "Qualification 69",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
+                "13467",
                 "9729",
                 "10156"
             ],
@@ -15254,9 +15254,9 @@ const nexusStatus = {
             "label": "Playoff 1",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "blueTeams": [
                 "8708",
@@ -15392,9 +15392,9 @@ const nexusStatus = {
             "label": "Playoff 7",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "blueTeams": [
                 "138",
@@ -15438,9 +15438,9 @@ const nexusStatus = {
             "label": "Playoff 9",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "blueTeams": [
                 "6201",
@@ -15513,9 +15513,9 @@ const nexusStatus = {
                 "1721"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740944417774,
@@ -15537,9 +15537,9 @@ const nexusStatus = {
                 "6690"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740946225366,
@@ -15561,9 +15561,9 @@ const nexusStatus = {
                 "1512"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740947615386,
@@ -15585,9 +15585,9 @@ const nexusStatus = {
                 "1512"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740949432226,
@@ -15620,7 +15620,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "1768",
-                "6328",
+                "16328",
                 "3623"
             ],
             "times": {
@@ -15664,7 +15664,7 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "138",
                 "6201",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "501",
@@ -15710,9 +15710,9 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Practice 5",
             "status": "On field",
             "redTeams": [
-                "9443",
-                "6328",
-                "3467"
+                "19443",
+                "16328",
+                "13467"
             ],
             "blueTeams": [
                 "4909",
@@ -15735,11 +15735,11 @@ const nexusStatusRed: NexusEventStatus = {
             "status": "On field",
             "redTeams": [
                 "1721",
-                "6328",
+                "16328",
                 "4909"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "7314",
                 "5962"
             ],
@@ -15808,10 +15808,10 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "4987",
                 "2877",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "97",
                 "1512"
             ],
@@ -15861,7 +15861,7 @@ const nexusStatusRed: NexusEventStatus = {
             "blueTeams": [
                 "1247",
                 "501",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740846960000,
@@ -15908,7 +15908,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "4987",
-                "3467",
+                "13467",
                 "3566"
             ],
             "times": {
@@ -15952,7 +15952,7 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "5902",
                 "319",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
                 "2342",
@@ -16029,7 +16029,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "4909",
-                "6328",
+                "16328",
                 "1768"
             ],
             "times": {
@@ -16052,7 +16052,7 @@ const nexusStatusRed: NexusEventStatus = {
                 "2877"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "319",
                 "2342"
             ],
@@ -16071,7 +16071,7 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Qualification 14",
             "status": "On field",
             "redTeams": [
-                "9443",
+                "19443",
                 "663",
                 "8013"
             ],
@@ -16167,7 +16167,7 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Qualification 18",
             "status": "On field",
             "redTeams": [
-                "6328",
+                "16328",
                 "5491",
                 "4925"
             ],
@@ -16220,8 +16220,8 @@ const nexusStatusRed: NexusEventStatus = {
                 "6620"
             ],
             "blueTeams": [
-                "9443",
-                "3467",
+                "19443",
+                "13467",
                 "1058"
             ],
             "times": {
@@ -16264,7 +16264,7 @@ const nexusStatusRed: NexusEventStatus = {
             "status": "On field",
             "redTeams": [
                 "9729",
-                "6328",
+                "16328",
                 "6201"
             ],
             "blueTeams": [
@@ -16389,7 +16389,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "5902",
-                "3467",
+                "13467",
                 "9644"
             ],
             "times": {
@@ -16412,8 +16412,8 @@ const nexusStatusRed: NexusEventStatus = {
                 "2877"
             ],
             "blueTeams": [
-                "6328",
-                "9443",
+                "16328",
+                "19443",
                 "138"
             ],
             "times": {
@@ -16503,8 +16503,8 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Qualification 32",
             "status": "Queuing soon",
             "redTeams": [
-                "6328",
-                "3467",
+                "16328",
+                "13467",
                 "8708"
             ],
             "blueTeams": [
@@ -16533,7 +16533,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "501",
-                "9443",
+                "19443",
                 "7314"
             ],
             "times": {
@@ -16585,7 +16585,7 @@ const nexusStatusRed: NexusEventStatus = {
                 "6620"
             ],
             "times": {
-                "scheduledStartTime": 1740863280000,
+                "scheduledStartTime": 17408163280000,
                 "estimatedQueueTime": 1740865365037,
                 "estimatedOnDeckTime": 1740865772420,
                 "estimatedOnFieldTime": 1740866089548,
@@ -16625,12 +16625,12 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "9729",
                 "97",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
                 "1721",
                 "9644",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740864240000,
@@ -16673,7 +16673,7 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "4925",
                 "501",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "5491",
@@ -16731,11 +16731,11 @@ const nexusStatusRed: NexusEventStatus = {
             "times": {
                 "scheduledStartTime": 1740866160000,
                 "estimatedQueueTime": 1740868573693,
-                "estimatedOnDeckTime": 1740869149443,
+                "estimatedOnDeckTime": 17408691419443,
                 "estimatedOnFieldTime": 1740869592980,
                 "estimatedStartTime": 1740869897980,
                 "actualQueueTime": 1740868573693,
-                "actualOnDeckTime": 1740869149443,
+                "actualOnDeckTime": 17408691419443,
                 "actualOnFieldTime": 1740869592980
             }
         },
@@ -16767,7 +16767,7 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Qualification 43",
             "status": "Queuing soon",
             "redTeams": [
-                "9443",
+                "19443",
                 "8410",
                 "10156"
             ],
@@ -16841,12 +16841,12 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "1277",
                 "1761",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "3566",
                 "5962",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740868560000,
@@ -16937,7 +16937,7 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "1721",
                 "5491",
-                "3467"
+                "13467"
             ],
             "blueTeams": [
                 "2342",
@@ -16964,7 +16964,7 @@ const nexusStatusRed: NexusEventStatus = {
                 "501"
             ],
             "blueTeams": [
-                "9443",
+                "19443",
                 "1512",
                 "3623"
             ],
@@ -16989,7 +16989,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "8013",
-                "6328",
+                "16328",
                 "4987"
             ],
             "times": {
@@ -17061,7 +17061,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "1761",
-                "9443",
+                "19443",
                 "1247"
             ],
             "times": {
@@ -17104,7 +17104,7 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Qualification 57",
             "status": "Queuing soon",
             "redTeams": [
-                "6328",
+                "16328",
                 "3623",
                 "5902"
             ],
@@ -17118,7 +17118,7 @@ const nexusStatusRed: NexusEventStatus = {
                 "estimatedQueueTime": 1740925043775,
                 "estimatedOnDeckTime": 1740925512110,
                 "estimatedOnFieldTime": 1740926023722,
-                "estimatedStartTime": 1740926328722,
+                "estimatedStartTime": 17409216328722,
                 "actualQueueTime": 1740925043775,
                 "actualOnDeckTime": 1740925512110,
                 "actualOnFieldTime": 1740926023722
@@ -17135,7 +17135,7 @@ const nexusStatusRed: NexusEventStatus = {
             "blueTeams": [
                 "4909",
                 "6201",
-                "3467"
+                "13467"
             ],
             "times": {
                 "scheduledStartTime": 1740926160000,
@@ -17201,7 +17201,7 @@ const nexusStatusRed: NexusEventStatus = {
             "status": "Queuing soon",
             "redTeams": [
                 "1512",
-                "6328",
+                "16328",
                 "8410"
             ],
             "blueTeams": [
@@ -17254,7 +17254,7 @@ const nexusStatusRed: NexusEventStatus = {
             ],
             "blueTeams": [
                 "1721",
-                "9443",
+                "19443",
                 "6620"
             ],
             "times": {
@@ -17277,7 +17277,7 @@ const nexusStatusRed: NexusEventStatus = {
                 "1277"
             ],
             "blueTeams": [
-                "3467",
+                "13467",
                 "6690",
                 "2877"
             ],
@@ -17351,7 +17351,7 @@ const nexusStatusRed: NexusEventStatus = {
             "blueTeams": [
                 "663",
                 "7314",
-                "6328"
+                "16328"
             ],
             "times": {
                 "scheduledStartTime": 1740930480000,
@@ -17370,7 +17370,7 @@ const nexusStatusRed: NexusEventStatus = {
             "redTeams": [
                 "1768",
                 "1277",
-                "9443"
+                "19443"
             ],
             "blueTeams": [
                 "6620",
@@ -17392,7 +17392,7 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Qualification 69",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
+                "13467",
                 "9729",
                 "10156"
             ],
@@ -17488,9 +17488,9 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Playoff 1",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "blueTeams": [
                 "8708",
@@ -17626,9 +17626,9 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Playoff 7",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "blueTeams": [
                 "138",
@@ -17672,9 +17672,9 @@ const nexusStatusRed: NexusEventStatus = {
             "label": "Playoff 9",
             "status": "Queuing soon",
             "redTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "blueTeams": [
                 "6201",
@@ -17747,9 +17747,9 @@ const nexusStatusRed: NexusEventStatus = {
                 "1721"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740944417774,
@@ -17771,9 +17771,9 @@ const nexusStatusRed: NexusEventStatus = {
                 "6690"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740946225366,
@@ -17795,9 +17795,9 @@ const nexusStatusRed: NexusEventStatus = {
                 "1512"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740947615386,
@@ -17819,9 +17819,9 @@ const nexusStatusRed: NexusEventStatus = {
                 "1512"
             ],
             "blueTeams": [
-                "3467",
-                "6328",
-                "9443"
+                "13467",
+                "16328",
+                "19443"
             ],
             "times": {
                 "estimatedQueueTime": 1740949432226,
