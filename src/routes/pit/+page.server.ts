@@ -56,7 +56,7 @@ export const load = (async ({ params, url }) => {
     const [teamYear, matches, rankings, nexusEventStatus, eventKey] =
         await retry(async (bail) => {
             const d = await getData(teamNumber, year, statboticsEventKey, nexusEventKey);
-            // console.log("d", d);
+            console.log("d", d);
             return d
         }, { retries: 5 });
 
