@@ -153,7 +153,7 @@
 	<Match
 		pos={{ x: 50 + 220 * 4, y: 40 + 85 * 4.5 }}
 		matchHeader="MATCH 13"
-		redTitle="Winner M11"
+		redTitle="Loser M11"
 		blueTitle="Winner M12"
 		match={data.find((m) => m.comp_level == 'sf' && m.set_number == 13)}
 	/>
