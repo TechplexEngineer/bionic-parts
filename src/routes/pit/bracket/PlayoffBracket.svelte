@@ -12,7 +12,7 @@
 <svg
 	id="bracket"
 	class="bracket"
-	viewBox="0 -5 1355 560"
+	viewBox="0 15 1355 540"
 	width="100%"
 	version="1.1"
 	xml:space="preserve"
@@ -24,14 +24,14 @@
 				<rect x={50 + 220 * i + 62} y="41" width="75" height="512" />
 			{/each}
 		</g>
-		<g name="roundLabels">
+		<!-- <g name="roundLabels">
 			<text x={117 + 220 * 0} y="36">ROUND 1</text>
 			<text x={117 + 220 * 1} y="36">ROUND 2</text>
 			<text x={117 + 220 * 2} y="36">ROUND 3</text>
 			<text x={117 + 220 * 3} y="36">ROUND 4</text>
 			<text x={117 + 220 * 4} y="36">ROUND 5</text>
 			<text x={123 + 220 * 5} y="36">FINALS</text>
-		</g>
+		</g> -->
 
 		<line x1="70" x2="971" y1={middle} y2={middle} stroke="#8e8e8e" />
 
@@ -172,14 +172,14 @@
 		width: 100%;
 	}
 	@font-face {
-		font-family: 'MyriadPro-Bold';
+		font-family: 'MyriadPro-Regular';
 		font-style: normal;
 		font-weight: normal;
-		src: url('/fonts/myriad-pro/MYRIADPRO-BOLD.woff') format('woff');
+		src: url('/fonts/myriad-pro/MYRIADPRO-SEMIBOLD.woff') format('woff');
 	}
 
 	.bracket {
-		font-family: 'MyriadPro-Bold';
+		font-family: 'MyriadPro-Regular';
 		margin-top: -10px;
 		margin-bottom: -20px;
 		/* margin-bottom: -45px; */
