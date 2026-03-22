@@ -12,7 +12,7 @@
 <svg
 	id="bracket"
 	class="bracket"
-	viewBox="0 15 1355 540"
+	viewBox="40 20 1315 540"
 	width="100%"
 	version="1.1"
 	xml:space="preserve"
