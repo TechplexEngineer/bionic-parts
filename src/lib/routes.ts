@@ -29,5 +29,10 @@ export const routes = [
         title: 'Pit Display',
         description: 'Dashboard for the Superpit.',
         link: '/pit'
+    },
+    {
+        title: 'Color Calculator',
+        description: 'Tool to generate colors.',
+        link: '/colorcalc'
     }
 ];
