@@ -8,14 +8,20 @@
 	import Navbar from '$lib/Navbar.svelte';
 
 	const debug = (bitmap: number[][]) => {
-		let outString = "[\n";
+		let outString = '[\n';
 		for (let row = 0; row < bitmap.length; row++) {
-			outString += "\t[" + bitmap[row].map(i=>i.toString(2).padStart(8,'_')).join(',').replaceAll('0', '_') + "],\n";
+			outString +=
+				'\t[' +
+				bitmap[row]
+					.map((i) => i.toString(2).padStart(8, '_'))
+					.join(',')
+					.replaceAll('0', '_') +
+				'],\n';
 		}
-		outString += "]";
+		outString += ']';
 
 		console.log('bitmap', outString);
-	}
+	};
 
 	let canvasElement: HTMLCanvasElement;
 	let data2Send: Buffer;
@@ -52,7 +58,6 @@
 
 	//@todo deselect before printing
 	const print = async () => {
-
 		const ctx = canvasElement.getContext('2d');
 		if (!ctx) {
 			bindPrintMessages = 'no canvas 2d context';
@@ -66,7 +71,6 @@
 		debug(bitmap);
 
 		data2Send = DymoService.printBitmap(bitmap);
-
 
 		try {
 			const device = await navigator.usb.requestDevice({
@@ -90,16 +94,15 @@
 		} catch (err) {
 			bindPrintMessages = (err as Error).message;
 		}
-		
 	};
 </script>
 
 <svelte:head>
-	<title>Dymo Label Magic : Bionic Parts</title>
+	<title>Dymo Label Magic : Bionic Tools</title>
 	<meta name="description" content="Dymo Label Magic" />
 </svelte:head>
 
-<Navbar/>
+<Navbar />
 
 <div class="container-fluid">
 	<div class="row">
@@ -107,14 +110,14 @@
 			<h1>Editor</h1>
 			<!-- <canvas bind:this={canvas} /> -->
 			<div style="border: 1px solid green">
-				<LabelEditor bind:canvasElement={canvasElement}/>
+				<LabelEditor bind:canvasElement />
 			</div>
 		</div>
 		<div class="col-md-3">
 			<h1>Data</h1>
 			<button class="btn btn-primary" on:click={print}>Print</button>
-			<br>
-			<textarea disabled rows="15" bind:value={bindPrintMessages} class="w-100"></textarea>
+			<br />
+			<textarea disabled rows="15" bind:value={bindPrintMessages} class="w-100" />
 		</div>
 	</div>
 </div>
@@ -122,6 +125,3 @@
 <!-- <br /> -->
 <!-- <canvas bind:this={canvas} /> -->
 <!-- <br> -->
-
-
-

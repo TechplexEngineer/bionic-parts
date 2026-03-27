@@ -100,7 +100,7 @@
 </script>
 
 <svelte:head>
-	<title>{routes.find((r) => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
+	<title>{routes.find((r) => r.link == $page.url.pathname)?.title} : Bionic Tools</title>
 	<meta
 		name="description"
 		content={routes.find((r) => $page.url.pathname.startsWith(r.link))?.description}

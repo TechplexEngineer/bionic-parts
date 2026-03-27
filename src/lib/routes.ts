@@ -16,7 +16,7 @@ export const routes = [
     //     link: 'https://docs.google.com/spreadsheets/d/115sOf7gw1nv_ZooKCAiivwwFtCRomxCifUcU8_FmLUY/edit#gid=0'
     // },
     // {
-    //     title: 'Bionic Parts Projects',
+    //     title: 'Bionic Tools Projects',
     //     description:
     //         'Projects group multiple Onshape documents and describe where parts from those documents go when released.',
     //     link: '/projects'

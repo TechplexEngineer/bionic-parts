@@ -119,7 +119,7 @@ export const getTrelloClientFromCookies = async (cookies: Cookies, cookieName = 
 
 
 const authorizeURL = "https://trello.com/1/OAuthAuthorizeToken";
-const appName = "Bionic Parts";
+const appName = "Bionic Tools";
 const scope = 'read,write'; // Comma-separated list of one or more of read, write, account. See https://developer.atlassian.com/cloud/trello/guides/rest-api/authorization/
 
 export const doTrelloAuthFlow = async (cookies: Cookies, returnUrl: URL) => {

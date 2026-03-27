@@ -3,10 +3,9 @@
 	import Navbar from '$lib/Navbar.svelte';
 	import { routes } from '$lib/routes';
 	import KanbanCard from './KanbanCard.svelte';
-    import * as XLSX from 'xlsx';
-  
+	import * as XLSX from 'xlsx';
 
-    let cards = [
+	let cards = [
 		{
 			name: `4" Zip Ties`,
 			desc: `Kable Kontrol™ Black Zip Ties - 4" Inch Long - UV Resistant Nylon - 18 Lbs Tensile Strength - 1000 pc Pack`,
@@ -32,7 +31,8 @@
 			link: 'https://www.cabletiesandmore.com/black-zip-ties-uv?pid=54',
 			rev: '1',
 			revDate: '2 Feb 25'
-		},{
+		},
+		{
 			name: `4" Zip Ties`,
 			desc: `Kable Kontrol™ Black Zip Ties - 4" Inch Long - UV Resistant Nylon - 18 Lbs Tensile Strength - 1000 pc Pack`,
 			pn: `ct208`,
@@ -57,7 +57,8 @@
 			link: 'https://www.cabletiesandmore.com/black-zip-ties-uv?pid=54',
 			rev: '1',
 			revDate: '2 Feb 25'
-		},{
+		},
+		{
 			name: `4" Zip Ties`,
 			desc: `Kable Kontrol™ Black Zip Ties - 4" Inch Long - UV Resistant Nylon - 18 Lbs Tensile Strength - 1000 pc Pack`,
 			pn: `ct208`,
@@ -82,7 +83,8 @@
 			link: 'https://www.cabletiesandmore.com/black-zip-ties-uv?pid=54',
 			rev: '1',
 			revDate: '2 Feb 25'
-		},{
+		},
+		{
 			name: `4" Zip Ties`,
 			desc: `Kable Kontrol™ Black Zip Ties - 4" Inch Long - UV Resistant Nylon - 18 Lbs Tensile Strength - 1000 pc Pack`,
 			pn: `ct208`,
@@ -110,9 +112,9 @@
 		}
 	];
 
-    const numPerPage = 2;
+	const numPerPage = 2;
 
-    const fileChange = (e: ChangeEventHandler<HTMLInputElement>) => {
+	const fileChange = (e: ChangeEventHandler<HTMLInputElement>) => {
 		if (!e.target.files) return;
 		const file = e.target.files[0];
 		const reader = new FileReader();
@@ -137,7 +139,7 @@
 					rev: r['Revision Number'],
 					revDate: r['Revision Date']
 				};
-			})
+			});
 
 			console.log();
 		};
@@ -146,12 +148,15 @@
 </script>
 
 <svelte:head>
-    <title>{routes.find(r => r.link == $page.url.pathname)?.title} : Bionic Parts</title>
-    <meta name="description" content={routes.find(r => r.link == $page.url.pathname)?.description}/>
+	<title>{routes.find((r) => r.link == $page.url.pathname)?.title} : Bionic Tools</title>
+	<meta
+		name="description"
+		content={routes.find((r) => r.link == $page.url.pathname)?.description}
+	/>
 </svelte:head>
 
 <div class="no-print">
-	<Navbar/>
+	<Navbar />
 	<div class="m-3">
 		<label for="formFile" class="form-label">Upload a CSV or XLSX</label>
 		<input class="form-control" type="file" id="formFile" on:change={fileChange} />
@@ -162,16 +167,13 @@
 	<div class="page">
 		{#each cards.slice(pageIdx * numPerPage, (pageIdx + 1) * numPerPage) as card}
 			<div class="label">
-                <KanbanCard card={card} />
-
+				<KanbanCard {card} />
 			</div>
 		{/each}
-		
 	</div>
 {/each}
 
 <style lang="scss">
-
 	.page {
 		// display: grid;
 		// grid-template-columns: 4in 4in;
@@ -183,35 +185,34 @@
 		padding-left: 0.21975in; //Side Margin
 		outline: 1px dotted;
 
-        break-inside: avoid;
+		break-inside: avoid;
 	}
 
-    @media print {
-        .page {
-            outline: none;
-        }
-		.no-print, .no-print *
-		{
+	@media print {
+		.page {
+			outline: none;
+		}
+		.no-print,
+		.no-print * {
 			display: none !important;
 		}
-	
-    }
+	}
 
 	.label {
-        display: inline-block;
+		display: inline-block;
 		box-sizing: border-box;
-		
+
 		// width: 4in; // Label Width
 		// height: 6in; //Label Height
 
 		outline: 1px dotted; //outline doesn't occupy space like border does
-        border-radius: 5px;
-        margin-right: 10px;
+		border-radius: 5px;
+		margin-right: 10px;
 	}
 
-    // .page:first-child .label {
-    //     margin-left: -5px;
-    // }
+	// .page:first-child .label {
+	//     margin-left: -5px;
+	// }
 
 	.vert-center {
 		display: inline-block;
@@ -219,12 +220,10 @@
 		// line-height: normal;
 	}
 
-    // .qrcode {
+	// .qrcode {
 	// 	width: .6in;
-    //     min-width: .6in;
-        
+	//     min-width: .6in;
+
 	// 	// float: right;
 	// }
-
-    
 </style>
