@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { routes } from "$lib/routes";
+	import { routes } from '$lib/routes';
 
 	function blankIfExt(link: string) {
 		return link.startsWith('http') ? '_blank' : '';
@@ -10,15 +10,14 @@
 	<h1>Welcome to Bionic Tools</h1>
 
 	<div class="wrapper">
-		{#each routes as panel}
-
-				<div class="card">
-					<div class="card-body">
-						<h5 class="card-title">{panel.title}</h5>
-						<p class="card-text">{panel.description}</p>
-						<a href={panel.link} target={blankIfExt(panel.link)} class="btn btn-primary">Go</a>
-					</div>
+		{#each routes.filter((r) => !r.hidden) as panel}
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">{panel.title}</h5>
+					<p class="card-text">{panel.description}</p>
+					<a href={panel.link} target={blankIfExt(panel.link)} class="btn btn-primary">Go</a>
 				</div>
+			</div>
 		{/each}
 	</div>
 </div>

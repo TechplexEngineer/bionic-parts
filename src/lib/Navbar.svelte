@@ -19,15 +19,15 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
 			<div class="navbar-nav">
-        {#each routes as panel}
-          <a
-            href={panel.link}
-            target={panel.link.startsWith('http') ? '_blank' : ''}
-            class="nav-link {panel.link === $page.url.pathname ? 'active' : ''}"
-            title="{panel.description}"
-          >
-            {panel.title}
-          </a>
+				{#each routes.filter((r) => !r.hidden) as panel}
+					<a
+						href={panel.link}
+						target={panel.link.startsWith('http') ? '_blank' : ''}
+						class="nav-link {panel.link === $page.url.pathname ? 'active' : ''}"
+						title={panel.description}
+					>
+						{panel.title}
+					</a>
 				{/each}
 				<!-- <a class="nav-link active" aria-current="page" href="/">Home</a>
 				<a class="nav-link" href="feedsandspeeds">Feed &amp; Speed</a>

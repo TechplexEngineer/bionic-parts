@@ -4,6 +4,12 @@ export const routes = [
         description: 'Use to calculate feeds and speeds for CNC machining.',
         link: '/feedsandspeeds'
     },
+    {
+        title: 'Home',
+        description: 'Landing Page',
+        link: '/',
+        hidden: true
+    },
     // {
     //     title: '1678 Tool Database',
     //     description: 'Feeds and Speeds published by FRC 1678, Citrus Circuits.',
