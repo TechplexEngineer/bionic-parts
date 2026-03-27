@@ -6,13 +6,17 @@
 
 	const middle = 30 + 20 + 85 * 4;
 
-	console.log('matches', data);
+	// after round 3 hide round 1 and make hte finals visible
+	// console.log(data.find((m) => m.comp_level == 'sf' && m.set_number == 8));
+	// before round 3 use this as the viewbox: 40 20 1100 540
+	// after round 3 use this as the viewbox: 255 20 1100 540
+	$: leftOffset = data.find((m) => m.comp_level == 'sf' && m.set_number == 8) ? '255' : '40';
 </script>
 
 <svg
 	id="bracket"
 	class="bracket"
-	viewBox="40 20 1315 540"
+	viewBox="{leftOffset} 25 1100 530"
 	width="100%"
 	version="1.1"
 	xml:space="preserve"

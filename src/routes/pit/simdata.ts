@@ -1,3 +1,4 @@
+import { tbaToNexus } from "./mapNexusToTBA";
 import { NexusEventStatus, StatboticsTeamEvent, StatboticsTeamMatches, StatboticsTeamYear } from "./restTypes";
 
 const team = {
@@ -17840,7 +17841,6 @@ const nexusStatusRed: NexusEventStatus = {
 };
 
 export const getSimData = async (event: string): Promise<[teamYear: StatboticsTeamYear, matches: StatboticsTeamMatches, ranking: StatboticsTeamEvent, nexusEventStatus: NexusEventStatus, eventKey: string]> => {
-    // console.log("event", event);
 
     if (event == "SIM-RED") {
         return [
@@ -17852,8 +17852,16 @@ export const getSimData = async (event: string): Promise<[teamYear: StatboticsTe
             team, matches, rankings, getNexusWithNextMatch(nexusStatus, "Playoff 1"), "2025nhsal"
         ];
     }
+    const evtMatch = event.toUpperCase().match(/SIM-((?:QM|SF|F)\d+)/);
+    if (evtMatch) {
+        console.log("evtMatch", evtMatch[1], tbaToNexus(evtMatch[1].toLowerCase()));
+        return [
+            team, getMatchesWithNextMatch(matches, tbaToNexus(evtMatch[1].toLowerCase())), rankings, getNexusWithNextMatch(nexusStatus, tbaToNexus(evtMatch[1].toLowerCase())), "2025nhsal"
+        ];
+    }
+
     return [
-        team, matches, rankings, getNexusWithNextMatch(nexusStatus, "Qualification 66"), "2025nhsal"
+        team, getMatchesWithNextMatch(matches, "Qualification 5"), rankings, getNexusWithNextMatch(nexusStatus, "Qualification 5"), "2025nhsal"
     ];
 }
 
@@ -17910,4 +17918,15 @@ const getNexusWithNextMatch = (status: NexusEventStatus, nextMatch: string): Nex
 
     return status
 
+}
+
+export const getMatchesWithNextMatch = (matches: StatboticsTeamMatches, nextMatch: string): StatboticsTeamMatches => {
+    return matches.filter(match => {
+        const tbaMatch = match.key.split('_')[1];
+        if (!tbaMatch) return false;
+        const nexusLabel = tbaToNexus(tbaMatch);
+        if (!nexusLabel) return false;
+
+        return labelCompare(nexusLabel, nextMatch) !== LabelEquality.GREATER;
+    });
 }

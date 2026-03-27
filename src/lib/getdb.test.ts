@@ -1,5 +1,5 @@
-import {describe, it} from "vitest";
-import getdb, {DataLayer} from "$lib/getdb";
+import { describe, it } from "vitest";
+import getdb, { DataLayer } from "$lib/getdb";
 
 
 describe("db", () => {
@@ -8,6 +8,6 @@ describe("db", () => {
         const db = new DataLayer(ddb);
 
         const res = await db.getProjectsByOnshapeDocId("da2bc7f409791a8720b27217")
-        console.log(res);
+        // console.log(res);
     });
 });
