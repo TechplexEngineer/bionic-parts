@@ -8,15 +8,15 @@
 	export let match: StatboticsTeamMatch | undefined;
 	// console.log('match', match);
 
-	let red1Team = match?.alliances?.red.team_keys[0] || '';
-	let red2Team = match?.alliances?.red.team_keys[1] || '';
-	let red3Team = match?.alliances?.red.team_keys[2] || '';
-	let blue1Team = match?.alliances?.blue.team_keys[0] || '';
-	let blue2Team = match?.alliances?.blue.team_keys[1] || '';
-	let blue3Team = match?.alliances?.blue.team_keys[2] || '';
+	$: red1Team = match?.alliances?.red.team_keys[0] || '';
+	$: red2Team = match?.alliances?.red.team_keys[1] || '';
+	$: red3Team = match?.alliances?.red.team_keys[2] || '';
+	$: blue1Team = match?.alliances?.blue.team_keys[0] || '';
+	$: blue2Team = match?.alliances?.blue.team_keys[1] || '';
+	$: blue3Team = match?.alliances?.blue.team_keys[2] || '';
 
-	export let redScore = match?.result?.red_score || '';
-	export let blueScore = match?.result?.blue_score || '';
+	$: redScore = match?.result?.red_score ?? '';
+	$: blueScore = match?.result?.blue_score ?? '';
 
 	export let pos: { x: number; y: number } = { x: 0, y: 0 };
 </script>
