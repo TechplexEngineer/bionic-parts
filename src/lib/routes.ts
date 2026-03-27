@@ -34,5 +34,10 @@ export const routes = [
         title: 'Color Calculator',
         description: 'Tool to generate colors.',
         link: '/colorcalc'
+    },
+    {
+        title: 'Screen Recorder',
+        description: 'Tool to record your screen.',
+        link: '/recordscreen'
     }
 ];

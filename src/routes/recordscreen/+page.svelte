@@ -7,6 +7,7 @@
 	import MultiStreamsMixer from 'multistreamsmixer';
 	// @ts-ignore
 	import { Decoder } from 'ebml';
+	import Navbar from '$lib/Navbar.svelte';
 
 	let state = 'options'; // 'options', 'starting', 'recording', 'playback'
 	let selectedMode = ''; // 'screen', 'screen+cam'
@@ -30,7 +31,9 @@
 		errorMessage = '';
 		try {
 			if (!DetectRTC.isScreenCapturingSupported) {
-				throw new Error('Screen capturing is not supported on your browser. Please use Chrome/Firefox/Edge on Desktop.');
+				throw new Error(
+					'Screen capturing is not supported on your browser. Please use Chrome/Firefox/Edge on Desktop.'
+				);
 			}
 
 			// Capture Screen
@@ -49,7 +52,9 @@
 						audio: true // Microphone
 					});
 				} catch (camErr) {
-					console.warn('Camera/Mic permission denied or not available. Falling back to screen only.');
+					console.warn(
+						'Camera/Mic permission denied or not available. Falling back to screen only.'
+					);
 					// Proceed without camera if denied/failed, but maybe user expects it to fail
 					throw new Error('Camera or Microphone access was denied or device not found.');
 				}
@@ -78,16 +83,15 @@
 
 			if (liveVideo) {
 				liveVideo.srcObject = finalStream;
-				liveVideo.play().catch((e) => console.error("Video play error:", e));
+				liveVideo.play().catch((e) => console.error('Video play error:', e));
 			}
-			
+
 			// Setup RecordRTC
 			recorder = new RecordRTC(finalStream, {
 				type: 'video',
 				mimeType: 'video/webm'
 			});
 			recorder.startRecording();
-
 		} catch (err: any) {
 			hasError = true;
 			errorMessage = err.message || 'Unknown error occurred while acquiring media.';
@@ -108,7 +112,7 @@
 	async function finalizeRecording() {
 		state = 'playback';
 		await tick();
-		
+
 		cleanupStreams();
 
 		if (recordedBlob) {
@@ -128,12 +132,14 @@
 		}
 	}
 
+	let downloadFormat = 'mkv';
+
 	function downloadVideo() {
 		if (!recordedUrl) return;
 		const a = document.createElement('a');
 		a.style.display = 'none';
 		a.href = recordedUrl;
-		a.download = `recording-${Date.now()}.webm`;
+		a.download = `recording-${Date.now()}.${downloadFormat}`;
 		document.body.appendChild(a);
 		a.click();
 		setTimeout(() => {
@@ -174,19 +180,20 @@
 
 	onMount(() => {
 		// Initialize or check compat here if needed
-		console.log("DetectRTC IS_WEBRTC_SUPPORTED:", DetectRTC.isWebRTCSupported);
+		console.log('DetectRTC IS_WEBRTC_SUPPORTED:', DetectRTC.isWebRTCSupported);
 	});
 </script>
+
+<Navbar />
 
 <div class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-5">
 	<div class="row w-100 justify-content-center">
 		<div class="col-12 col-md-10 col-lg-8 card shadow border-0 p-5 rounded-4 text-center">
-			
 			{#if state === 'options'}
 				<h1 class="mb-4 fw-bold text-primary">Record Your Screen</h1>
 				<p class="text-muted mb-5">
-					A simple offline-capable screen recorder mimicking recordscreen.io. 
-					Choose an option below to get started. All recordings are kept securely on your device.
+					A simple offline-capable screen recorder mimicking recordscreen.io. Choose an option below
+					to get started. All recordings are kept securely on your device.
 				</p>
 
 				{#if hasError}
@@ -196,11 +203,17 @@
 				{/if}
 
 				<div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-					<button class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold" on:click={() => startRecordingSequence('screen+cam')}>
-						<i class="bi bi-camera-video me-2"></i> Screen + Camera
+					<button
+						class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold"
+						on:click={() => startRecordingSequence('screen+cam')}
+					>
+						<i class="bi bi-camera-video me-2" /> Screen + Camera
 					</button>
-					<button class="btn btn-outline-primary btn-lg rounded-pill px-4 py-3 fw-bold" on:click={() => startRecordingSequence('screen')}>
-						<i class="bi bi-display me-2"></i> Screen Only
+					<button
+						class="btn btn-outline-primary btn-lg rounded-pill px-4 py-3 fw-bold"
+						on:click={() => startRecordingSequence('screen')}
+					>
+						<i class="bi bi-display me-2" /> Screen Only
 					</button>
 				</div>
 			{/if}
@@ -215,11 +228,20 @@
 			{/if}
 
 			{#if state === 'recording'}
-				<h3 class="mb-3 text-danger"><span class="spinner-grow spinner-grow-sm me-2 text-danger" role="status" aria-hidden="true"></span>Recording Live...</h3>
-				
-				<div class="ratio ratio-16x9 bg-dark rounded-3 overflow-hidden mb-4 shadow-sm" style="max-height: 500px;">
+				<h3 class="mb-3 text-danger">
+					<span
+						class="spinner-grow spinner-grow-sm me-2 text-danger"
+						role="status"
+						aria-hidden="true"
+					/>Recording Live...
+				</h3>
+
+				<div
+					class="ratio ratio-16x9 bg-dark rounded-3 overflow-hidden mb-4 shadow-sm"
+					style="max-height: 500px;"
+				>
 					<!-- svelte-ignore a11y-media-has-caption -->
-					<video bind:this={liveVideo} class="w-100 h-100 object-fit-contain" muted autoplay></video>
+					<video bind:this={liveVideo} class="w-100 h-100 object-fit-contain" muted autoplay />
 				</div>
 
 				<button class="btn btn-danger btn-lg rounded-pill px-5 fw-bold" on:click={stopRecording}>
@@ -229,22 +251,38 @@
 
 			{#if state === 'playback'}
 				<h2 class="mb-4 fw-bold text-success">Recording Complete!</h2>
-				
-				<div class="ratio ratio-16x9 bg-dark rounded-3 overflow-hidden mb-4 shadow-sm" style="max-height: 500px;">
+
+				<div
+					class="ratio ratio-16x9 bg-dark rounded-3 overflow-hidden mb-4 shadow-sm"
+					style="max-height: 500px;"
+				>
 					<!-- svelte-ignore a11y-media-has-caption -->
-					<video bind:this={playbackVideo} class="w-100 h-100 object-fit-contain" controls autoplay></video>
+					<video
+						bind:this={playbackVideo}
+						class="w-100 h-100 object-fit-contain"
+						controls
+						autoplay
+					/>
 				</div>
 
-				<div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
-					<button class="btn btn-success btn-lg rounded-pill px-4 py-3 fw-bold" on:click={downloadVideo}>
-						Download Video
-					</button>
-					<button class="btn btn-outline-secondary btn-lg rounded-pill px-4 py-3 fw-bold" on:click={recordAnother}>
+				<div class="d-flex flex-column flex-sm-row justify-content-center gap-3 align-items-center">
+					<div class="input-group" style="max-width: 300px;">
+						<select class="form-select form-select-lg" bind:value={downloadFormat}>
+							<option value="webm">.webm</option>
+							<option value="mkv">.mkv</option>
+						</select>
+						<button class="btn btn-success btn-lg fw-bold px-4" on:click={downloadVideo}>
+							Download
+						</button>
+					</div>
+					<button
+						class="btn btn-outline-secondary btn-lg rounded-pill px-4 py-3 fw-bold"
+						on:click={recordAnother}
+					>
 						Record Another
 					</button>
 				</div>
 			{/if}
-
 		</div>
 	</div>
 </div>
