@@ -37,7 +37,14 @@
 		</div>
 		<div class="form-group">
 			<label for="teamNumberInput">Team Number:</label>
-			<input type="number" id="teamNumberInput" class="form-control" min="1" name="teamNumber" />
+			<input
+				type="number"
+				id="teamNumberInput"
+				class="form-control"
+				min="1"
+				name="teamNumber"
+				value="4909"
+			/>
 		</div>
 		<!-- <div class="form-group">
 				<label for="intervalInput">Update Interval (ms):</label>

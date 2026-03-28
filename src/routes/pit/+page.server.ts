@@ -90,13 +90,13 @@ export const load = (async ({ params, url }) => {
     // console.log('upcommingMatches', upcommingMatches);
     const rankingPoints = nextMatch ?
         nextMatch.alliances.red.team_keys.includes(teamNumber) ? [
-            { name: "Auto RP", pred: nextMatch.pred.red_auto_rp },
-            { name: "RP 1", pred: nextMatch.pred.red_coral_rp },
-            { name: "RP 2", pred: nextMatch.pred.red_barge_rp },
+            { name: "RP 1", pred: nextMatch.pred.red_rp_1 },
+            { name: "RP 2", pred: nextMatch.pred.red_rp_2 },
+            { name: "RP 3", pred: nextMatch.pred.red_rp_3 },
         ] : [
-            { name: "Auto", pred: nextMatch.pred.blue_auto_rp },
-            { name: "RP 1", pred: nextMatch.pred.blue_coral_rp },
-            { name: "RP 2", pred: nextMatch.pred.blue_barge_rp },
+            { name: "RP 1", pred: nextMatch.pred.blue_rp_1 },
+            { name: "RP 2", pred: nextMatch.pred.blue_rp_2 },
+            { name: "RP 3", pred: nextMatch.pred.blue_barge_rp },
         ]
         : [];
 
