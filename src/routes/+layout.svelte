@@ -36,7 +36,7 @@
 <slot />
 
 <style>
-	:global(body) {
+	/* :global(body) {
 		--color-bg-0: rgb(202, 216, 228);
 		--color-bg-1: hsl(209, 36%, 86%);
 		--color-bg-2: hsl(224, 44%, 95%);
@@ -49,5 +49,5 @@
 				rgba(255, 255, 255, 0) 100%
 			),
 			linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
-	}
+	} */
 </style>
