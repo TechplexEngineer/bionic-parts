@@ -23,12 +23,38 @@
 			: `${matchData.comp_level.toUpperCase()} ${matchData.set_number}M${matchData.match_number}`
 		: 'Match 12345';
 
-	function exportPNG() {
+	async function exportPNG() {
 		if (!svgElement) return;
+
+		// Fetch the font and create a base64 font-face so it works in Canvas
+		let fontBase64 = '';
+		try {
+			const res = await fetch('/fonts/mashine/Mashine-semibold.woff');
+			const blob = await res.blob();
+			fontBase64 = await new Promise((resolve) => {
+				const reader = new FileReader();
+				reader.onloadend = () => resolve(reader.result as string);
+				reader.readAsDataURL(blob);
+			});
+		} catch (e) {
+			console.error('Failed to load font for export', e);
+		}
 
 		// We need to fetch any external stylesheets/fonts or just hope they are rendered
 		// if they are standard. Since this is just SVG to Canvas.
-		const svgData = new XMLSerializer().serializeToString(svgElement);
+		let svgData = new XMLSerializer().serializeToString(svgElement);
+
+		if (fontBase64) {
+			const style = `<style>
+				@font-face {
+					font-family: 'Mashine';
+					src: url('${fontBase64}') format('woff');
+					font-weight: 600;
+					font-style: normal;
+				}
+			</style>`;
+			svgData = svgData.replace(/<defs[^>]*>/, (match) => match + style);
+		}
 		const canvas = document.createElement('canvas');
 		const ctx = canvas.getContext('2d');
 
