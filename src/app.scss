@@ -4,3 +4,12 @@
 // @import "bootstrap/scss/boostrap";
 @import "~bootstrap/scss/bootstrap";
 
+@font-face {
+  font-family: 'Mashine';
+  src: local('Mashine'), local('Mashine-SemiBold'),
+       url('/fonts/mashine/Mashine-semibold.woff') format('woff'),
+       url('/fonts/mashine/Mashine-semibold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
