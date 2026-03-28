@@ -45,5 +45,10 @@ export const routes = [
         title: 'Screen Recorder',
         description: 'Tool to record your screen.',
         link: '/recordscreen'
+    },
+    {
+        title: 'Match Post Template',
+        description: 'Tool to generate match post templates.',
+        link: '/matchposttemplate'
     }
 ];
