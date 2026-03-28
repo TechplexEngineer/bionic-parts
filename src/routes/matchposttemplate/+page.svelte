@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Navbar from '$lib/Navbar.svelte';
 	import type { PageData } from './$types';
+	import { getStyleForPng } from './getStyleForPng';
 
 	export let data: PageData;
 
@@ -45,14 +46,7 @@
 		let svgData = new XMLSerializer().serializeToString(svgElement);
 
 		if (fontBase64) {
-			const style = `<style>
-				@font-face {
-					font-family: 'Mashine';
-					src: url('${fontBase64}') format('woff');
-					font-weight: 600;
-					font-style: normal;
-				}
-			</style>`;
+			const style = getStyleForPng(fontBase64);
 			svgData = svgData.replace(/<defs[^>]*>/, (match) => match + style);
 		}
 		const canvas = document.createElement('canvas');
@@ -88,8 +82,11 @@
 <br />
 
 <div class="container">
-	<div class="mb-3 d-flex gap-2 align-items-center">
-		<form method="get" class="d-flex gap-2 align-items-center mb-0">
+	<div class="mb-3 d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center">
+		<form
+			method="get"
+			class="d-flex flex-column flex-md-row gap-2 align-items-start align-items-md-center mb-0"
+		>
 			<label for="match" class="form-label mb-0" style="white-space: nowrap;">TBA Match Key:</label>
 			<input type="text" id="match" name="match" class="form-control" value={data.matchKey} />
 			<button type="submit" class="btn btn-secondary">Load</button>
@@ -99,6 +96,7 @@
 
 	<svg
 		bind:this={svgElement}
+		class="preview-svg"
 		id="svg36"
 		width="1080"
 		height="1350"
@@ -314,3 +312,13 @@
 		>
 	</svg>
 </div>
+
+<style>
+	.preview-svg {
+		width: 80vw;
+		max-width: 1080px;
+		height: auto;
+		display: block;
+		margin: 0 auto;
+	}
+</style>
