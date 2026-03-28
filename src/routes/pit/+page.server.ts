@@ -96,7 +96,7 @@ export const load = (async ({ params, url }) => {
         ] : [
             { name: "RP 1", pred: nextMatch.pred.blue_rp_1 },
             { name: "RP 2", pred: nextMatch.pred.blue_rp_2 },
-            { name: "RP 3", pred: nextMatch.pred.blue_barge_rp },
+            { name: "RP 3", pred: nextMatch.pred.blue_rp_3 },
         ]
         : [];
 
