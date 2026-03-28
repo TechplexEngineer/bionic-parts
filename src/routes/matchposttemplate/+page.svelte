@@ -269,9 +269,24 @@
 			stroke="#ffffff"
 			stroke-width="1.767"
 		>
-			<text id="RED1" transform="translate(142.07 460)" text-anchor="middle">{redTeams[0]}</text>
-			<text id="RED2" transform="translate(142.07 584.23)" text-anchor="middle">{redTeams[1]}</text>
-			<text id="RED3" transform="translate(142.07 708.45)" text-anchor="middle">{redTeams[2]}</text>
+			<g transform="translate(142.07 460)">
+				<text id="RED1" text-anchor="middle">{redTeams[0]}</text>
+				{#if redTeams[0] === '4909'}
+					<line x1="-48" y1="14" x2="48" y2="14" stroke-width="4" />
+				{/if}
+			</g>
+			<g transform="translate(142.07 584.23)">
+				<text id="RED2" text-anchor="middle">{redTeams[1]}</text>
+				{#if redTeams[1] === '4909'}
+					<line x1="-48" y1="14" x2="48" y2="14" stroke-width="4" />
+				{/if}
+			</g>
+			<g transform="translate(142.07 708.45)">
+				<text id="RED3" text-anchor="middle">{redTeams[2]}</text>
+				{#if redTeams[2] === '4909'}
+					<line x1="-48" y1="14" x2="48" y2="14" stroke-width="4" />
+				{/if}
+			</g>
 		</g>
 		<g
 			id="BlueTeams"
@@ -282,13 +297,24 @@
 			stroke="#ffffff"
 			stroke-width="1.767"
 		>
-			<text id="Blue1" transform="translate(517.41 460)" text-anchor="middle">{blueTeams[0]}</text>
-			<text id="Blue2" transform="translate(517.41 584.23)" text-anchor="middle"
-				>{blueTeams[1]}</text
-			>
-			<text id="Blue3" transform="translate(517.41 708.45)" text-anchor="middle"
-				>{blueTeams[2]}</text
-			>
+			<g transform="translate(517.41 460)">
+				<text id="Blue1" text-anchor="middle">{blueTeams[0]}</text>
+				{#if blueTeams[0] === '4909'}
+					<line x1="-48" y1="14" x2="48" y2="14" stroke-width="4" />
+				{/if}
+			</g>
+			<g transform="translate(517.41 584.23)">
+				<text id="Blue2" text-anchor="middle">{blueTeams[1]}</text>
+				{#if blueTeams[1] === '4909'}
+					<line x1="-48" y1="14" x2="48" y2="14" stroke-width="4" />
+				{/if}
+			</g>
+			<g transform="translate(517.41 708.45)">
+				<text id="Blue3" text-anchor="middle">{blueTeams[2]}</text>
+				{#if blueTeams[2] === '4909'}
+					<line x1="-48" y1="14" x2="48" y2="14" stroke-width="4" />
+				{/if}
+			</g>
 		</g>
 		<text
 			id="SCORERED"
