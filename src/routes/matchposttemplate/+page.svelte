@@ -65,7 +65,7 @@
 				const pngUrl = canvas.toDataURL('image/png');
 				const downloadLink = document.createElement('a');
 				downloadLink.href = pngUrl;
-				downloadLink.download = 'match_post.png';
+				downloadLink.download = data.matchKey ? `${data.matchKey}.png` : 'match_post.png';
 				document.body.appendChild(downloadLink);
 				downloadLink.click();
 				document.body.removeChild(downloadLink);
