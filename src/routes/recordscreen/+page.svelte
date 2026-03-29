@@ -5,8 +5,6 @@
 	import DetectRTC from 'detectrtc';
 	// @ts-ignore
 	import MultiStreamsMixer from 'multistreamsmixer';
-	// @ts-ignore
-	import { Decoder } from 'ebml';
 	import Navbar from '$lib/Navbar.svelte';
 
 	let state = 'options'; // 'options', 'starting', 'recording', 'playback'
@@ -116,15 +114,6 @@
 		cleanupStreams();
 
 		if (recordedBlob) {
-			// EBML Demonstration to parse metadata if we wanted to extract or fix duration manually
-			try {
-				const decoder = new Decoder();
-				console.log('EBML Decoder Initialized. WebM Blob size:', recordedBlob.size);
-				// To fully utilize ebml to modify file duration, extensive ArrayBuffer parsing is typically done here.
-			} catch (e) {
-				console.error('EBML Parsing issue:', e);
-			}
-
 			recordedUrl = URL.createObjectURL(recordedBlob);
 			if (playbackVideo) {
 				playbackVideo.src = recordedUrl;
