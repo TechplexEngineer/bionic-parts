@@ -50,5 +50,10 @@ export const routes = [
         title: 'Match Post Template',
         description: 'Tool to generate match post templates.',
         link: '/matchposttemplate'
+    },
+    {
+        title: 'When2Meet',
+        description: 'Scheduling poll tool — find the best time for everyone.',
+        link: '/when2meet'
     }
 ];
