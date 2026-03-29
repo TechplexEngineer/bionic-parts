@@ -12,6 +12,9 @@
   $: aggregates = data.aggregates as AggregateMap;
   $: topSlots = data.topSlots as TopSlot[];
 
+  // Show time labels every hour (4 × 15-min slots = 60 min)
+  const TIME_LABEL_INTERVAL_SLOTS = 4;
+
   // Participant session
   let participantId = '';
   let editToken = '';
@@ -317,7 +320,7 @@
           <!-- Slot rows -->
           {#each slots as slotMinutes, si}
             <div class="grid-time-label">
-              {#if si % 4 === 0}
+              {#if si % TIME_LABEL_INTERVAL_SLOTS === 0}
                 {minutesToTimeLabel(slotMinutes)}
               {/if}
             </div>

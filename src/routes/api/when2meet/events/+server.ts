@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import { getDb, createEvent } from '$lib/when2meet/db';
 
 const MAX_DATES = 62;
+const MAX_EVENT_DURATION_MINUTES = 24 * 60;
 
 export const POST: RequestHandler = async ({ request, platform }) => {
   let body: unknown;
@@ -30,7 +31,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 
   if (isNaN(startTimeMinutes) || isNaN(endTimeMinutes)) return json({ error: 'Invalid time range' }, { status: 400 });
   if (startTimeMinutes >= endTimeMinutes) return json({ error: 'End time must be after start time' }, { status: 400 });
-  if (endTimeMinutes - startTimeMinutes > 24 * 60) return json({ error: 'Event cannot exceed 24 hours' }, { status: 400 });
+  if (endTimeMinutes - startTimeMinutes > MAX_EVENT_DURATION_MINUTES) return json({ error: 'Event cannot exceed 24 hours' }, { status: 400 });
 
   let selectedDates: string[] | undefined;
   let selectedWeekdays: number[] | undefined;

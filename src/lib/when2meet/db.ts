@@ -225,26 +225,23 @@ export async function applyAvailabilityBatch(
   operation: 'add' | 'remove',
   changes: { columnKey: string; slotIndex: number }[]
 ): Promise<void> {
+  if (changes.length === 0) return;
   const now = Date.now();
   if (operation === 'add') {
-    for (const change of changes) {
-      await db
-        .prepare(
-          `INSERT OR IGNORE INTO w2m_availability_slots (event_id, participant_id, column_key, slot_index, created_at)
-           VALUES (?, ?, ?, ?, ?)`
-        )
-        .bind(eventId, participantId, change.columnKey, change.slotIndex, now)
-        .run();
-    }
+    const stmt = db.prepare(
+      `INSERT OR IGNORE INTO w2m_availability_slots (event_id, participant_id, column_key, slot_index, created_at)
+       VALUES (?, ?, ?, ?, ?)`
+    );
+    await db.batch(
+      changes.map((c) => stmt.bind(eventId, participantId, c.columnKey, c.slotIndex, now))
+    );
   } else {
-    for (const change of changes) {
-      await db
-        .prepare(
-          'DELETE FROM w2m_availability_slots WHERE participant_id = ? AND column_key = ? AND slot_index = ?'
-        )
-        .bind(participantId, change.columnKey, change.slotIndex)
-        .run();
-    }
+    const stmt = db.prepare(
+      'DELETE FROM w2m_availability_slots WHERE participant_id = ? AND column_key = ? AND slot_index = ?'
+    );
+    await db.batch(
+      changes.map((c) => stmt.bind(participantId, c.columnKey, c.slotIndex))
+    );
   }
 }
 

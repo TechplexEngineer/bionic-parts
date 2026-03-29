@@ -21,11 +21,12 @@
   let dragging = false;
   let dragAdding = true;
 
-  // Generate time options: every 30 minutes from 0 to 24:00
-  // 24*60 (midnight end) is displayed as 11:59 PM to avoid showing "12:00 AM" for end-of-day
+  const MINUTES_PER_DAY = 24 * 60;
+  // Midnight-end option shows as "11:59 PM" to avoid displaying "12:00 AM" for end-of-day
+  const END_OF_DAY_DISPLAY_MINUTES = 23 * 60 + 59;
   const timeOptions: { value: number; label: string }[] = [];
-  for (let m = 0; m <= 24 * 60; m += 30) {
-    timeOptions.push({ value: m, label: minutesToTimeLabel(m === 24 * 60 ? 23 * 60 + 59 : m) });
+  for (let m = 0; m <= MINUTES_PER_DAY; m += 30) {
+    timeOptions.push({ value: m, label: minutesToTimeLabel(m === MINUTES_PER_DAY ? END_OF_DAY_DISPLAY_MINUTES : m) });
   }
 
   // Timezone search
@@ -219,7 +220,7 @@
         <div class="col-sm-6">
           <label for="start-time" class="form-label">Earliest Time</label>
           <select id="start-time" class="form-select" bind:value={startTimeMinutes}>
-            {#each timeOptions.filter(t => t.value < 24 * 60) as opt}
+            {#each timeOptions.filter(t => t.value < MINUTES_PER_DAY) as opt}
               <option value={opt.value}>{opt.label}</option>
             {/each}
           </select>
