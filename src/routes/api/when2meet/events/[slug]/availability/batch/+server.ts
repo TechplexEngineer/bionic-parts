@@ -2,6 +2,8 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb, getEventBySlug, validateParticipantToken, applyAvailabilityBatch, getAggregates, getEventColumns } from '$lib/when2meet/db';
 
+const MAX_BATCH_SIZE = 500;
+
 export const POST: RequestHandler = async ({ params, request, platform }) => {
   let body: unknown;
   try { body = await request.json(); } catch { return json({ error: 'Invalid JSON' }, { status: 400 }); }
@@ -14,7 +16,7 @@ export const POST: RequestHandler = async ({ params, request, platform }) => {
 
   if (!participantId || !editToken) return json({ error: 'Missing credentials' }, { status: 400 });
   if (operation !== 'add' && operation !== 'remove') return json({ error: 'Invalid operation' }, { status: 400 });
-  if (changes.length > 500) return json({ error: 'Too many changes' }, { status: 400 });
+  if (changes.length > MAX_BATCH_SIZE) return json({ error: 'Too many changes' }, { status: 400 });
 
   const db = await getDb(platform);
   const event = await getEventBySlug(db, params.slug);

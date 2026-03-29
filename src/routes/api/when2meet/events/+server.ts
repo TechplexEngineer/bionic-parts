@@ -2,6 +2,8 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { getDb, createEvent } from '$lib/when2meet/db';
 
+const MAX_DATES = 62;
+
 export const POST: RequestHandler = async ({ request, platform }) => {
   let body: unknown;
   try {
@@ -38,7 +40,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
       ? (b.selectedDates as unknown[]).filter((d): d is string => typeof d === 'string')
       : [];
     if (selectedDates.length === 0) return json({ error: 'At least one date required' }, { status: 400 });
-    if (selectedDates.length > 62) return json({ error: 'Too many dates (max 62)' }, { status: 400 });
+    if (selectedDates.length > MAX_DATES) return json({ error: `Too many dates (max ${MAX_DATES})` }, { status: 400 });
   } else {
     selectedWeekdays = Array.isArray(b.selectedWeekdays)
       ? (b.selectedWeekdays as unknown[]).filter((d): d is number => typeof d === 'number')

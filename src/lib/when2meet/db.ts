@@ -1,5 +1,6 @@
 // Database access functions for when2meet using raw D1 queries
 import { nanoid } from '$lib/when2meet/nanoid';
+import { WEEKDAY_LONG_LABELS, formatDateColumn } from '$lib/when2meet/time';
 import type { GridColumn, AggregateMap } from '$lib/when2meet/grid';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -291,12 +292,4 @@ export async function getEventByOrganizerToken(db: RawD1, slug: string, token: s
     .bind(slug, token)
     .first()) as W2MEvent | null;
   return result ?? null;
-}
-
-const WEEKDAY_LONG_LABELS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-function formatDateColumn(dateIso: string): string {
-  const [year, month, day] = dateIso.split('-').map(Number);
-  const d = new Date(year, month - 1, day);
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 }

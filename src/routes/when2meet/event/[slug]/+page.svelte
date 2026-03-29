@@ -57,7 +57,7 @@
         body: JSON.stringify({ displayName: name })
       });
       const d = await res.json() as { error?: string; participantId: string; editToken: string; displayName: string };
-      if (!res.ok) { joinError = (d as { error?: string }).error || 'Failed to join.'; joining = false; return; }
+      if (!res.ok) { joinError = d.error || 'Failed to join.'; joining = false; return; }
       participantId = d.participantId;
       editToken = d.editToken;
       displayName = d.displayName;

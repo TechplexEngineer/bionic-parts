@@ -22,6 +22,7 @@
   let dragAdding = true;
 
   // Generate time options: every 30 minutes from 0 to 24:00
+  // 24*60 (midnight end) is displayed as 11:59 PM to avoid showing "12:00 AM" for end-of-day
   const timeOptions: { value: number; label: string }[] = [];
   for (let m = 0; m <= 24 * 60; m += 30) {
     timeOptions.push({ value: m, label: minutesToTimeLabel(m === 24 * 60 ? 23 * 60 + 59 : m) });
