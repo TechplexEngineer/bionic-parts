@@ -7,36 +7,30 @@
 	const currentYear = data.currentYear;
 	const availableYears = Array.from({ length: currentYear - 2021 }, (_, i) => currentYear - i);
 
-	function formatDate(timestamp: number) {
-		if (!timestamp) return 'TBD';
-		return new Date(timestamp * 1000).toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-			year: 'numeric'
-		});
+	function formatDateRange(startDate: string, endDate: string) {
+		if (!startDate) return 'TBD';
+		const opts: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', timeZone: 'UTC' };
+		const start = new Date(startDate).toLocaleDateString('en-US', opts);
+		const end = new Date(endDate).toLocaleDateString('en-US', { ...opts, year: 'numeric' });
+		return `${start} – ${end}`;
 	}
 
-	function getStatusClass(status: string) {
-		switch (status?.toLowerCase()) {
-			case 'completed':
-				return 'bg-secondary';
-			case 'upcoming':
-				return 'bg-primary';
-			case 'ongoing':
-				return 'bg-success';
-			default:
-				return 'bg-light text-dark';
-		}
+	function getStatusBadgeClass(event: any) {
+		const now = Date.now();
+		const start = new Date(event.start_date + 'T00:00:00Z').getTime();
+		const end = new Date(event.end_date + 'T23:59:59Z').getTime();
+		if (now < start) return 'bg-primary';
+		if (now > end) return 'bg-secondary';
+		return 'bg-success';
 	}
 
-	function formatEventType(type: string) {
-		return (
-			type
-				?.replace(/_/g, ' ')
-				.split(' ')
-				.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-				.join(' ') || ''
-		);
+	function getStatusLabel(event: any) {
+		const now = Date.now();
+		const start = new Date(event.start_date + 'T00:00:00Z').getTime();
+		const end = new Date(event.end_date + 'T23:59:59Z').getTime();
+		if (now < start) return 'Upcoming';
+		if (now > end) return 'Completed';
+		return 'Ongoing';
 	}
 </script>
 
@@ -61,36 +55,28 @@
 				<div class="col">
 					<div class="card h-100">
 						<div class="card-body">
-							<h5 class="card-title">{event.event_name}</h5>
+							<h5 class="card-title">{event.name}</h5>
 							<p class="card-text text-muted">
-								<small>Week {event.week} &bull; {formatEventType(event.type)}</small>
+								<small>
+									{event.event_type_string}{event.week != null ? ` · Week ${event.week + 1}` : ''}
+								</small>
 							</p>
-							{#if event.state || event.country}
+							{#if event.city || event.state_prov || event.country}
 								<p class="card-text">
-									<small>📍 {[event.state, event.country].filter(Boolean).join(', ')}</small>
+									<small>📍 {[event.city, event.state_prov, event.country].filter(Boolean).join(', ')}</small>
 								</p>
 							{/if}
-							{#if event.time}
+							{#if event.start_date}
 								<p class="card-text">
-									<small>📅 {formatDate(event.time)}</small>
+									<small>📅 {formatDateRange(event.start_date, event.end_date)}</small>
 								</p>
 							{/if}
-							{#if event.status}
-								<span class="badge {getStatusClass(event.status)}">{event.status}</span>
-							{/if}
-							{#if event.record?.qual?.count > 0}
-								<p class="card-text mt-2">
-									<small>
-										Record: {event.record.qual.wins}-{event.record.qual.losses}-{event.record.qual.ties}
-										&bull; Rank: {event.record.qual.rank}/{event.record.qual.num_teams}
-									</small>
-								</p>
-							{/if}
+							<span class="badge {getStatusBadgeClass(event)}">{getStatusLabel(event)}</span>
 						</div>
 						<div class="card-footer">
-							<a href="/event/{event.event}" class="btn btn-primary btn-sm">View Event</a>
+							<a href="/event/{event.key}" class="btn btn-primary btn-sm">View Event</a>
 							<a
-								href="/pit?teamNumber={data.teamNumber}&statboticsEventKey={event.event}&nexusEventKey={event.event}"
+								href="/pit?teamNumber={data.teamNumber}&statboticsEventKey={event.key}&nexusEventKey={event.key}"
 								class="btn btn-outline-secondary btn-sm ms-1"
 							>
 								Pit Display

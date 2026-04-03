@@ -1,23 +1,31 @@
+import { TBA_API_KEY } from '$env/static/private';
 import type { PageServerLoad } from './$types';
-import type { StatboticsTeam } from '../pit/restTypes';
 
+const TEAM_KEY = 'frc4909';
 const TEAM_NUMBER = 4909;
 const CURRENT_YEAR = new Date().getFullYear();
 
-export const load = (async ({ url }) => {
+export const load = (async ({ url, fetch }) => {
 	const yearStr = url.searchParams.get('year');
 	const year = yearStr ? parseInt(yearStr) : CURRENT_YEAR;
 
-	let events: StatboticsTeam[] = [];
+	let events: any[] = [];
 	try {
-		events = await fetch(
-			`https://api.statbotics.io/v3/team_events?team=${TEAM_NUMBER}&year=${year}`
-		).then((res) => (res.ok ? res.json() : []));
+		const res = await fetch(
+			`https://www.thebluealliance.com/api/v3/team/${TEAM_KEY}/events/${year}/simple`,
+			{ headers: { 'X-TBA-Auth-Key': TBA_API_KEY, accept: 'application/json' } }
+		);
+		if (res.ok) events = await res.json<any[]>();
 	} catch {
 		events = [];
 	}
 
-	const sortedEvents = (events || []).sort((a, b) => (a.time || 0) - (b.time || 0));
+	const sortedEvents = (events || []).sort((a: any, b: any) => {
+		const weekA = a.week ?? 99;
+		const weekB = b.week ?? 99;
+		if (weekA !== weekB) return weekA - weekB;
+		return (a.start_date || '').localeCompare(b.start_date || '');
+	});
 
 	return {
 		year,

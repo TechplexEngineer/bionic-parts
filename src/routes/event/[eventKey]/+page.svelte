@@ -5,7 +5,7 @@
 	export let data: PageData;
 
 	function formatDate(dateStr: string) {
-		if (!dateStr) return 'TBD';
+		if (!dateStr) return '';
 		return new Date(dateStr).toLocaleDateString('en-US', {
 			month: 'long',
 			day: 'numeric',
@@ -14,26 +14,69 @@
 		});
 	}
 
-	function formatEventType(type: string) {
-		return (
-			type
-				?.replace(/_/g, ' ')
-				.split(' ')
-				.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-				.join(' ') || ''
-		);
+	function formatMatchName(compLevel: string, setNumber: number, matchNumber: number): string {
+		switch (compLevel) {
+			case 'qm':
+				return `Quals ${matchNumber}`;
+			case 'ef':
+				return `Octos ${setNumber}M${matchNumber}`;
+			case 'qf':
+				return `Quarters ${setNumber}M${matchNumber}`;
+			case 'sf':
+				return `Playoffs ${setNumber}M${matchNumber}`;
+			case 'f':
+				return `Finals ${matchNumber}`;
+			default:
+				return `${compLevel.toUpperCase()} ${matchNumber}`;
+		}
 	}
 
-	$: topRankings = data.rankings.slice(0, 10);
-	$: ourTeamInTop = topRankings.some((t) => t.team === data.teamNumber);
-	$: ourTeamRanking = !ourTeamInTop
-		? data.rankings.find((t) => t.team === data.teamNumber)
+	function formatMatchTime(match: any): string {
+		const ts = match.predicted_time ?? match.time;
+		if (!ts) return 'TBD';
+		const d = new Date(ts * 1000);
+		const day = d.toLocaleDateString('en-US', { weekday: 'short' });
+		const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+		return `${day} ${time}${match.predicted_time ? '*' : ''}`;
+	}
+
+	function isPlayed(match: any): boolean {
+		return (match.alliances?.red?.score ?? -1) >= 0 && (match.alliances?.blue?.score ?? -1) >= 0;
+	}
+
+	function teamNum(teamKey: string): string {
+		return teamKey.replace('frc', '');
+	}
+
+	function isOurTeam(teamKey: string): boolean {
+		return teamKey === data.teamKey;
+	}
+
+	function getYoutubeLink(match: any): string | null {
+		const video = (match.videos ?? []).find((v: any) => v.type === 'youtube');
+		return video ? `https://youtu.be/${video.key}` : null;
+	}
+
+	$: qualMatches = data.matches.filter((m: any) => m.comp_level === 'qm');
+	$: elimMatches = data.matches.filter((m: any) => m.comp_level !== 'qm');
+
+	$: rankingsList = data.rankings?.rankings ?? [];
+	$: sortOrderInfo = data.rankings?.sort_order_info ?? [];
+	$: topRankings = rankingsList.slice(0, 15);
+	$: ourRankInTop = topRankings.some((r: any) => r.team_key === data.teamKey);
+	$: ourRanking = !ourRankInTop
+		? rankingsList.find((r: any) => r.team_key === data.teamKey)
 		: null;
+
+	$: qualStatus = data.teamStatus?.qual;
+	$: teamRank = qualStatus?.ranking?.rank ?? null;
+	$: numTeams = qualStatus?.num_teams ?? null;
+	$: teamRecord = qualStatus?.ranking?.record ?? null;
 </script>
 
 <Navbar />
 
-<div class="container mt-4">
+<div class="container-fluid mt-4 px-4">
 	<nav aria-label="breadcrumb">
 		<ol class="breadcrumb">
 			<li class="breadcrumb-item"><a href="/event?year={data.year}">Events {data.year}</a></li>
@@ -41,154 +84,251 @@
 		</ol>
 	</nav>
 
-	<div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
-		<div>
-			<h1>{data.eventDetails?.name ?? data.eventKey}</h1>
+	<div class="row g-4">
+		<!-- Left: Event info -->
+		<div class="col-12 col-md-4 col-lg-3">
+			<h2>{data.eventDetails?.name ?? data.eventKey}</h2>
 			{#if data.eventDetails}
-				<p class="text-muted mb-1">
-					{formatEventType(data.eventDetails.type)} &bull; Week {data.eventDetails.week}
-					{#if data.eventDetails.start_date}
-						&bull; {formatDate(data.eventDetails.start_date)} – {formatDate(
-							data.eventDetails.end_date
-						)}
-					{/if}
-				</p>
-				{#if data.eventDetails.state || data.eventDetails.country}
-					<p class="text-muted mb-0">
-						📍 {[data.eventDetails.state, data.eventDetails.country].filter(Boolean).join(', ')}
+				{#if data.eventDetails.city || data.eventDetails.state_prov || data.eventDetails.country}
+					<p class="mb-1">
+						📍 in <a
+							href="https://maps.google.com/?q={[data.eventDetails.city, data.eventDetails.state_prov, data.eventDetails.country].filter(Boolean).join(', ')}"
+							target="_blank"
+							rel="noopener"
+						>
+							{[data.eventDetails.city, data.eventDetails.state_prov, data.eventDetails.country]
+								.filter(Boolean)
+								.join(', ')}
+						</a>
 					</p>
 				{/if}
+				{#if data.eventDetails.start_date}
+					<p class="mb-1">
+						📅 {formatDate(data.eventDetails.start_date)} to {formatDate(
+							data.eventDetails.end_date
+						)}
+					</p>
+				{/if}
+				{#if data.eventDetails.week != null}
+					<span class="badge bg-secondary mb-2">Week {data.eventDetails.week + 1}</span>
+				{/if}
+			{/if}
+
+			{#if teamRank && teamRecord}
+				<p class="mt-2 mb-1">
+					Team {data.teamNumber} was Rank {teamRank}{numTeams ? `/${numTeams}` : ''} with a record
+					of {teamRecord.wins}-{teamRecord.losses}-{teamRecord.ties}
+				</p>
+			{/if}
+
+			<div class="mt-3 d-flex flex-column gap-2">
+				<a
+					href="https://www.thebluealliance.com/event/{data.eventKey}#matches"
+					target="_blank"
+					rel="noopener"
+					class="btn btn-outline-dark"
+				>
+					◉ Watch All Matches
+				</a>
+				<a
+					href="/pit?teamNumber={data.teamNumber}&statboticsEventKey={data.eventKey}&nexusEventKey={data.eventKey}"
+					class="btn btn-primary"
+				>
+					Open Pit Display
+				</a>
+			</div>
+		</div>
+
+		<!-- Right: Match schedule -->
+		<div class="col-12 col-md-8 col-lg-9">
+			{#if data.matches.length === 0}
+				<div class="alert alert-info">No match data available for this event.</div>
+			{:else}
+				<div class="table-responsive">
+					<table class="table table-sm table-bordered match-table">
+						<thead>
+							<tr>
+								<th class="text-center video-col"></th>
+								<th>Match</th>
+								<th colspan="3" class="text-center red-header">Red Alliance</th>
+								<th colspan="3" class="text-center blue-header">Blue Alliance</th>
+								<th colspan="2" class="text-center">Scores</th>
+							</tr>
+						</thead>
+						<tbody>
+							{#if qualMatches.length > 0}
+								<tr class="section-header">
+									<td colspan="10" class="text-center">Qualifications</td>
+								</tr>
+								{#each qualMatches as match}
+									{@const redTeams = match.alliances?.red?.team_keys ?? []}
+									{@const blueTeams = match.alliances?.blue?.team_keys ?? []}
+									{@const played = isPlayed(match)}
+									{@const video = getYoutubeLink(match)}
+									<tr>
+										<td class="text-center p-1 video-col">
+											{#if video}
+												<a href={video} target="_blank" rel="noopener" class="text-dark">◉</a>
+											{/if}
+										</td>
+										<td class="match-name">{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td>
+										{#each redTeams as teamKey}
+											<td class="text-center red-cell" class:our-team={isOurTeam(teamKey)}>
+												{teamNum(teamKey)}
+											</td>
+										{/each}
+										{#each blueTeams as teamKey}
+											<td class="text-center blue-cell" class:our-team={isOurTeam(teamKey)}>
+												{teamNum(teamKey)}
+											</td>
+										{/each}
+										{#if played}
+											<td class="text-center red-score fw-bold">{match.alliances.red.score}</td>
+											<td class="text-center blue-score fw-bold">{match.alliances.blue.score}</td>
+										{:else}
+											<td colspan="2" class="text-center text-muted scheduled-time">{formatMatchTime(match)}</td>
+										{/if}
+									</tr>
+								{/each}
+							{/if}
+							{#if elimMatches.length > 0}
+								<tr class="section-header">
+									<td colspan="10" class="text-center">Playoffs</td>
+								</tr>
+								{#each elimMatches as match}
+									{@const redTeams = match.alliances?.red?.team_keys ?? []}
+									{@const blueTeams = match.alliances?.blue?.team_keys ?? []}
+									{@const played = isPlayed(match)}
+									{@const video = getYoutubeLink(match)}
+									<tr>
+										<td class="text-center p-1 video-col">
+											{#if video}
+												<a href={video} target="_blank" rel="noopener" class="text-dark">◉</a>
+											{/if}
+										</td>
+										<td class="match-name">{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td>
+										{#each redTeams as teamKey}
+											<td class="text-center red-cell" class:our-team={isOurTeam(teamKey)}>
+												{teamNum(teamKey)}
+											</td>
+										{/each}
+										{#each blueTeams as teamKey}
+											<td class="text-center blue-cell" class:our-team={isOurTeam(teamKey)}>
+												{teamNum(teamKey)}
+											</td>
+										{/each}
+										{#if played}
+											<td class="text-center red-score fw-bold">{match.alliances.red.score}</td>
+											<td class="text-center blue-score fw-bold">{match.alliances.blue.score}</td>
+										{:else}
+											<td colspan="2" class="text-center text-muted scheduled-time">{formatMatchTime(match)}</td>
+										{/if}
+									</tr>
+								{/each}
+							{/if}
+						</tbody>
+					</table>
+				</div>
 			{/if}
 		</div>
-		<a
-			href="/pit?teamNumber={data.teamNumber}&statboticsEventKey={data.eventKey}&nexusEventKey={data.eventKey}"
-			class="btn btn-primary"
-		>
-			Open Pit Display
-		</a>
 	</div>
 
-	{#if data.teamEvent}
-		<div class="row g-3 mb-4">
-			<div class="col-md-4">
-				<div class="card h-100">
-					<div class="card-header">
-						<strong>Team {data.teamNumber} — {data.teamEvent.team_name}</strong>
-					</div>
-					<div class="card-body">
-						<div class="mb-2">
-							<span class="badge bg-success fs-6">
-								EPA: {Math.round(data.teamEvent.epa.total_points.mean * 10) / 10}
-							</span>
-							{#if data.teamEvent.status}
-								<span class="badge bg-secondary ms-1">{data.teamEvent.status}</span>
-							{/if}
-						</div>
-						{#if data.teamEvent.record?.qual?.count > 0}
-							<p class="mb-1"><strong>Qualification Record:</strong></p>
-							<p class="mb-2">
-								{data.teamEvent.record.qual.wins}-{data.teamEvent.record.qual.losses}-{data.teamEvent
-									.record.qual.ties}
-								(Rank {data.teamEvent.record.qual.rank}/{data.teamEvent.record.qual.num_teams})
-							</p>
-						{/if}
-						{#if data.teamEvent.record?.elim?.count > 0}
-							<p class="mb-1"><strong>Playoff Record:</strong></p>
-							<p class="mb-0">
-								{data.teamEvent.record.elim.wins}-{data.teamEvent.record.elim.losses}-{data.teamEvent
-									.record.elim.ties}
-							</p>
-						{/if}
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-4">
-				<div class="card h-100">
-					<div class="card-header"><strong>EPA Breakdown</strong></div>
-					<div class="card-body p-0">
-						<table class="table table-sm mb-0">
-							<tbody>
-								<tr>
-									<td>Total</td>
-									<td
-										><strong
-											>{Math.round(data.teamEvent.epa.breakdown.total_points * 10) / 10}</strong
-										></td
-									>
-								</tr>
-								<tr>
-									<td>Auto</td>
-									<td>{Math.round(data.teamEvent.epa.breakdown.auto_points * 10) / 10}</td>
-								</tr>
-								<tr>
-									<td>Teleop</td>
-									<td>{Math.round(data.teamEvent.epa.breakdown.teleop_points * 10) / 10}</td>
-								</tr>
-								<tr>
-									<td>Endgame</td>
-									<td>{Math.round(data.teamEvent.epa.breakdown.endgame_points * 10) / 10}</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	{/if}
-
-	{#if data.rankings.length > 0}
-		<h2>Event Rankings</h2>
-		<div class="table-responsive">
-			<table class="table table-hover">
-				<thead>
-					<tr>
-						<th>Rank</th>
-						<th>Team</th>
-						<th>EPA</th>
-						<th>W-L-T</th>
-						<th>RPs</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each topRankings as team}
-						<tr class:table-success={team.team === data.teamNumber}>
-							<td>{team.record.qual.rank}</td>
-							<td>
-								<strong>{team.team}</strong>
-								{#if team.team_name}
-									<small class="text-muted"> — {team.team_name}</small>
-								{/if}
-							</td>
-							<td>{Math.round(team.epa.total_points.mean * 10) / 10}</td>
-							<td
-								>{team.record.qual.wins}-{team.record.qual.losses}-{team.record.qual.ties}</td
-							>
-							<td>{team.record.qual.rps}</td>
-						</tr>
-					{/each}
-					{#if ourTeamRanking}
+	<!-- Rankings -->
+	{#if rankingsList.length > 0}
+		<div class="mt-4">
+			<h3>Rankings</h3>
+			<div class="table-responsive">
+				<table class="table table-sm table-hover">
+					<thead>
 						<tr>
-							<td colspan="5" class="text-center text-muted py-1">…</td>
+							<th>Rank</th>
+							<th>Team</th>
+							{#each sortOrderInfo.slice(0, 2) as info}
+								<th>{info.name}</th>
+							{/each}
+							<th>W-L-T</th>
+							<th>Played</th>
 						</tr>
-						<tr class="table-success">
-							<td>{ourTeamRanking.record.qual.rank}</td>
-							<td>
-								<strong>{ourTeamRanking.team}</strong>
-								{#if ourTeamRanking.team_name}
-									<small class="text-muted"> — {ourTeamRanking.team_name}</small>
-								{/if}
-							</td>
-							<td>{Math.round(ourTeamRanking.epa.total_points.mean * 10) / 10}</td>
-							<td
-								>{ourTeamRanking.record.qual.wins}-{ourTeamRanking.record.qual.losses}-{ourTeamRanking
-									.record.qual.ties}</td
-							>
-							<td>{ourTeamRanking.record.qual.rps}</td>
-						</tr>
-					{/if}
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						{#each topRankings as r}
+							<tr class:table-success={r.team_key === data.teamKey}>
+								<td>{r.rank}</td>
+								<td class:fw-bold={r.team_key === data.teamKey}>{teamNum(r.team_key)}</td>
+								{#each (r.sort_orders ?? []).slice(0, 2) as so, i}
+									<td
+										>{sortOrderInfo[i]?.precision === 0
+											? so
+											: so.toFixed(sortOrderInfo[i]?.precision ?? 2)}</td
+									>
+								{/each}
+								<td>{r.record.wins}-{r.record.losses}-{r.record.ties}</td>
+								<td>{r.matches_played}</td>
+							</tr>
+						{/each}
+						{#if ourRanking}
+							<tr>
+								<td colspan="6" class="text-center text-muted py-1">…</td>
+							</tr>
+							<tr class="table-success">
+								<td>{ourRanking.rank}</td>
+								<td class="fw-bold">{teamNum(ourRanking.team_key)}</td>
+								{#each (ourRanking.sort_orders ?? []).slice(0, 2) as so, i}
+									<td
+										>{sortOrderInfo[i]?.precision === 0
+											? so
+											: so.toFixed(sortOrderInfo[i]?.precision ?? 2)}</td
+									>
+								{/each}
+								<td>{ourRanking.record.wins}-{ourRanking.record.losses}-{ourRanking.record.ties}</td>
+								<td>{ourRanking.matches_played}</td>
+							</tr>
+						{/if}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	{/if}
 </div>
+
+<style>
+	.red-header {
+		background-color: rgba(220, 53, 69, 0.12);
+	}
+	.blue-header {
+		background-color: rgba(13, 110, 253, 0.12);
+	}
+	.red-cell {
+		background-color: rgba(220, 53, 69, 0.07);
+	}
+	.blue-cell {
+		background-color: rgba(13, 110, 253, 0.07);
+	}
+	.red-score {
+		background-color: rgba(220, 53, 69, 0.15);
+	}
+	.blue-score {
+		background-color: rgba(13, 110, 253, 0.15);
+	}
+	.our-team {
+		text-decoration: underline;
+		font-weight: bold;
+	}
+	.section-header td {
+		background-color: #f0f0f0;
+		font-weight: 600;
+		font-size: 0.85rem;
+	}
+	.match-table {
+		font-size: 0.875rem;
+	}
+	.video-col {
+		width: 28px;
+	}
+	.match-name {
+		white-space: nowrap;
+	}
+	.scheduled-time {
+		font-size: 0.8rem;
+	}
+</style>
