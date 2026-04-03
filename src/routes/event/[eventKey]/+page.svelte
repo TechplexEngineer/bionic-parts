@@ -23,7 +23,8 @@
 			case 'qf':
 				return `Quarters ${setNumber}M${matchNumber}`;
 			case 'sf':
-				return `Playoffs ${setNumber}M${matchNumber}`;
+				// In FRC 2023+, "sf" covers all double-elimination playoff rounds
+				return `Semis ${setNumber}M${matchNumber}`;
 			case 'f':
 				return `Finals ${matchNumber}`;
 			default:
@@ -50,6 +51,10 @@
 
 	function isOurTeam(teamKey: string): boolean {
 		return teamKey === data.teamKey;
+	}
+
+	function getLocation(event: any): string {
+		return [event.city, event.state_prov, event.country].filter(Boolean).join(', ');
 	}
 
 	function getYoutubeLink(match: any): string | null {
@@ -90,15 +95,14 @@
 			<h2>{data.eventDetails?.name ?? data.eventKey}</h2>
 			{#if data.eventDetails}
 				{#if data.eventDetails.city || data.eventDetails.state_prov || data.eventDetails.country}
+					{@const location = getLocation(data.eventDetails)}
 					<p class="mb-1">
 						📍 in <a
-							href="https://maps.google.com/?q={[data.eventDetails.city, data.eventDetails.state_prov, data.eventDetails.country].filter(Boolean).join(', ')}"
+							href="https://maps.google.com/?q={location}"
 							target="_blank"
 							rel="noopener"
 						>
-							{[data.eventDetails.city, data.eventDetails.state_prov, data.eventDetails.country]
-								.filter(Boolean)
-								.join(', ')}
+							{location}
 						</a>
 					</p>
 				{/if}
@@ -110,6 +114,7 @@
 					</p>
 				{/if}
 				{#if data.eventDetails.week != null}
+					<!-- TBA week is 0-indexed; add 1 for human-readable display -->
 					<span class="badge bg-secondary mb-2">Week {data.eventDetails.week + 1}</span>
 				{/if}
 			{/if}

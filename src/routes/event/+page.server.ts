@@ -21,8 +21,10 @@ export const load = (async ({ url, fetch }) => {
 	}
 
 	const sortedEvents = (events || []).sort((a: any, b: any) => {
-		const weekA = a.week ?? 99;
-		const weekB = b.week ?? 99;
+		// Championship/off-season events have no week — sort them last
+		const SORT_LAST = 99;
+		const weekA = a.week ?? SORT_LAST;
+		const weekB = b.week ?? SORT_LAST;
 		if (weekA !== weekB) return weekA - weekB;
 		return (a.start_date || '').localeCompare(b.start_date || '');
 	});

@@ -15,21 +15,26 @@
 		return `${start} – ${end}`;
 	}
 
-	function getStatusBadgeClass(event: any) {
+	function getEventStatus(event: any): 'upcoming' | 'ongoing' | 'completed' {
 		const now = Date.now();
 		const start = new Date(event.start_date + 'T00:00:00Z').getTime();
 		const end = new Date(event.end_date + 'T23:59:59Z').getTime();
-		if (now < start) return 'bg-primary';
-		if (now > end) return 'bg-secondary';
+		if (now < start) return 'upcoming';
+		if (now > end) return 'completed';
+		return 'ongoing';
+	}
+
+	function getStatusBadgeClass(event: any) {
+		const status = getEventStatus(event);
+		if (status === 'upcoming') return 'bg-primary';
+		if (status === 'completed') return 'bg-secondary';
 		return 'bg-success';
 	}
 
 	function getStatusLabel(event: any) {
-		const now = Date.now();
-		const start = new Date(event.start_date + 'T00:00:00Z').getTime();
-		const end = new Date(event.end_date + 'T23:59:59Z').getTime();
-		if (now < start) return 'Upcoming';
-		if (now > end) return 'Completed';
+		const status = getEventStatus(event);
+		if (status === 'upcoming') return 'Upcoming';
+		if (status === 'completed') return 'Completed';
 		return 'Ongoing';
 	}
 </script>
