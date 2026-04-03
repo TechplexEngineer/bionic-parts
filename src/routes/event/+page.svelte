@@ -4,7 +4,8 @@
 
 	export let data: PageData;
 
-	const availableYears = [2025, 2024, 2023, 2022];
+	const currentYear = data.currentYear;
+	const availableYears = Array.from({ length: currentYear - 2021 }, (_, i) => currentYear - i);
 
 	function formatDate(timestamp: number) {
 		if (!timestamp) return 'TBD';
