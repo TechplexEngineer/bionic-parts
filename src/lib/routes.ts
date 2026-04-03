@@ -32,6 +32,11 @@ export const routes = [
         link: '/kanban'
     },
     {
+        title: 'Events',
+        description: "Browse Team 4909's competition events.",
+        link: '/event'
+    },
+    {
         title: 'Pit Display',
         description: 'Dashboard for the Superpit.',
         link: '/pit'
