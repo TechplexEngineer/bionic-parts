@@ -1,8 +1,18 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 	import Navbar from '$lib/Navbar.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			invalidateAll();
+		}, 30000);
+
+		return () => clearInterval(interval);
+	});
 
 	function formatDate(dateStr: string) {
 		if (!dateStr) return '';
@@ -37,7 +47,11 @@
 		if (!ts) return 'TBD';
 		const d = new Date(ts * 1000);
 		const day = d.toLocaleDateString('en-US', { weekday: 'short' });
-		const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+		const time = d.toLocaleTimeString('en-US', {
+			hour: 'numeric',
+			minute: '2-digit',
+			hour12: true
+		});
 		return `${day} ${time}${match.predicted_time ? '*' : ''}`;
 	}
 
@@ -62,16 +76,29 @@
 		return video ? `https://youtu.be/${video.key}` : null;
 	}
 
+	function resolveWebcast(webcast: any): string | null {
+		if (!webcast) return null;
+		switch (webcast.type) {
+			case 'twitch':
+				return `https://www.twitch.tv/${webcast.channel}`;
+			case 'youtube':
+				return `https://www.youtube.com/watch?v=${webcast.channel}`;
+			case 'livestream':
+				return `https://livestream.com/accounts/${webcast.channel}/events/${webcast.file}`;
+			case 'bluealliance':
+				return `https://www.thebluealliance.com/gameday/${webcast.channel}`;
+			case 'ustream':
+				return `https://www.ustream.tv/channel/${webcast.channel}`;
+			default:
+				return `https://www.thebluealliance.com/gameday#event=${data.eventKey}`;
+		}
+	}
+
 	$: qualMatches = data.matches.filter((m: any) => m.comp_level === 'qm');
 	$: elimMatches = data.matches.filter((m: any) => m.comp_level !== 'qm');
 
 	$: rankingsList = data.rankings?.rankings ?? [];
 	$: sortOrderInfo = data.rankings?.sort_order_info ?? [];
-	$: topRankings = rankingsList.slice(0, 15);
-	$: ourRankInTop = topRankings.some((r: any) => r.team_key === data.teamKey);
-	$: ourRanking = !ourRankInTop
-		? rankingsList.find((r: any) => r.team_key === data.teamKey)
-		: null;
 
 	$: qualStatus = data.teamStatus?.qual;
 	$: teamRank = qualStatus?.ranking?.rank ?? null;
@@ -97,11 +124,7 @@
 				{#if data.eventDetails.city || data.eventDetails.state_prov || data.eventDetails.country}
 					{@const location = getLocation(data.eventDetails)}
 					<p class="mb-1">
-						📍 in <a
-							href="https://maps.google.com/?q={location}"
-							target="_blank"
-							rel="noopener"
-						>
+						📍 in <a href="https://maps.google.com/?q={location}" target="_blank" rel="noopener">
 							{location}
 						</a>
 					</p>
@@ -121,19 +144,30 @@
 
 			{#if teamRank && teamRecord}
 				<p class="mt-2 mb-1">
-					Team {data.teamNumber} was Rank {teamRank}{numTeams ? `/${numTeams}` : ''} with a record
-					of {teamRecord.wins}-{teamRecord.losses}-{teamRecord.ties}
+					Team {data.teamNumber} was Rank {teamRank}{numTeams ? `/${numTeams}` : ''} with a record of
+					{teamRecord.wins}-{teamRecord.losses}-{teamRecord.ties}
 				</p>
 			{/if}
 
 			<div class="mt-3 d-flex flex-column gap-2">
+				{#if data.eventDetails?.webcasts && data.eventDetails.webcasts.length > 0}
+					{#each data.eventDetails.webcasts as webcast, i}
+						{@const url = resolveWebcast(webcast)}
+						{#if url}
+							<a href={url} target="_blank" rel="noopener" class="btn btn-outline-primary">
+								Open Webcast {webcast.date} ({webcast.type})
+							</a>
+						{/if}
+					{/each}
+				{/if}
+
 				<a
 					href="https://www.thebluealliance.com/event/{data.eventKey}#matches"
 					target="_blank"
 					rel="noopener"
 					class="btn btn-outline-dark"
 				>
-					◉ Watch All Matches
+					View event on The Blue Alliance
 				</a>
 				<a
 					href="/pit?teamNumber={data.teamNumber}&statboticsEventKey={data.eventKey}&nexusEventKey={data.eventKey}"
@@ -153,17 +187,18 @@
 					<table class="table table-sm table-bordered match-table">
 						<thead>
 							<tr>
-								<th class="text-center video-col"></th>
+								<th class="text-center video-col" />
 								<th>Match</th>
 								<th colspan="3" class="text-center red-header">Red Alliance</th>
 								<th colspan="3" class="text-center blue-header">Blue Alliance</th>
 								<th colspan="2" class="text-center">Scores</th>
+								<th colspan="2" class="text-center">RP</th>
 							</tr>
 						</thead>
 						<tbody>
 							{#if qualMatches.length > 0}
 								<tr class="section-header">
-									<td colspan="10" class="text-center">Qualifications</td>
+									<td colspan="12" class="text-center">Qualifications</td>
 								</tr>
 								{#each qualMatches as match}
 									{@const redTeams = match.alliances?.red?.team_keys ?? []}
@@ -176,7 +211,9 @@
 												<a href={video} target="_blank" rel="noopener" class="text-dark">◉</a>
 											{/if}
 										</td>
-										<td class="match-name">{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td>
+										<td class="match-name"
+											>{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td
+										>
 										{#each redTeams as teamKey}
 											<td class="text-center red-cell" class:our-team={isOurTeam(teamKey)}>
 												{teamNum(teamKey)}
@@ -190,15 +227,19 @@
 										{#if played}
 											<td class="text-center red-score fw-bold">{match.alliances.red.score}</td>
 											<td class="text-center blue-score fw-bold">{match.alliances.blue.score}</td>
+											<td class="text-center red-rp">{match.score_breakdown?.red?.rp ?? 0}</td>
+											<td class="text-center blue-rp">{match.score_breakdown?.blue?.rp ?? 0}</td>
 										{:else}
-											<td colspan="2" class="text-center text-muted scheduled-time">{formatMatchTime(match)}</td>
+											<td colspan="4" class="text-center text-muted scheduled-time"
+												>{formatMatchTime(match)}</td
+											>
 										{/if}
 									</tr>
 								{/each}
 							{/if}
 							{#if elimMatches.length > 0}
 								<tr class="section-header">
-									<td colspan="10" class="text-center">Playoffs</td>
+									<td colspan="12" class="text-center">Playoffs</td>
 								</tr>
 								{#each elimMatches as match}
 									{@const redTeams = match.alliances?.red?.team_keys ?? []}
@@ -211,7 +252,9 @@
 												<a href={video} target="_blank" rel="noopener" class="text-dark">◉</a>
 											{/if}
 										</td>
-										<td class="match-name">{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td>
+										<td class="match-name"
+											>{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td
+										>
 										{#each redTeams as teamKey}
 											<td class="text-center red-cell" class:our-team={isOurTeam(teamKey)}>
 												{teamNum(teamKey)}
@@ -225,8 +268,12 @@
 										{#if played}
 											<td class="text-center red-score fw-bold">{match.alliances.red.score}</td>
 											<td class="text-center blue-score fw-bold">{match.alliances.blue.score}</td>
+											<td class="text-center red-rp">-</td>
+											<td class="text-center blue-rp">-</td>
 										{:else}
-											<td colspan="2" class="text-center text-muted scheduled-time">{formatMatchTime(match)}</td>
+											<td colspan="4" class="text-center text-muted scheduled-time"
+												>{formatMatchTime(match)}</td
+											>
 										{/if}
 									</tr>
 								{/each}
@@ -256,7 +303,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						{#each topRankings as r}
+						{#each rankingsList as r}
 							<tr class:table-success={r.team_key === data.teamKey}>
 								<td>{r.rank}</td>
 								<td class:fw-bold={r.team_key === data.teamKey}>{teamNum(r.team_key)}</td>
@@ -271,24 +318,6 @@
 								<td>{r.matches_played}</td>
 							</tr>
 						{/each}
-						{#if ourRanking}
-							<tr>
-								<td colspan="6" class="text-center text-muted py-1">…</td>
-							</tr>
-							<tr class="table-success">
-								<td>{ourRanking.rank}</td>
-								<td class="fw-bold">{teamNum(ourRanking.team_key)}</td>
-								{#each (ourRanking.sort_orders ?? []).slice(0, 2) as so, i}
-									<td
-										>{sortOrderInfo[i]?.precision === 0
-											? so
-											: so.toFixed(sortOrderInfo[i]?.precision ?? 2)}</td
-									>
-								{/each}
-								<td>{ourRanking.record.wins}-{ourRanking.record.losses}-{ourRanking.record.ties}</td>
-								<td>{ourRanking.matches_played}</td>
-							</tr>
-						{/if}
 					</tbody>
 				</table>
 			</div>
@@ -314,6 +343,14 @@
 	}
 	.blue-score {
 		background-color: rgba(13, 110, 253, 0.15);
+	}
+	.red-rp {
+		background-color: rgba(220, 53, 69, 0.05);
+		width: 40px;
+	}
+	.blue-rp {
+		background-color: rgba(13, 110, 253, 0.05);
+		width: 40px;
 	}
 	.our-team {
 		text-decoration: underline;
