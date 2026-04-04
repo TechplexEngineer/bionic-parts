@@ -12,7 +12,7 @@ export const load = (async ({ url, fetch }) => {
 	let events: any[] = [];
 	try {
 		const res = await fetch(
-			`https://www.thebluealliance.com/api/v3/team/${TEAM_KEY}/events/${year}/simple`,
+			`https://www.thebluealliance.com/api/v3/team/${TEAM_KEY}/events/${year}`,
 			{ headers: { 'X-TBA-Auth-Key': TBA_API_KEY, accept: 'application/json' } }
 		);
 		if (res.ok) events = await res.json<any[]>();
@@ -20,11 +20,22 @@ export const load = (async ({ url, fetch }) => {
 		events = [];
 	}
 
-	const sortedEvents = (events || []).sort((a: any, b: any) => {
-		// Championship/off-season events have no week — sort them last
+	const processedEvents = (events || []).map((event: any) => {
+		let displayWeek = event.week;
+		if (displayWeek === null || displayWeek === undefined) {
+			if (event.event_type === 100) displayWeek = -1; // Week 0 for Preseason
+		}
+		return { ...event, displayWeek };
+	});
+
+	const sortedEvents = processedEvents.sort((a: any, b: any) => {
+		// Championship/off-season/preseason events have no week — sort preseason first, others last
+		const PRESEASON = -1;
 		const SORT_LAST = 99;
-		const weekA = a.week ?? SORT_LAST;
-		const weekB = b.week ?? SORT_LAST;
+		
+		const weekA = a.displayWeek ?? (a.event_type === 100 ? PRESEASON : SORT_LAST);
+		const weekB = b.displayWeek ?? (b.event_type === 100 ? PRESEASON : SORT_LAST);
+		
 		if (weekA !== weekB) return weekA - weekB;
 		return (a.start_date || '').localeCompare(b.start_date || '');
 	});

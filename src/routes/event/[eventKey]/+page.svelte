@@ -211,9 +211,11 @@
 												<a href={video} target="_blank" rel="noopener" class="text-dark">◉</a>
 											{/if}
 										</td>
-										<td class="match-name"
-											>{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td
-										>
+										<td class="match-name">
+											<a href="/matchposttemplate?match={match.key}">
+												{formatMatchName(match.comp_level, match.set_number, match.match_number)}
+											</a>
+										</td>
 										{#each redTeams as teamKey}
 											<td class="text-center red-cell" class:our-team={isOurTeam(teamKey)}>
 												{teamNum(teamKey)}
@@ -252,9 +254,11 @@
 												<a href={video} target="_blank" rel="noopener" class="text-dark">◉</a>
 											{/if}
 										</td>
-										<td class="match-name"
-											>{formatMatchName(match.comp_level, match.set_number, match.match_number)}</td
-										>
+										<td class="match-name">
+											<a href="/matchposttemplate?match={match.key}">
+												{formatMatchName(match.comp_level, match.set_number, match.match_number)}
+											</a>
+										</td>
 										{#each redTeams as teamKey}
 											<td class="text-center red-cell" class:our-team={isOurTeam(teamKey)}>
 												{teamNum(teamKey)}
@@ -369,6 +373,15 @@
 	}
 	.match-name {
 		white-space: nowrap;
+	}
+	.match-name a {
+		text-decoration: none;
+		color: inherit;
+		font-weight: 500;
+	}
+	.match-name a:hover {
+		text-decoration: underline;
+		color: var(--bs-primary);
 	}
 	.scheduled-time {
 		font-size: 0.8rem;
