@@ -55,7 +55,7 @@
     "bootstrap": "^5.2.3",
     "buffer": "^6.0.3",
     "detectrtc": "^1.4.1",
-    "drizzle-kit": "^0.18.0",
+    "drizzle-kit": "^0.22.0",
     "drizzle-orm": "^0.29.0",
     "ebml": "^3.0.0",
     "mini-canvas-editor": "^0.3.0",
