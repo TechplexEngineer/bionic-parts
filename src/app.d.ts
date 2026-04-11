@@ -31,8 +31,15 @@ declare global {
         // interface Platform {
         //     env?: {
         //         BIONIC_PARTS_DB?: D1Database;
+        //         MY_CONTAINER?: DurableObjectNamespace;
         //     }
         // }
+        interface Platform {
+            env?: {
+                BIONIC_PARTS_DB?: D1Database;
+                MY_CONTAINER?: DurableObjectNamespace;
+            }
+        }
 
     }
 }

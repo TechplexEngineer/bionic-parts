@@ -1,0 +1,31 @@
+{
+  "name": "bionic-parts",
+  // "build": {
+  //   "command": "npm run build"
+  // },
+  "pages_build_output_dir": ".svelte-kit/cloudflare",
+  "env": {
+    "production": {
+      "vars": {
+        "NODE_VERSION": "24"
+      }
+    }
+  },
+
+  "containers": [
+		{
+			"class_name": "MyContainer",
+			"image": "./container/Dockerfile",
+			"max_instances": 10
+		}
+	],
+
+	"durable_objects": {
+		"bindings": [
+			{
+				"class_name": "MyContainer",
+				"name": "MY_CONTAINER"
+			}
+		]
+	}
+}
